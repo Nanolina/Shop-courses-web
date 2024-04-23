@@ -1,15 +1,20 @@
 import * as dotenv from 'dotenv';
+import TelegramBot from 'node-telegram-bot-api';
 dotenv.config();
 
-const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.BOT_TOKEN;
+const appURL = process.env.APP_URL;
+if (!token || !appURL) {
+  throw Error('token or app url not found');
+}
+
 const bot = new TelegramBot(token, { polling: true });
 
-bot.on('message', (msg) => {
+bot.on('message', (msg: any) => {
   const chatId = msg.chat.id;
   const options = {
     reply_markup: {
-      inline_keyboard: [[{ text: 'Open courses', url: process.env.APP_URL }]],
+      inline_keyboard: [[{ text: 'Open courses', web_app: { url: appURL } }]],
     },
   };
 
