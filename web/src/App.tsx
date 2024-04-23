@@ -1,9 +1,18 @@
 import { useEffect } from 'react';
+import Button from './components/Button/Button';
 
 const tg = window.Telegram.WebApp;
 
 function App() {
   const onClose = () => tg.close();
+
+  const onToggleButton = () => {
+    if (tg.MainButton.isVisible) {
+      tg.MainButton.hide();
+    } else {
+      tg.MainButton.show();
+    }
+  };
 
   useEffect(() => {
     tg.ready();
@@ -12,7 +21,7 @@ function App() {
   return (
     <div>
       <header>Welcome back!</header>
-      <button onClick={onClose}>Закрыть</button>
+      <Button onClick={onToggleButton}>Закрыть</Button>
     </div>
   );
 }
