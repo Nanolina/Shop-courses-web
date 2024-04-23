@@ -1,28 +1,17 @@
 import { useEffect } from 'react';
-import Button from './components/Button/Button';
+import HomePage from './pages/HomePage/HomePage';
 
 const tg = window.Telegram.WebApp;
 
 function App() {
-  const onClose = () => tg.close();
-
-  const onToggleButton = () => {
-    if (tg.MainButton.isVisible) {
-      tg.MainButton.hide();
-    } else {
-      tg.MainButton.show();
-    }
-  };
-
   useEffect(() => {
     tg.ready();
   }, []);
 
   return (
-    <div>
-      <header>Welcome back!</header>
-      <Button onClick={onToggleButton}>Закрыть</Button>
-    </div>
+    <>
+      <HomePage />
+    </>
   );
 }
 
