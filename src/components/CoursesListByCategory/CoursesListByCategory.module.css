@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+  border-bottom: 2px solid #e9e9e9;
+}
+
+.labelsContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.courseWrapper {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 10px;
+}
+
+.textAll {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
