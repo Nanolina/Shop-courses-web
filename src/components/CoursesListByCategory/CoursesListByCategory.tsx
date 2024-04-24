@@ -9,13 +9,9 @@ function CoursesListByCategory({ category, courses }: any) {
     <div className={styles.container}>
       <div className={styles.labelsContainer}>
         <Label text={category} />
-        <Label
-          text={
-            <div className={styles.textAll}>
-              All <IoIosArrowForward size={15} />
-            </div>
-          }
-        />
+        <div className={styles.textAll}>
+          All <IoIosArrowForward size={15} />
+        </div>
       </div>
       <div className={styles.courseWrapper}>
         {courses.map((course: ICourse) => (

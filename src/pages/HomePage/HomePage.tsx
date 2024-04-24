@@ -6,11 +6,13 @@ import SearchBar from '../../ui/SearchBar/SearchBar';
 
 const HomePage = () => {
   return (
-    <Container>
+    <>
       <Header />
-      <SearchBar placeholder="Search for courses" />
-      <CoursesList />
-    </Container>
+      <Container>
+        <SearchBar placeholder="Search for courses" />
+        <CoursesList />
+      </Container>
+    </>
   );
 };
 

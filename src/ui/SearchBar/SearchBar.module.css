@@ -17,11 +17,8 @@
   padding: 0px 8px;
   border: 1px solid #8c8c8c;
   box-sizing: border-box;
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: #ffffff;
   color: #8c8c8c;
-  font-size: 14px;
-  font-family: 'Roboto';
-  line-height: 19px;
   outline: none;
 }

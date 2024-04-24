@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 10px;
+  gap: 20px;
   border-bottom: 2px solid #e9e9e9;
 }
 
@@ -15,9 +15,11 @@
 
 .courseWrapper {
   display: flex;
-  overflow-x: auto;
+  white-space: nowrap;
   gap: 20px;
   padding-bottom: 10px;
+  overflow-x: scroll;
+  width: 100%;
 }
 
 .textAll {
@@ -25,4 +27,6 @@
   justify-content: center;
   align-items: center;
   gap: 5px;
+  font-size: 16px;
+  font-weight: 500;
 }

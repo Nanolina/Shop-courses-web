@@ -6,7 +6,7 @@ function CourseItem({ course }: { course: ICourse }) {
     <div className={styles.container}>
       <img src={course.image} alt={course.name} className={styles.image} />
       <div className={styles.info}>
-        <div className={styles.text}>{course.name}</div>
+        <div>{course.name}</div>
         <div className={styles.price}>
           {course.price}{' '}
           {course.currency ? (

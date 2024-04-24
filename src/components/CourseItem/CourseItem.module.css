@@ -4,12 +4,13 @@
   justify-content: center;
   align-items: flex-start;
   gap: 10px;
+  width: 200px;
 }
 
 .image {
   width: 150px;
-  height: 150px;
-  border-radius: 10px;
+  height: 130px;
+  border-radius: 8px;
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -21,20 +22,17 @@
 }
 
 .price {
-  color: #030303;
-  font-size: 14px;
-  font-family: 'Roboto';
   font-weight: 600;
-  line-height: 16px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 5px;
 }
 
-.text {
-  color: #030303;
-  font-size: 12px;
-  font-family: 'Roboto';
-  line-height: 14px;
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 5px;
 }
