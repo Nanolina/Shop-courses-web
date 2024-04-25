@@ -2,7 +2,12 @@ import styles from './Button.module.css';
 
 function Button(props: any) {
   return (
-    <button {...props} className={styles.button}>
+    <button
+      {...props}
+      className={
+        props.color === 'gray' ? styles.buttonGray : styles.buttonGreen
+      }
+    >
       {props.text}
     </button>
   );

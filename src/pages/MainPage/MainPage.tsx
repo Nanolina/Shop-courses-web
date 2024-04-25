@@ -4,16 +4,16 @@ import Header from '../../components/Header/Header';
 import Container from '../../ui/Container/Container';
 import SearchBar from '../../ui/SearchBar/SearchBar';
 
-const HomePage = () => {
+const MainPage = () => {
   return (
     <>
-      <Header />
+      <Header type="main" />
       <Container>
-        <SearchBar placeholder="Search for courses" />
+        <SearchBar />
         <CoursesList />
       </Container>
     </>
   );
 };
 
-export default HomePage;
+export default MainPage;

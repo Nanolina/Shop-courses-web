@@ -1,6 +1,7 @@
 export interface ICourse {
   id: string;
   name: string;
+  description: string;
   category: string;
   subcategory: string;
   price: number;

@@ -1,35 +1,48 @@
-export const data = [
+import { ICourse } from './types';
+
+export const data: ICourse[] = [
   {
     id: '1',
     name: 'React',
+    description:
+      'Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today',
     category: 'Technology',
     subcategory: 'Full-stack development',
     price: 10.34,
     currency: 'TON',
+
     image:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png',
   },
   {
     id: '2',
     name: 'NestJS',
+    description:
+      'Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today',
     category: 'Technology',
     subcategory: 'Full-stack development',
     price: 5,
     currency: 'TON',
+
     image: 'https://nestjs.com/img/logo-small.svg',
   },
   {
     id: '3',
     name: 'Redux',
+    description:
+      'Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today',
     category: 'Technology',
     subcategory: 'Frontend development',
     price: 2,
     currency: 'TON',
+
     image: 'https://www.bairesdev.com/wp-content/uploads/2020/07/redux.svg',
   },
   {
     id: '4',
     name: 'Red velvet cake',
+    description:
+      'Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today',
     category: 'Cooking',
     subcategory: 'Desserts',
     price: 1,
@@ -40,6 +53,8 @@ export const data = [
   {
     id: '5',
     name: 'Photo by Angel',
+    description:
+      'Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today',
     category: 'Art and design',
     subcategory: 'Photography',
     price: 20,
