@@ -5,12 +5,11 @@ export const data: ICourse[] = [
     id: '1',
     name: 'React',
     description:
-      'Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today',
+      'Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today. Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today. Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today. Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today. Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today. Discover in-depth course information, watch video previews, and enhance your skills. Enroll now to unlock a world of knowledge and start learning today',
     category: 'Technology',
     subcategory: 'Full-stack development',
     price: 10.34,
     currency: 'TON',
-
     image:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png',
   },
@@ -23,7 +22,6 @@ export const data: ICourse[] = [
     subcategory: 'Full-stack development',
     price: 5,
     currency: 'TON',
-
     image: 'https://nestjs.com/img/logo-small.svg',
   },
   {
@@ -35,7 +33,6 @@ export const data: ICourse[] = [
     subcategory: 'Frontend development',
     price: 2,
     currency: 'TON',
-
     image: 'https://www.bairesdev.com/wp-content/uploads/2020/07/redux.svg',
   },
   {

@@ -14,7 +14,7 @@
   box-sizing: border-box;
 }
 
-.addButton {
+.createButton {
   display: flex;
   justify-content: center;
   align-items: center;

@@ -15,9 +15,9 @@ const Header = (props: any) => {
           <Label text="Courses" isForHeader />
           <Button
             text={
-              <div className={styles.addButton}>
+              <div className={styles.createButton}>
                 <CiCirclePlus size={20} />
-                Add
+                Create
               </div>
             }
           />
@@ -27,6 +27,7 @@ const Header = (props: any) => {
           <IoIosArrowBack
             onClick={() => navigate(-1)}
             style={{ cursor: 'pointer' }}
+            size={20}
           />
           <Label text={props.label} />
         </>

@@ -5,7 +5,7 @@ function SearchBar() {
   return (
     <div className={styles.container}>
       <input className={styles.input} placeholder="Search" />
-      <IoSearchSharp className={styles.icon} color="#8c8c8c" />
+      <IoSearchSharp className={styles.icon} color="#8c8c8c" size={20} />
     </div>
   );
 }
