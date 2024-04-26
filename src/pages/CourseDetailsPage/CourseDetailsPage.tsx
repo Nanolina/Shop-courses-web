@@ -4,6 +4,7 @@ import Header from '../../components/Header/Header';
 import { data } from '../../data';
 import Container from '../../ui/Container/Container';
 import Label from '../../ui/Label/Label';
+import styles from './CourseDetailsPage.module.css';
 
 const tg = window.Telegram.WebApp;
 
@@ -12,22 +13,23 @@ function CourseDetailsPage() {
   const course = data.find((course) => course.id === id);
 
   useEffect(() => {
-    tg.MainButton.text = 'Add to cart';
-    tg.MainButton.color = '#5fe7ae';
-    tg.MainButton.textColor = '#000000';
-    tg.MainButton.show();
-  }, []);
+    if (course) {
+      tg.MainButton.text = `Buy for ${course.price} ${course.currency}`;
+      tg.MainButton.show();
+    }
+  }, [course]);
 
   if (!course) {
     return <div>Course is not found</div>;
   }
+
   return (
     <>
       <Header label="Explore course" />
       <Container>
         <img src={course.image} alt="Course" width="100%" height="50%" />
         <Label text={course.name} />
-        <div>{course.description}</div>
+        <div className={styles.description}>{course.description}</div>
       </Container>
     </>
   );

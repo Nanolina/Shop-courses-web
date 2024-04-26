@@ -1,7 +1,5 @@
-import { CiCirclePlus } from 'react-icons/ci';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
 import styles from './Header.module.css';
 
@@ -10,28 +8,14 @@ const Header = (props: any) => {
 
   return (
     <div className={styles.container}>
-      {props.type === 'main' ? (
-        <>
-          <Label text="Courses" isForHeader />
-          <Button
-            text={
-              <div className={styles.createButton}>
-                <CiCirclePlus size={20} />
-                Create
-              </div>
-            }
-          />
-        </>
-      ) : (
-        <>
-          <IoIosArrowBack
-            onClick={() => navigate(-1)}
-            style={{ cursor: 'pointer' }}
-            size={20}
-          />
-          <Label text={props.label} />
-        </>
-      )}
+      <>
+        <IoIosArrowBack
+          onClick={() => navigate(-1)}
+          style={{ cursor: 'pointer' }}
+          size={20}
+        />
+        <Label text={props.label} />
+      </>
     </div>
   );
 };
