@@ -10,8 +10,6 @@ import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 
 const tg = window.Telegram.WebApp;
-const serverUrl = process.env.REACT_APP_SERVER_URL || '';
-const query_id = tg.initDataUnsafe?.query_id;
 
 function CreateFormPage() {
   const [longTitle, setLongTitle] = useState<string>('');
@@ -23,9 +21,6 @@ function CreateFormPage() {
   const [currency, setCurrency] = useState<string>('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
-
-  console.log('imageFile', imageFile);
-  console.log('imagePreview', imagePreview);
 
   const setImage = (file: File | null) => {
     setImageFile(file);
@@ -86,27 +81,7 @@ function CreateFormPage() {
       currency,
       imageFile,
     };
-    // tg.sendData(JSON.stringify(data));
-    fetch(`${serverUrl}/course`, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify({ course, queryId: query_id }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Something went wrong');
-        }
-      })
-      .then((data) => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+    tg.sendData(JSON.stringify(course));
   }, [
     category,
     currency,
@@ -117,13 +92,6 @@ function CreateFormPage() {
     shortTitle,
     subcategory,
   ]);
-
-  useEffect(() => {
-    tg.onEvent('mainButtonClicked', onSendData);
-    return () => {
-      tg.offEvent('mainButtonClicked', onSendData);
-    };
-  }, [onSendData]);
 
   useEffect(() => {
     tg.MainButton.setParams({
@@ -138,6 +106,13 @@ function CreateFormPage() {
       tg.MainButton.show();
     }
   }, [category, currency, longTitle, price, shortTitle]);
+
+  useEffect(() => {
+    tg.onEvent('mainButtonClicked', onSendData);
+    return () => {
+      tg.offEvent('mainButtonClicked', onSendData);
+    };
+  }, [onSendData]);
 
   useEffect(() => {
     scroll.scrollToBottom();
