@@ -1,7 +1,8 @@
 .select {
   width: 100%;
   height: 50px;
-  color: var(--tg-theme-accent-text-color);
   font-size: large;
   padding: 10px;
+  color: var(--tg-theme-accent-text-color);
+  background-color: var(--tg-theme-bg-color);
 }

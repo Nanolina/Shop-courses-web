@@ -26,7 +26,7 @@ function CourseDetailsPage() {
   return (
     <>
       <Header label="Explore course" isLabelRight />
-      <Container>
+      <Container grayContainer={false}>
         <img src={course.image} alt="Course" width="100%" height="50%" />
         <Label text={course.name} />
         <div className={styles.description}>{course.description}</div>

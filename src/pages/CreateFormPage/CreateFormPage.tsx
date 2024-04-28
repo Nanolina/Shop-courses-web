@@ -1,11 +1,12 @@
-import { ChangeEvent, useState } from 'react';
-import Header from '../../components/Header/Header';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { IOption } from '../../types';
 import Container from '../../ui/Container/Container';
 import Label from '../../ui/Label/Label';
 import Select from '../../ui/Select/Select';
-import TextArea from '../../ui/TextArea/TextArea';
+import TextArea from '../../ui/Textarea/TextArea';
 import TextInput from '../../ui/TextInput/TextInput';
+
+const tg = window.Telegram.WebApp;
 
 function CreateFormPage() {
   const [longTitle, setLongTitle] = useState<string>('');
@@ -40,55 +41,57 @@ function CreateFormPage() {
     other: [],
   };
 
+  useEffect(() => {
+    tg.MainButton.text = 'Create';
+    tg.MainButton.show();
+  }, []);
+
   return (
-    <>
-      <Header label="Create new course" hasButtonBack={false} />
-      <Container>
-        <TextInput
-          value={longTitle}
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            setLongTitle(event.target.value)
-          }
-          placeholder="Full course title"
-        />
-        <TextInput
-          value={shortTitle}
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            setShortTitle(event.target.value)
-          }
-          placeholder="Short course title"
-        />
-        <TextArea
-          value={description}
-          onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
-            setDescription(event.target.value)
-          }
-          placeholder="Description"
-        />
-        <Label
-          text="Choose a category"
-          style={{
-            isCenter: true,
-          }}
-        />
+    <Container>
+      <TextInput
+        value={longTitle}
+        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+          setLongTitle(event.target.value)
+        }
+        placeholder="Full course title"
+      />
+      <TextInput
+        value={shortTitle}
+        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+          setShortTitle(event.target.value)
+        }
+        placeholder="Short course title"
+      />
+      <TextArea
+        value={description}
+        onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+          setDescription(event.target.value)
+        }
+        placeholder="Description"
+      />
+      <Label
+        text="Choose a category"
+        style={{
+          isCenter: true,
+        }}
+      />
+      <Select
+        selectValue={category}
+        onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+          setCategory(event.target.value)
+        }
+        options={categoryOptions}
+      />
+      {category && category !== 'other' && (
         <Select
-          selectValue={category}
+          selectValue={subcategory}
           onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-            setCategory(event.target.value)
+            setSubcategory(event.target.value)
           }
-          options={categoryOptions}
+          options={subcategoryOptions[category]}
         />
-        {category && category !== 'other' && (
-          <Select
-            selectValue={subcategory}
-            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-              setSubcategory(event.target.value)
-            }
-            options={subcategoryOptions[category]}
-          />
-        )}
-      </Container>
-    </>
+      )}
+    </Container>
   );
 }
 

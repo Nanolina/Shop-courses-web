@@ -1,7 +1,10 @@
 import styles from './Container.module.css';
 
-function Container(props: any) {
-  return <div className={styles.container}>{props.children}</div>;
+function Container({ grayContainer = true, children }: any) {
+  const className = `${styles.container} ${
+    grayContainer ? styles.grayContainer : ''
+  }`;
+  return <div className={className}>{children}</div>;
 }
 
 export default Container;

@@ -6,3 +6,7 @@
   justify-content: center;
   gap: 10px;
 }
+
+.grayContainer {
+  background-color: var(--tg-theme-secondary-bg-color);
+}
