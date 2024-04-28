@@ -3,8 +3,8 @@ import { IOption } from '../../types';
 import Container from '../../ui/Container/Container';
 import Label from '../../ui/Label/Label';
 import Select from '../../ui/Select/Select';
-import TextArea from '../../ui/Textarea/TextArea';
 import TextInput from '../../ui/TextInput/TextInput';
+import TextArea from '../../ui/Textarea/TextArea';
 
 const tg = window.Telegram.WebApp;
 
@@ -14,6 +14,8 @@ function CreateFormPage() {
   const [description, setDescription] = useState<string>('');
   const [category, setCategory] = useState<string>('');
   const [subcategory, setSubcategory] = useState<string>('');
+  const [price, setPrice] = useState<number>(0);
+  const [currency, setCurrency] = useState<string>('');
 
   const categoryOptions: IOption[] = [
     { value: 'technology', label: 'Technology' },
@@ -40,6 +42,10 @@ function CreateFormPage() {
     ],
     other: [],
   };
+
+  const currencyOptions: IOption[] = [
+    { value: 'TON', label: 'The Open Network (TON)' },
+  ];
 
   useEffect(() => {
     tg.MainButton.text = 'Create';
@@ -69,13 +75,8 @@ function CreateFormPage() {
         }
         placeholder="Description"
       />
-      <Label
-        text="Choose a category"
-        style={{
-          isCenter: true,
-        }}
-      />
       <Select
+        type="category"
         selectValue={category}
         onChange={(event: ChangeEvent<HTMLSelectElement>) =>
           setCategory(event.target.value)
@@ -84,6 +85,7 @@ function CreateFormPage() {
       />
       {category && category !== 'other' && (
         <Select
+          type="subcategory"
           selectValue={subcategory}
           onChange={(event: ChangeEvent<HTMLSelectElement>) =>
             setSubcategory(event.target.value)
@@ -91,6 +93,26 @@ function CreateFormPage() {
           options={subcategoryOptions[category]}
         />
       )}
+      <Label
+        text="Enter the cost"
+        style={{
+          isCenter: true,
+        }}
+      />
+      <TextInput
+        value={price}
+        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+          setPrice(parseFloat(event.target.value))
+        }
+      />
+      <Select
+        type="currency"
+        selectValue={currency}
+        onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+          setCurrency(event.target.value)
+        }
+        options={currencyOptions}
+      />
     </Container>
   );
 }

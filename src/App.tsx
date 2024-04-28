@@ -9,6 +9,7 @@ const tg = window.Telegram.WebApp;
 function App() {
   useEffect(() => {
     tg.ready();
+    tg.setHeaderColor('secondary_bg_color');
   }, []);
 
   return (
