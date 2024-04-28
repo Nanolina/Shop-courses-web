@@ -1,6 +1,9 @@
 import { ChangeEvent, useEffect, useState } from 'react';
+import { animateScroll as scroll } from 'react-scroll';
 import { IOption } from '../../types';
 import Container from '../../ui/Container/Container';
+import ImagePreview from '../../ui/ImagePreview/ImagePreview';
+import ImageUpload from '../../ui/ImageUpload/ImageUpload';
 import Label from '../../ui/Label/Label';
 import Select from '../../ui/Select/Select';
 import TextInput from '../../ui/TextInput/TextInput';
@@ -16,6 +19,29 @@ function CreateFormPage() {
   const [subcategory, setSubcategory] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [currency, setCurrency] = useState<string>('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
+
+  console.log('imageFile', imageFile);
+  console.log('imagePreview', imagePreview);
+
+  const setImage = (file: File | null) => {
+    setImageFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview('');
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImagePreview('');
+    setImageFile(null);
+  };
 
   const categoryOptions: IOption[] = [
     { value: 'technology', label: 'Technology' },
@@ -51,6 +77,10 @@ function CreateFormPage() {
     tg.MainButton.text = 'Create';
     tg.MainButton.show();
   }, []);
+
+  useEffect(() => {
+    scroll.scrollToBottom();
+  }, [imagePreview]);
 
   return (
     <Container>
@@ -113,6 +143,19 @@ function CreateFormPage() {
         }
         options={currencyOptions}
       />
+      <Label
+        text="The main image for your course"
+        style={{
+          isCenter: true,
+        }}
+      />
+      <ImageUpload onImageChange={setImage} />
+      {imagePreview && (
+        <ImagePreview
+          imagePreview={imagePreview}
+          removeImage={handleRemoveImage}
+        />
+      )}
     </Container>
   );
 }

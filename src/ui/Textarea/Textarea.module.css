@@ -5,4 +5,11 @@
   box-sizing: border-box;
   color: var(--tg-theme-accent-text-color);
   font-size: large;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.textArea:focus {
+  outline: none;
+  border: 1px solid var(--tg-theme-accent-text-color);
 }

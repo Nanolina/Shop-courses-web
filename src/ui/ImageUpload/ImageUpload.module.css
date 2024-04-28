@@ -1,0 +1,20 @@
+.container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.hiddenInput {
+  display: none; /* Hide input completely */
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: white;
+  color: var(--tg-theme-accent-text-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: large;
+}
