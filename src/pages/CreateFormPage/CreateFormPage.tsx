@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { animateScroll as scroll } from 'react-scroll';
 import { IOption } from '../../types';
 import Container from '../../ui/Container/Container';
@@ -73,10 +73,49 @@ function CreateFormPage() {
     { value: 'TON', label: 'The Open Network (TON)' },
   ];
 
+  const onSendData = useCallback(() => {
+    const data = {
+      longTitle,
+      shortTitle,
+      description,
+      category,
+      subcategory,
+      price,
+      currency,
+      imageFile,
+    };
+    tg.sendData(JSON.stringify(data));
+  }, [
+    category,
+    currency,
+    description,
+    imageFile,
+    longTitle,
+    price,
+    shortTitle,
+    subcategory,
+  ]);
+
   useEffect(() => {
-    tg.MainButton.text = 'Create';
-    tg.MainButton.show();
+    tg.onEvent('mainButtonClicked', onSendData);
+    return () => {
+      tg.offEvent('mainButtonClicked', onSendData);
+    };
+  }, [onSendData]);
+
+  useEffect(() => {
+    tg.MainButton.setParams({
+      text: 'Create',
+    });
   }, []);
+
+  useEffect(() => {
+    if (!shortTitle || !longTitle || !category || !price || !currency) {
+      tg.MainButton.hide();
+    } else {
+      tg.MainButton.show();
+    }
+  }, [category, currency, longTitle, price, shortTitle]);
 
   useEffect(() => {
     scroll.scrollToBottom();
@@ -132,7 +171,7 @@ function CreateFormPage() {
       <TextInput
         value={price}
         onChange={(event: ChangeEvent<HTMLInputElement>) =>
-          setPrice(parseFloat(event.target.value))
+          setPrice(parseFloat(event.target.value) || 0)
         }
       />
       <Select

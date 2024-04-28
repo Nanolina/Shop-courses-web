@@ -14,7 +14,10 @@ function CourseDetailsPage() {
 
   useEffect(() => {
     if (course) {
-      tg.MainButton.text = `Buy for ${course.price} ${course.currency}`;
+      tg.MainButton.setParams({
+        text: `Buy for ${course.price} ${course.currency}`,
+      });
+
       tg.MainButton.show();
     }
   }, [course]);
