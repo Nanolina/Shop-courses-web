@@ -7,9 +7,10 @@ import ImageUpload from '../../ui/ImageUpload/ImageUpload';
 import Label from '../../ui/Label/Label';
 import Select from '../../ui/Select/Select';
 import TextInput from '../../ui/TextInput/TextInput';
-import TextArea from '../../ui/Textarea/TextArea';
+import TextArea from '../../ui/TextArea/TextArea';
 
 const tg = window.Telegram.WebApp;
+const serverUrl = process.env.REACT_APP_SERVER_URL || '';
 
 function CreateFormPage() {
   const [longTitle, setLongTitle] = useState<string>('');
@@ -74,7 +75,7 @@ function CreateFormPage() {
   ];
 
   const onSendData = useCallback(() => {
-    const data = {
+    const course = {
       longTitle,
       shortTitle,
       description,
@@ -84,7 +85,14 @@ function CreateFormPage() {
       currency,
       imageFile,
     };
-    tg.sendData(JSON.stringify(data));
+    // tg.sendData(JSON.stringify(data));
+    fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({ course, queryId: tg.initDataUnsafe?.query_id }),
+    });
   }, [
     category,
     currency,
