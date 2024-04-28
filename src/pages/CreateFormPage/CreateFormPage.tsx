@@ -6,8 +6,8 @@ import ImagePreview from '../../ui/ImagePreview/ImagePreview';
 import ImageUpload from '../../ui/ImageUpload/ImageUpload';
 import Label from '../../ui/Label/Label';
 import Select from '../../ui/Select/Select';
-import TextInput from '../../ui/TextInput/TextInput';
 import TextArea from '../../ui/TextArea/TextArea';
+import TextInput from '../../ui/TextInput/TextInput';
 
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
