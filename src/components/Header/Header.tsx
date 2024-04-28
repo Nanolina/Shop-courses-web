@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Label from '../../ui/Label/Label';
 import styles from './Header.module.css';
 
-const Header = ({ label, hasButtonBack = true }: any) => {
+const Header = ({ label, hasButtonBack = true, isLabelRight = true }: any) => {
   const navigate = useNavigate();
 
   return (
@@ -16,7 +16,16 @@ const Header = ({ label, hasButtonBack = true }: any) => {
             size={20}
           />
         )}
-        <Label text={label} />
+
+        <Label
+          text={label}
+          style={{
+            isForHeader: true,
+            ...(isLabelRight && {
+              isRight: true,
+            }),
+          }}
+        />
       </>
     </div>
   );

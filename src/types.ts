@@ -8,3 +8,8 @@ export interface ICourse {
   currency: string;
   image: string;
 }
+
+export interface IOption {
+  value: string;
+  label: string;
+}

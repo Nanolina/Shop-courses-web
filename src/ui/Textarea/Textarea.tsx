@@ -1,9 +1,9 @@
-import styles from './Textarea.module.css';
+import styles from './TextArea.module.css';
 
-function Textarea({ value, onChange, placeholder }: any) {
+function TextArea({ value, onChange, placeholder }: any) {
   return (
     <textarea
-      className={styles.textarea}
+      className={styles.textArea}
       placeholder={placeholder}
       value={value}
       onChange={onChange}
@@ -11,4 +11,4 @@ function Textarea({ value, onChange, placeholder }: any) {
   );
 }
 
-export default Textarea;
+export default TextArea;
