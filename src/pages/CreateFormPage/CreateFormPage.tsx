@@ -93,7 +93,20 @@ function CreateFormPage() {
         'Content-type': 'application/json',
       },
       body: JSON.stringify({ course, queryId: query_id }),
-    });
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Something went wrong');
+        }
+      })
+      .then((data) => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   }, [
     category,
     currency,
