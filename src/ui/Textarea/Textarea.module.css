@@ -1,0 +1,8 @@
+.textarea {
+  width: 100%;
+  height: 200px;
+  padding: 10px;
+  box-sizing: border-box;
+  color: var(--tg-theme-accent-text-color);
+  font-size: large;
+}
