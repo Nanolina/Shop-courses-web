@@ -1,12 +1,19 @@
 export interface ICourse {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   category: string;
-  subcategory: string;
+  subcategory?: string;
   price: number;
   currency: string;
-  image: string;
+  imageUrl?: string;
+  modules: IModule[];
+}
+
+interface IModule {
+  name?: string;
+  description?: string;
+  videos: string[];
 }
 
 export interface IOption {

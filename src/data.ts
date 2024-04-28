@@ -10,8 +10,20 @@ export const data: ICourse[] = [
     subcategory: 'Full-stack development',
     price: 10.34,
     currency: 'TON',
-    image:
+    imageUrl:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png',
+    modules: [
+      {
+        name: '1 Module. How to create React application',
+        description: '',
+        videos: [],
+      },
+      {
+        name: '2 Module. How to create first components',
+        description: '',
+        videos: [],
+      },
+    ],
   },
   {
     id: '2',
@@ -22,7 +34,19 @@ export const data: ICourse[] = [
     subcategory: 'Full-stack development',
     price: 5,
     currency: 'TON',
-    image: 'https://nestjs.com/img/logo-small.svg',
+    imageUrl: 'https://nestjs.com/img/logo-small.svg',
+    modules: [
+      {
+        name: '1 Module. Set up NestJS',
+        description: '',
+        videos: [],
+      },
+      {
+        name: '2 Module. Modules. Controllers. Servers',
+        description: '',
+        videos: [],
+      },
+    ],
   },
   {
     id: '3',
@@ -33,7 +57,14 @@ export const data: ICourse[] = [
     subcategory: 'Frontend development',
     price: 2,
     currency: 'TON',
-    image: 'https://www.bairesdev.com/wp-content/uploads/2020/07/redux.svg',
+    imageUrl: 'https://www.bairesdev.com/wp-content/uploads/2020/07/redux.svg',
+    modules: [
+      {
+        name: '1 Module. How to install redux',
+        description: '',
+        videos: [],
+      },
+    ],
   },
   {
     id: '4',
@@ -44,8 +75,20 @@ export const data: ICourse[] = [
     subcategory: 'Desserts',
     price: 1,
     currency: 'TON',
-    image:
+    imageUrl:
       'https://img.iamcook.ru/2023/upl/recipes/cat/u-968ad71d1ca2f596e67e589c160a7038.jpg',
+    modules: [
+      {
+        name: '1 Module. Prepare the ingredients',
+        description: '',
+        videos: [],
+      },
+      {
+        name: '2 Module. Making a delicate biscuit',
+        description: '',
+        videos: [],
+      },
+    ],
   },
   {
     id: '5',
@@ -56,7 +99,14 @@ export const data: ICourse[] = [
     subcategory: 'Photography',
     price: 20,
     currency: 'TON',
-    image:
+    imageUrl:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4rb8Kimk-ZJ3gLa8oIKJPu4MsK_JnOJ3w5eRLzfiYLQ&s',
+    modules: [
+      {
+        name: '',
+        description: '',
+        videos: [],
+      },
+    ],
   },
 ];
