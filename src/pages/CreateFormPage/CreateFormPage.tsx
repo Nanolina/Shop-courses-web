@@ -11,6 +11,7 @@ import Textarea from '../../ui/Textarea/Textarea';
 
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
+const query_id = tg.initDataUnsafe?.query_id;
 
 function CreateFormPage() {
   const [longTitle, setLongTitle] = useState<string>('');
@@ -86,12 +87,12 @@ function CreateFormPage() {
       imageFile,
     };
     // tg.sendData(JSON.stringify(data));
-    fetch(serverUrl, {
+    fetch(`${serverUrl}/course`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
       },
-      body: JSON.stringify({ course, queryId: tg.initDataUnsafe?.query_id }),
+      body: JSON.stringify({ course, queryId: query_id }),
     });
   }, [
     category,
