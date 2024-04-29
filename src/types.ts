@@ -13,7 +13,7 @@ export interface ICourse {
   subcategory?: string;
   price: number;
   currency: string;
-  logo?: IImage;
+  image?: IImage;
   modules: IModule[];
 }
 

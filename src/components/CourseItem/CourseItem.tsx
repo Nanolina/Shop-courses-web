@@ -11,7 +11,7 @@ function CourseItem({ course }: { course: ICourse }) {
       onClick={() => navigate(`/course/${course.id}`)}
     >
       <img
-        src={course.logo?.url || ''}
+        src={course.image?.url || ''}
         alt={course.name}
         className={styles.image}
       />

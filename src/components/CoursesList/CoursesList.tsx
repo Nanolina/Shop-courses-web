@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { data } from '../../data.ts';
 import { ICourse } from '../../types.ts';
 import CoursesListByCategory from '../CoursesListByCategory/CoursesListByCategory.tsx';
 import styles from './CoursesList.module.css';
@@ -10,12 +11,12 @@ const CoursesList = () => {
 
   // Grouping data by categories
   const groupedData = useMemo<Record<string, ICourse[]>>(() => {
-    return coursesData.reduce<Record<string, ICourse[]>>((acc, course) => {
+    return data.reduce<Record<string, ICourse[]>>((acc, course) => {
       acc[course.category] = acc[course.category] || [];
       acc[course.category].push(course);
       return acc;
     }, {});
-  }, [coursesData]);
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
