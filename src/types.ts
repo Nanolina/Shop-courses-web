@@ -1,12 +1,12 @@
 export interface IImage {
-  courseId: string;
+  courseId: number;
   id: string;
   publicId: string;
   url: string;
 }
 
 export interface ICourse {
-  id: string;
+  id: number;
   name: string;
   description?: string;
   category: string;
