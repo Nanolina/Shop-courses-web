@@ -1,3 +1,10 @@
+export interface IImage {
+  courseId: string;
+  id: string;
+  publicId: string;
+  url: string;
+}
+
 export interface ICourse {
   id: string;
   name: string;
@@ -6,7 +13,7 @@ export interface ICourse {
   subcategory?: string;
   price: number;
   currency: string;
-  imageUrl?: string;
+  logo?: IImage;
   modules: IModule[];
 }
 

@@ -1,5 +1,4 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import { animateScroll as scroll } from 'react-scroll';
 import { IOption } from '../../types';
 import Container from '../../ui/Container/Container';
 import Label from '../../ui/Label/Label';
@@ -79,10 +78,6 @@ function CreateFormPage() {
       tg.offEvent('mainButtonClicked', onSendData);
     };
   }, [onSendData]);
-
-  useEffect(() => {
-    scroll.scrollToTop();
-  }, []);
 
   return (
     <Container>
