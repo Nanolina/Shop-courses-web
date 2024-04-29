@@ -10,7 +10,7 @@ const tg = window.Telegram.WebApp;
 
 function CourseDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const course = data.find((course) => course.id === id);
+  const course = data.find((course) => course.id === Number(id));
 
   useEffect(() => {
     if (course) {
@@ -30,7 +30,7 @@ function CourseDetailsPage() {
     <>
       <Header label="Explore course" isLabelRight />
       <Container grayContainer={false}>
-        <img src={course.image} alt="Course" width="100%" height="50%" />
+        <img src={course.image?.url} alt="Course" width="100%" height="50%" />
         <Label text={course.name} />
         <div className={styles.description}>{course.description}</div>
       </Container>
