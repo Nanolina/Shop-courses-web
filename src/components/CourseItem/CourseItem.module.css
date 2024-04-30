@@ -20,6 +20,11 @@
   background-repeat: no-repeat;
 }
 
+.name {
+  white-space: normal;
+  text-align: center;
+}
+
 .toncoin {
   width: 20px;
   height: 20px;

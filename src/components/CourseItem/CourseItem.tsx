@@ -17,7 +17,7 @@ function CourseItem({ course }: { course: ICourse }) {
       />
 
       <div className={styles.info}>
-        <div>{course.name}</div>
+        <div className={styles.name}>{course.name}</div>
         <div className={styles.price}>
           {course.price}{' '}
           {course.currency === 'TON' ? (
