@@ -1,0 +1,1 @@
+export { groupCoursesByCategory } from './course';

@@ -1,8 +1,12 @@
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
+import { groupCoursesByCategory } from '../../functions';
 import { ICourse } from '../../types.ts';
+import { Loader } from '../../ui/Loader/Loader.tsx';
 import CoursesListByCategory from '../CoursesListByCategory/CoursesListByCategory.tsx';
 import styles from './CoursesList.module.css';
+
+const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const CoursesList = () => {
   const [coursesData, setCoursesData] = useState<ICourse[]>([]);
@@ -10,18 +14,15 @@ const CoursesList = () => {
   const [error, setError] = useState('');
 
   // Grouping data by categories
-  const groupedData = useMemo<Record<string, ICourse[]>>(() => {
-    return coursesData.reduce<Record<string, ICourse[]>>((acc, course) => {
-      acc[course.category] = acc[course.category] || [];
-      acc[course.category].push(course);
-      return acc;
-    }, {});
-  }, [coursesData]);
+  const groupedData = useMemo(
+    () => groupCoursesByCategory(coursesData),
+    [coursesData]
+  );
 
-  async function getCourseData() {
+  async function getAllCourses() {
     try {
-      const serverUrl = process.env.REACT_APP_SERVER_URL;
-      const response = await axios.get(`${serverUrl}/course`);
+      const allCoursesApiUrl = `${serverUrl}/course`;
+      const response = await axios.get(allCoursesApiUrl);
       setCoursesData(response.data);
       setIsLoading(false);
       return response.data;
@@ -33,10 +34,10 @@ const CoursesList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getCourseData();
+    getAllCourses();
   }, []);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Loader />;
   if (error) return <p>Error: {error}</p>;
 
   return (
