@@ -15,12 +15,10 @@ const MainPage = () => {
   }, [navigate]);
 
   return (
-    <>
-      <Container>
-        <SearchBar />
-        <CoursesList />
-      </Container>
-    </>
+    <Container>
+      <SearchBar />
+      <CoursesList />
+    </Container>
   );
 };
 

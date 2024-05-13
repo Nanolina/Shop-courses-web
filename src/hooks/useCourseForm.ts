@@ -1,0 +1,89 @@
+import { useCallback, useEffect, useState } from 'react';
+import { IOption } from '../types';
+
+export const categoryOptions: IOption[] = [
+  { value: 'technology', label: 'Technology' },
+  { value: 'cooking', label: 'Cooking' },
+  { value: 'art', label: 'Art and design' },
+  { value: 'other', label: 'Other' },
+];
+
+export const subcategoryOptions: Record<string, IOption[]> = {
+  technology: [
+    { value: 'full-stack', label: 'Full-stack development' },
+    { value: 'data-science', label: 'Data Science' },
+    { value: 'other', label: 'Other' },
+  ],
+  cooking: [
+    { value: 'baking', label: 'Baking' },
+    { value: 'grilling', label: 'Grilling' },
+    { value: 'other', label: 'Other' },
+  ],
+  art: [
+    { value: 'painting', label: 'Painting' },
+    { value: 'sculpture', label: 'Sculpture' },
+    { value: 'other', label: 'Other' },
+  ],
+  other: [],
+};
+
+export const currencyOptions: IOption[] = [
+  { value: 'TON', label: 'The Open Network (TON)' },
+];
+
+export function useCourseForm() {
+  const [name, setName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [category, setCategory] = useState<string>('');
+  const [subcategory, setSubcategory] = useState<string>('');
+  const [price, setPrice] = useState<number>(0);
+  const [currency, setCurrency] = useState<string>('');
+
+  const tg = window.Telegram.WebApp;
+
+  const onSendData = useCallback(() => {
+    const course = {
+      name,
+      description,
+      category,
+      subcategory,
+      price,
+      currency,
+    };
+    tg.sendData(JSON.stringify(course));
+  }, [name, description, category, subcategory, price, currency, tg]);
+
+  useEffect(() => {
+    tg.MainButton.setParams({
+      text: 'Create',
+    });
+    tg.onEvent('mainButtonClicked', onSendData);
+    return () => tg.offEvent('mainButtonClicked', onSendData);
+  }, [onSendData, tg]);
+
+  useEffect(() => {
+    if (!name || !category || !price || !currency) {
+      tg.MainButton.hide();
+    } else {
+      tg.MainButton.show();
+    }
+  }, [name, category, price, currency, tg.MainButton]);
+
+  return {
+    name,
+    setName,
+    description,
+    setDescription,
+    category,
+    setCategory,
+    subcategory,
+    setSubcategory,
+    price,
+    setPrice,
+    currency,
+    setCurrency,
+    categoryOptions,
+    subcategoryOptions,
+    currencyOptions,
+  };
+}

@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage';
-import CreateFormPage from './pages/CreateFormPage/CreateFormPage';
+import { default as CreateCourseFormPage } from './pages/CreateCourseFormPage/CreateCourseFormPage';
 import MainPage from './pages/MainPage/MainPage';
+import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
 
 const tg = window.Telegram.WebApp;
 
@@ -17,7 +18,8 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/course/:id" element={<CourseDetailsPage />} />
-        <Route path="/create" element={<CreateFormPage />} />
+        <Route path="/course/create" element={<CreateCourseFormPage />} />
+        <Route path="/course/user/:userId" element={<MyCreatedCoursesPage />} />
       </Routes>
     </Router>
   );
