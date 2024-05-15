@@ -9,6 +9,8 @@ import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
 
 const tg = window.Telegram.WebApp;
+const manifestUrl =
+  'https://raw.githubusercontent.com/ton-community/tutorials/main/03-client/test/public/tonconnect-manifest.json';
 
 function App() {
   useEffect(() => {
