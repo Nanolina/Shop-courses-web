@@ -1,0 +1,15 @@
+.cover {
+  height: 70px;
+  width: 70px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 6px rgb(141, 141, 141);
+}
+
+.info {
+  margin: 0px auto;
+}
+.icons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

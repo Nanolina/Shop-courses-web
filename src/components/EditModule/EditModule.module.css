@@ -1,0 +1,26 @@
+.cover {
+  height: 70px;
+  width: 70px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 6px rgb(141, 141, 141);
+}
+
+.info {
+  margin: 20px;
+}
+.icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.edMod {
+  display: flex;
+  flex-direction: column;
+}
+
+.rows {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
