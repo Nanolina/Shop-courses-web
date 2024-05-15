@@ -1,3 +1,4 @@
+import { TonConnectButton } from '@tonconnect/ui-react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -54,6 +55,7 @@ function CourseDetailsPage() {
 
   return (
     <>
+      <TonConnectButton />
       <Header label="Explore course" isLabelRight />
       <img src={course.image?.url} alt="Course" width="100%" height="50%" />
       <Container grayContainer={false}>

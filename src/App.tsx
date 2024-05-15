@@ -1,3 +1,4 @@
+import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage';
@@ -16,6 +17,7 @@ function App() {
   }, []);
 
   return (
+    <TonConnectUIProvider manifestUrl="URL">
     <Router>
       <Routes>
         <Route path="/" element={<MainPage />} />
@@ -26,6 +28,7 @@ function App() {
         <Route path="/module/:moduleId/lesson" element={<LessonsPage />} />
       </Routes>
     </Router>
+    </TonConnectUIProvider>
   );
 }
 
