@@ -14,6 +14,21 @@ form {
   margin: 10px auto;
   border: 1px solid grey;
 }
+.formMod h3 {
+  text-transform: uppercase;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-weight: 600;
+  border-bottom: 1px solid grey;
+  width: 70%;
+  padding: 5px;
+  margin-top: -15px;
+}
+.header {
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  align-items: end;
+}
 
 .formMod label {
   text-align: left;
@@ -28,6 +43,7 @@ form {
   height: 20px;
   border: 1px solid grey;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 1.2em;
 }
 
 .formMod textarea {
@@ -37,6 +53,7 @@ form {
   border-radius: 5px;
   border: 1px solid grey;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 1.2em;
 }
 
 .formMod button {
@@ -48,4 +65,8 @@ form {
   background-color: azure;
   border: 1px solid grey;
   margin: 10px auto;
+}
+
+.button {
+  color: black;
 }

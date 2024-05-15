@@ -9,13 +9,21 @@ function EditModule({
   setDescription,
   title,
   setTitle,
-  onDelete,
   isEdit,
   setIsEdit,
-  setModules,
 }: any) {
   return (
     <div className={styles.edMod}>
+      <div className={styles.icons}>
+        <RxCross2
+          className={styles.cross}
+          color="var(--tg-theme-accent-text-color)"
+          size={20}
+          onClick={() => {
+            setIsEdit(() => !isEdit);
+          }}
+        />
+      </div>
       <div className={styles.rows}>
         <img
           className={styles.cover}
@@ -27,14 +35,6 @@ function EditModule({
             value={title}
             onChange={(event: any) => setTitle(() => event.target.value)}
             placeholder="Enter the module description"
-          />
-        </div>
-        <div className={styles.icons}>
-          <RxCross2
-            className={styles.cross}
-            color="var(--tg-theme-accent-text-color)"
-            size={20}
-            onClick={onDelete}
           />
         </div>
       </div>

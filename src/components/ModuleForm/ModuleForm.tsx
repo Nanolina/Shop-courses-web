@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-// import { LuPlus } from 'react-icons/lu';
+import { RxCross2 } from 'react-icons/rx';
 import styles from './ModuleForm.module.css';
+import Button from '../../ui/Button/Button';
+import Label from '../../ui/Label/Label';
+import TextInput from '../../ui/TextInput/TextInput';
+import Textarea from '../../ui/Textarea/Textarea';
 
 const rows = 5;
 
-function ModuleForm({ modules, id, setModules }: any) {
+function ModuleForm({ modules, id, setModules, isForm, setIsForm }: any) {
   const initialStateModule = {
     id: modules.length + 1,
     name: '',
@@ -12,10 +16,6 @@ function ModuleForm({ modules, id, setModules }: any) {
     courseId: '1', //? как связать с курсом ?
   };
   const [newModule, setNewModule] = useState(initialStateModule);
-
-    // const className = `${styles.form} ${
-    //   formMod ? styles.formMod : ''
-    // }`;
 
   const handleEditModule = (id: any) => {
     setModules((prevModules: any) => {
@@ -43,26 +43,35 @@ function ModuleForm({ modules, id, setModules }: any) {
   };
 
   return (
-    <form className={styles.formMod }>
-      <label>Module title</label>
-      <input
+    <form className={styles.formMod}>
+      <div className={styles.header}>
+        <RxCross2
+          className={styles.cross}
+          size={20}
+          color="var(--tg-theme-accent-text-color)"
+          onClick={() => setIsForm(!isForm)}
+        />
+      </div>
+      <h3>Create a new module</h3>
+      <Label text="Module title" />
+      <TextInput
         value={newModule.name}
         color="var(--tg-theme-accent-text-color)"
         placeholder="Enter the module title"
-        onChange={(event) =>
+        onChange={(event: any) =>
           setNewModule((prevState) => ({
             ...prevState,
             name: event.target.value,
           }))
         }
       />
-      <label>Module description</label>
-      <textarea
+      <Label text="Module description" />
+      <Textarea
         value={newModule.description}
         rows={rows}
         color="var(--tg-theme-accent-text-color)"
         placeholder="Enter the module description"
-        onChange={(event) =>
+        onChange={(event: any) =>
           setNewModule((prevState) => ({
             ...prevState,
             description: event.target.value,
@@ -70,19 +79,16 @@ function ModuleForm({ modules, id, setModules }: any) {
         }
       />
 
-      <button
-        color="var(--tg-theme-accent-text-color)"
-        type="button"
+      <Button
+        text="Save"
+        isBlack={true}
         onClick={() => {
           handleResetForm();
+          setIsForm(!isForm);
           id ? handleEditModule(id) : handleAddModule();
         }}
-      >
-        {' '}
-        Save
-      </button>
+      />
     </form>
   );
 }
-//<LuPlus color="var(--tg-theme-accent-text-color)" size={20} />
 export default ModuleForm;

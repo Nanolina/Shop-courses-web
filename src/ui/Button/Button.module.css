@@ -1,8 +1,13 @@
-.button {
+.button,
+.blackButton {
   background-color: var(--tg-theme-button-color);
   border-radius: 8px;
   border: 1px solid rgb(186, 186, 186);
   padding: 5px;
   color: var(--tg-theme-button-text-color);
   font-size: 18px;
+}
+
+.blackButton {
+  color: black;
 }

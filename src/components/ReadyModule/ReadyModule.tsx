@@ -1,5 +1,5 @@
 import { FiEdit } from 'react-icons/fi';
-import { RxCross2 } from 'react-icons/rx';
+import { MdDeleteForever } from 'react-icons/md';
 import styles from './ReadyModule.module.css';
 
 function ReadyModule({ module, onDelete, isEdit, setIsEdit }: any) {
@@ -15,7 +15,7 @@ function ReadyModule({ module, onDelete, isEdit, setIsEdit }: any) {
         <p>{module.description}</p>
       </div>
       <div className={styles.icons}>
-        <RxCross2
+        <MdDeleteForever
           className={styles.cross}
           color="var(--tg-theme-accent-text-color)"
           size={20}
