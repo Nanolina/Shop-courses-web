@@ -1,5 +1,9 @@
-form {
-  width: 80%;
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
 }
 
 .formMod {
@@ -11,62 +15,38 @@ form {
   border-radius: 10px;
   padding: 20px;
   width: 80vw;
-  margin: 10px auto;
-  border: 1px solid grey;
+  gap: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.formMod h3 {
+
+.header {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  align-items: center;
+  height: 20px;
+  padding-bottom: 10px;
+}
+
+.cross {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.header h3 {
   text-transform: uppercase;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-weight: 600;
   border-bottom: 1px solid grey;
   width: 70%;
   padding: 5px;
-  margin-top: -15px;
 }
-.header {
+
+.labelInputContainer {
+  width: 100%;
   display: flex;
-  justify-content: end;
-  width: 100%;
-  align-items: end;
-}
-
-.formMod label {
-  text-align: left;
-  width: 100%;
-}
-
-.formMod input {
-  margin: 10px auto;
-  background-color: azure;
-  width: inherit;
-  border-radius: 5px;
-  height: 20px;
-  border: 1px solid grey;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: 1.2em;
-}
-
-.formMod textarea {
-  margin: 10px auto;
-  background-color: azure;
-  width: inherit;
-  border-radius: 5px;
-  border: 1px solid grey;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: 1.2em;
-}
-
-.formMod button {
-  text-align: center;
-  font-weight: 600;
-  width: 90%;
-  height: 30px;
-  border-radius: 5px;
-  background-color: azure;
-  border: 1px solid grey;
-  margin: 10px auto;
-}
-
-.button {
-  color: black;
+  flex-direction: column;
+  gap: 10px;
 }

@@ -4,15 +4,15 @@ import styles from './ReadyModule.module.css';
 
 function ReadyModule({ module, onDelete, isEdit, setIsEdit }: any) {
   return (
-    <>
+    <div className={styles.container}>
       <img
         className={styles.cover}
         src="https://avatars.githubusercontent.com/u/39895671?v=4"
         alt="cover"
       />
       <div className={styles.info}>
-        <h3>{module.name}</h3>
-        <p>{module.description}</p>
+        <div className={styles.name}>{module.name}</div>
+        <p className={styles.description}>{module.description}</p>
       </div>
       <div className={styles.icons}>
         <MdDeleteForever
@@ -29,7 +29,7 @@ function ReadyModule({ module, onDelete, isEdit, setIsEdit }: any) {
           }}
         />
       </div>
-    </>
+    </div>
   );
 }
 
