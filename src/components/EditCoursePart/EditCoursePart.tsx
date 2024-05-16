@@ -2,9 +2,10 @@ import { RxCross2 } from 'react-icons/rx';
 import Button from '../../ui/Button/Button';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
-import styles from './EditModule.module.css';
+import styles from './EditCoursePart.module.css';
 
-function EditModule({
+function EditCoursePart({
+  type,
   description,
   setDescription,
   title,
@@ -18,22 +19,25 @@ function EditModule({
         <RxCross2
           className={styles.cross}
           color="var(--tg-theme-accent-text-color)"
-          size={20}
+          size={24}
           onClick={() => {
             setIsEdit(() => !isEdit);
           }}
         />
       </div>
+
       <TextInput
         value={title}
         onChange={(event: any) => setTitle(event.target.value)}
-        placeholder="Enter the module description"
+        placeholder={`Enter the ${type} description`}
       />
+
       <Textarea
         value={description}
         onChange={(event: any) => setDescription(event.target.value)}
-        placeholder="Enter the module description"
+        placeholder={`Enter the ${type} description`}
       />
+
       <Button
         text="Send"
         color="var(--tg-theme-accent-text-color)"
@@ -46,4 +50,4 @@ function EditModule({
   );
 }
 
-export default EditModule;
+export default EditCoursePart;

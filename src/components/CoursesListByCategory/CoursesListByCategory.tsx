@@ -1,13 +1,9 @@
 import { IoIosArrowForward } from 'react-icons/io';
+import { capitalizeFirstLetter } from '../../functions';
 import { ICourse } from '../../types';
 import Label from '../../ui/Label/Label';
 import CourseItem from '../CourseItem/CourseItem';
 import styles from './CoursesListByCategory.module.css';
-
-function capitalizeFirstLetter(data: string) {
-  if (!data) return data;
-  return data.charAt(0).toUpperCase() + data.slice(1);
-}
 
 function CoursesListByCategory({ category, courses }: any) {
   return (
