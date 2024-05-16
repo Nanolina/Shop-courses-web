@@ -1,28 +1,33 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CoursePartForm from '../../components/CoursePartForm/CoursePartForm';
 import CoursePartList from '../../components/CoursePartList/CoursePartList';
 import Container from '../../ui/Container/Container';
 
+import { IoIosArrowBack } from 'react-icons/io';
+
 const tg = window.Telegram.WebApp;
 
-function ModulesPage() {
-  const [modules, setModules]: any = useState([
+function LessonPage() {
+  const [lessons, setLessons]: any = useState([
     {
       id: '1',
-      name: 'Module React courses',
-      description:
-        'Shop-coursesbjhbhsdbchsbchjbsjcb sdcbjhdbchjdb cdbchjsbhjcbhdjsbc dcbhdjsbchjdsbhjcbsdhj cdbchjsdbchjbds cbcdshjbcjhdsbchj sdcbhjdsbcjhsd cbsdjhcbdsjh cbjhsd cbhjdsbchjs bc',
-      courseId: '1',
+      name: 'Lesson React courses',
+      description: 'This lesson for React to Shop-courses',
+      courseId: '4',
+      moduleId: '1',
     },
     {
       id: '2',
-      name: 'Module React courses 2',
-      description: 'Shop-courses',
-      courseId: '1',
+      name: 'Lesson 2 React courses',
+      description: 'This 2 lesson for React to Shop-courses',
+      courseId: '4',
+      moduleId: '1',
     },
   ]);
 
   const [isForm, setIsForm] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const toggleForm = () => {
@@ -30,7 +35,7 @@ function ModulesPage() {
     };
 
     tg.MainButton.setParams({
-      text: 'Create new module',
+      text: 'Create new lesson',
     });
     tg.onEvent('mainButtonClicked', toggleForm);
     return () => tg.offEvent('mainButtonClicked', toggleForm);
@@ -46,16 +51,21 @@ function ModulesPage() {
 
   return (
     <Container>
+      <IoIosArrowBack
+        onClick={() => navigate(-1)}
+        style={{ cursor: 'pointer' }}
+        size={20}
+      />
       <CoursePartList
-        type="modules"
-        modules={modules}
-        setModules={setModules}
+        type="lessons"
+        lessons={lessons}
+        setLessons={setLessons}
       />
       {isForm && (
         <CoursePartForm
-          type="modules"
-          modules={modules}
-          setModules={setModules}
+          type="lessons"
+          lessons={lessons}
+          setLessons={setLessons}
           isForm={isForm}
           setIsForm={setIsForm}
         />
@@ -64,4 +74,4 @@ function ModulesPage() {
   );
 }
 
-export default ModulesPage;
+export default LessonPage;
