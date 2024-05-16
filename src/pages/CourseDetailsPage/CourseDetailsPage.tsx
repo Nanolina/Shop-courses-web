@@ -1,4 +1,4 @@
-import { TonConnectButton } from '@tonconnect/ui-react';
+import { CHAIN, TonConnectButton } from '@tonconnect/ui-react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -20,6 +20,11 @@ function CourseDetailsPage() {
   const [error, setError] = useState('');
   const { network } = useTonConnect();
 
+  const networkType = network
+    ? network === CHAIN.MAINNET
+      ? 'mainnet'
+      : 'testnet'
+    : 'N/A';
   async function getCourseDetails() {
     try {
       const courseApiUrl = `${serverUrl}/course/${id}`;
@@ -58,7 +63,7 @@ function CourseDetailsPage() {
   return (
     <>
       <TonConnectButton />
-      <button>network-{network}</button>
+      <button>{networkType}</button>
       <Header label="Explore course" isLabelRight />
       <img src={course.image?.url} alt="Course" width="100%" height="50%" />
       <Container grayContainer={false}>
