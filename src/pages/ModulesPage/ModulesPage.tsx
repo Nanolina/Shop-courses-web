@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
-import CoursePartForm from '../../components/CoursePartForm/CoursePartForm';
-import CoursePartList from '../../components/CoursePartList/CoursePartList';
-import Container from '../../ui/Container/Container';
-
-const tg = window.Telegram.WebApp;
+import { useState } from 'react';
+import { MODULE } from '../../consts';
+import CoursePartPage from '../CoursePartPage/CoursePartPage';
 
 function ModulesPage() {
+  const [isForm, setIsForm] = useState(false);
   const [modules, setModules]: any = useState([
     {
       id: '1',
@@ -13,6 +11,22 @@ function ModulesPage() {
       description:
         'Shop-coursesbjhbhsdbchsbchjbsjcb sdcbjhdbchjdb cdbchjsbhjcbhdjsbc dcbhdjsbchjdsbhjcbsdhj cdbchjsdbchjbds cbcdshjbcjhdsbchj sdcbhjdsbcjhsd cbsdjhcbdsjh cbjhsd cbhjdsbchjs bc',
       courseId: '1',
+      lessons: [
+        {
+          id: '1',
+          name: 'Lesson React courses',
+          description: 'This lesson for React to Shop-courses',
+          courseId: '4',
+          moduleId: '1',
+        },
+        {
+          id: '2',
+          name: 'Lesson 2 React courses',
+          description: 'This 2 lesson for React to Shop-courses',
+          courseId: '4',
+          moduleId: '1',
+        },
+      ],
     },
     {
       id: '2',
@@ -22,45 +36,14 @@ function ModulesPage() {
     },
   ]);
 
-  const [isForm, setIsForm] = useState(false);
-
-  useEffect(() => {
-    const toggleForm = () => {
-      setIsForm(!isForm);
-    };
-
-    tg.MainButton.setParams({
-      text: 'Create new module',
-    });
-    tg.onEvent('mainButtonClicked', toggleForm);
-    return () => tg.offEvent('mainButtonClicked', toggleForm);
-  }, [isForm]);
-
-  useEffect(() => {
-    if (isForm) {
-      tg.MainButton.hide();
-    } else {
-      tg.MainButton.show();
-    }
-  }, [isForm]);
-
   return (
-    <Container>
-      <CoursePartList
-        type="modules"
-        modules={modules}
-        setModules={setModules}
-      />
-      {isForm && (
-        <CoursePartForm
-          type="modules"
-          modules={modules}
-          setModules={setModules}
-          isForm={isForm}
-          setIsForm={setIsForm}
-        />
-      )}
-    </Container>
+    <CoursePartPage
+      type={MODULE}
+      items={modules}
+      setItems={setModules}
+      isForm={isForm}
+      setIsForm={setIsForm}
+    />
   );
 }
 

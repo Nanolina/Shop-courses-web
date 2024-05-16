@@ -1,61 +1,40 @@
 import { useState } from 'react';
-import { LESSONS, MODULES } from '../../consts';
+import { useNavigate } from 'react-router-dom';
+import { MODULE } from '../../consts';
 import EditCoursePart from '../EditCoursePart/EditCoursePart';
 import ReadyCoursePart from '../ReadyCoursePart/ReadyCoursePart';
 import styles from './CoursePartItem.module.css';
 
-function CoursePartItem({ type, module, onDelete, lesson }: any) {
-  const modDescription = module ? module.description : '';
-  const modTitle = module ? module.name : '';
-  const lesDescription = lesson ? lesson.description : '';
-  const lesTitle = lesson ? lesson.name : '';
-
+function CoursePartItem({ type, item, onDelete }: any) {
+  const navigate = useNavigate();
   const [isEdit, setIsEdit]: any = useState(false);
-  const [setModDescription] = useState(modDescription);
-  const [setModTitle] = useState(modTitle);
-  const [setLesDescription] = useState(lesDescription);
-  const [setLesTitle] = useState(lesTitle);
+  const [description, setDescription] = useState(item.description);
+  const [title, setTitle] = useState(item.name);
 
   return (
-    <div className={styles.modulesItem}>
-      {!isEdit && type === MODULES && (
+    <div className={styles.container}>
+      {!isEdit && (
         <ReadyCoursePart
-          type={type}
-          module={module}
+          item={item}
           onDelete={onDelete}
-          setIsEdit={setIsEdit}
           isEdit={isEdit}
+          setIsEdit={setIsEdit}
+          navigate={
+            type === MODULE
+              ? () => navigate(`/module/${item.id}/lesson`)
+              : () => {}
+          }
         />
       )}
-      {isEdit && type === MODULES && (
+      {isEdit && (
         <EditCoursePart
           type={type}
-          description={modDescription}
-          setDescription={setModDescription}
-          title={modTitle}
-          setTitle={setModTitle}
-          setIsEdit={setIsEdit}
+          description={description}
+          setDescription={setDescription}
+          title={title}
+          setTitle={setTitle}
           isEdit={isEdit}
-        />
-      )}
-      {!isEdit && type === LESSONS && (
-        <ReadyCoursePart
-          type={type}
-          lesson={lesson}
-          onDelete={onDelete}
           setIsEdit={setIsEdit}
-          isEdit={isEdit}
-        />
-      )}
-      {isEdit && type === LESSONS && (
-        <EditCoursePart
-          type={type}
-          description={lesDescription}
-          setDescription={setLesDescription}
-          title={lesTitle}
-          setTitle={setLesTitle}
-          setIsEdit={setIsEdit}
-          isEdit={isEdit}
         />
       )}
     </div>

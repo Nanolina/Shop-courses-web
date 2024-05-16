@@ -1,50 +1,19 @@
-import { LESSONS, MODULES } from '../../consts';
 import CoursePartItem from '../CoursePartItem/CoursePartItem';
 
-function CoursePartList({
-  type,
-  modules,
-  setModules,
-  lessons,
-  setLessons,
-}: any) {
-  const moduleType = type === MODULES;
-  const lessonType = type === LESSONS;
-
-  function deleteModule(id: any) {
-    setModules(modules.filter((module: any) => module.id !== id));
-  }
-
-  function deleteLesson(id: any) {
-    setLessons(lessons.filter((lesson: any) => lesson.id !== id));
+function CoursePartList({ type, items, setItems }: any) {
+  function deleteItem(id: any) {
+    setItems(items.filter((item: any) => item.id !== id));
   }
 
   return (
     <>
-      {moduleType && (
-        <>
-          {modules.map((el: any) => (
-            <CoursePartItem
-              type={type}
-              setModules={setModules}
-              module={el}
-              onDelete={() => deleteModule(el.id)}
-            />
-          ))}
-        </>
-      )}
-      {lessonType && (
-        <>
-          {lessons.map((el: any) => (
-            <CoursePartItem
-              type={type}
-              setModules={setModules}
-              lesson={el}
-              onDelete={() => deleteLesson(el.id)}
-            />
-          ))}
-        </>
-      )}
+      {items.map((item: any) => (
+        <CoursePartItem
+          type={type}
+          item={item}
+          onDelete={() => deleteItem(item.id)}
+        />
+      ))}
     </>
   );
 }
