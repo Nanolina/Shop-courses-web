@@ -6,7 +6,7 @@ export interface IImage {
 }
 
 export interface ICourse {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   category: string;
@@ -17,9 +17,18 @@ export interface ICourse {
   modules: IModule[];
 }
 
-interface IModule {
-  name?: string;
+export interface IModule {
+  id: string;
+  name: string;
   description?: string;
+  courseId: string;
+}
+
+export interface ILesson {
+  id: string;
+  name: string;
+  description?: string;
+  moduleId: string;
   videos: string[];
 }
 

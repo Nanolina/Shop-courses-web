@@ -1,46 +1,48 @@
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { MODULE } from '../../consts';
+import { IModule } from '../../types';
+import { Loader } from '../../ui/Loader/Loader.tsx';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
 
+const serverUrl = process.env.REACT_APP_SERVER_URL;
+
 function ModulesPage() {
+  const { courseId } = useParams();
   const [isForm, setIsForm] = useState(false);
-  const [modules, setModules]: any = useState([
-    {
-      id: '1',
-      name: 'Module React courses',
-      description:
-        'Shop-coursesbjhbhsdbchsbchjbsjcb sdcbjhdbchjdb cdbchjsbhjcbhdjsbc dcbhdjsbchjdsbhjcbsdhj cdbchjsdbchjbds cbcdshjbcjhdsbchj sdcbhjdsbcjhsd cbsdjhcbdsjh cbjhsd cbhjdsbchjs bc',
-      courseId: '1',
-      lessons: [
-        {
-          id: '1',
-          name: 'Lesson React courses',
-          description: 'This lesson for React to Shop-courses',
-          courseId: '4',
-          moduleId: '1',
-        },
-        {
-          id: '2',
-          name: 'Lesson 2 React courses',
-          description: 'This 2 lesson for React to Shop-courses',
-          courseId: '4',
-          moduleId: '1',
-        },
-      ],
-    },
-    {
-      id: '2',
-      name: 'Module React courses 2',
-      description: 'Shop-courses',
-      courseId: '1',
-    },
-  ]);
+  const [modulesData, setModulesData] = useState<IModule[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function getAllModules() {
+    try {
+      const allModulesApiUrl = `${serverUrl}/course/${courseId}/module`;
+      const response = await axios.get(allModulesApiUrl);
+      setModulesData(response.data);
+      setIsLoading(false);
+      return response.data;
+    } catch (error: any) {
+      setError(error?.message || error);
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    setIsLoading(true);
+    getAllModules();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (isLoading) return <Loader />;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <CoursePartPage
       type={MODULE}
-      items={modules}
-      setItems={setModules}
+      parentId={courseId}
+      items={modulesData}
+      setItems={setModulesData}
       isForm={isForm}
       setIsForm={setIsForm}
     />

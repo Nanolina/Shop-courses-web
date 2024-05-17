@@ -1,5 +1,7 @@
+import axios from 'axios';
 import { useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
+import { MODULE } from '../../consts';
 import { capitalizeFirstLetter } from '../../functions';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
@@ -7,22 +9,31 @@ import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import styles from './CoursePartForm.module.css';
 
-function CoursePartForm({ type, items, setItems, isForm, setIsForm }: any) {
+const serverUrl = process.env.REACT_APP_SERVER_URL;
+
+function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
   const initialStateItem = {
-    id: items.length + 1,
     name: '',
     description: '',
-    courseId: '1',
   };
 
   const [newItem, setNewItem] = useState(initialStateItem);
+  const [error, setError] = useState('');
 
-  const handleAddPart = () => {
-    setItems((prevItems: any) => [
-      ...prevItems,
-      { ...newItem, id: items.length + 1 },
-    ]);
-  };
+  async function createNewCoursePart() {
+    try {
+      const apiUrl =
+        type === MODULE
+          ? `${serverUrl}/course/${parentId}/lesson`
+          : `${serverUrl}/module/${parentId}/lesson`;
+      const response = await axios.post(apiUrl, newItem);
+      return response.data;
+    } catch (error: any) {
+      setError(error?.message || error);
+    }
+  }
+
+  if (error) return <p>Error: {error}</p>;
 
   const handleResetForm = () => {
     setNewItem(initialStateItem);
@@ -72,7 +83,7 @@ function CoursePartForm({ type, items, setItems, isForm, setIsForm }: any) {
           onClick={() => {
             handleResetForm();
             setIsForm(!isForm);
-            handleAddPart();
+            createNewCoursePart();
           }}
         />
       </form>

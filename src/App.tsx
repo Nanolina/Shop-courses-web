@@ -19,10 +19,10 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<MainPage />} />
-        <Route path="/course/:id" element={<CourseDetailsPage />} />
+        <Route path="/course/:courseId" element={<CourseDetailsPage />} />
         <Route path="/course/create" element={<CreateCourseFormPage />} />
         <Route path="/course/user/:userId" element={<MyCreatedCoursesPage />} />
-        <Route path="/module" element={<ModulesPage />} />
+        <Route path="/course/:courseId/module" element={<ModulesPage />} />
         <Route path="/module/:moduleId/lesson" element={<LessonsPage />} />
       </Routes>
     </Router>

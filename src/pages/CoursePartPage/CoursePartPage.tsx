@@ -7,18 +7,25 @@ import Container from '../../ui/Container/Container';
 
 const tg = window.Telegram.WebApp;
 
-function CoursePartPage({ type, items, setItems, isForm, setIsForm }: any) {
+function CoursePartPage({
+  type,
+  parentId,
+  items,
+  setItems,
+  isForm,
+  setIsForm,
+}: any) {
   useEffect(() => {
     const toggleForm = () => {
       setIsForm(!isForm);
     };
 
     tg.MainButton.setParams({
-      text: 'Create new module',
+      text: `Create new ${type}`,
     });
     tg.onEvent('mainButtonClicked', toggleForm);
     return () => tg.offEvent('mainButtonClicked', toggleForm);
-  }, [isForm, setIsForm]);
+  }, [isForm, setIsForm, type]);
 
   useEffect(() => {
     if (isForm) {
@@ -35,8 +42,7 @@ function CoursePartPage({ type, items, setItems, isForm, setIsForm }: any) {
       {isForm && (
         <CoursePartForm
           type={type}
-          items={items}
-          setItems={setItems}
+          parentId={parentId}
           isForm={isForm}
           setIsForm={setIsForm}
         />
