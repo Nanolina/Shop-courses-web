@@ -10,7 +10,7 @@ import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesP
 
 const tg = window.Telegram.WebApp;
 const manifestUrl =
-  'https://raw.githubusercontent.com/ton-community/tutorials/main/03-client/test/public/tonconnect-manifest.json';
+  `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
 
 function App() {
   useEffect(() => {
@@ -19,7 +19,7 @@ function App() {
   }, []);
 
   return (
-    <TonConnectUIProvider manifestUrl="URL">
+    <TonConnectUIProvider manifestUrl={manifestUrl}>
     <Router>
       <Routes>
         <Route path="/" element={<MainPage />} />
