@@ -1,7 +1,9 @@
+import { CHAIN, TonConnectButton } from '@tonconnect/ui-react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
+import { useTonConnect } from '../../hooks';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import Label from '../../ui/Label/Label';
@@ -16,7 +18,13 @@ function CourseDetailsPage() {
   const [course, setCourse] = useState<ICourse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const { network } = useTonConnect();
 
+  const networkType = network
+    ? network === CHAIN.MAINNET
+      ? 'mainnet'
+      : 'testnet'
+    : 'N/A';
   async function getCourseDetails() {
     try {
       const courseApiUrl = `${serverUrl}/course/${id}`;
@@ -54,6 +62,8 @@ function CourseDetailsPage() {
 
   return (
     <>
+      <TonConnectButton />
+      <button>{networkType}</button>
       <Header label="Explore course" isLabelRight />
       <img src={course.image?.url} alt="Course" width="100%" height="50%" />
       <Container grayContainer={false}>

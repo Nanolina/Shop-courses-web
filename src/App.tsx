@@ -1,3 +1,4 @@
+import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage';
@@ -8,6 +9,8 @@ import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
 
 const tg = window.Telegram.WebApp;
+const manifestUrl =
+  `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
 
 function App() {
   useEffect(() => {
@@ -16,6 +19,7 @@ function App() {
   }, []);
 
   return (
+    <TonConnectUIProvider manifestUrl={manifestUrl}>
     <Router>
       <Routes>
         <Route path="/" element={<MainPage />} />
@@ -26,6 +30,7 @@ function App() {
         <Route path="/module/:moduleId/lesson" element={<LessonsPage />} />
       </Routes>
     </Router>
+    </TonConnectUIProvider>
   );
 }
 
