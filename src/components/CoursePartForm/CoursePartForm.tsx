@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
+import { CREATE } from '../../consts';
 import { capitalizeFirstLetter } from '../../functions';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
@@ -7,22 +8,19 @@ import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import styles from './CoursePartForm.module.css';
 
-function CoursePartForm({ type, items, setItems, isForm, setIsForm }: any) {
+function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
   const initialStateItem = {
-    id: items.length + 1,
     name: '',
     description: '',
-    courseId: '1',
   };
+
+  const tg = window.Telegram.WebApp;
 
   const [newItem, setNewItem] = useState(initialStateItem);
 
-  const handleAddPart = () => {
-    setItems((prevItems: any) => [
-      ...prevItems,
-      { ...newItem, id: items.length + 1 },
-    ]);
-  };
+  async function createNewCoursePart() {
+    tg.sendData(JSON.stringify({ type, parentId, method: CREATE, ...newItem }));
+  }
 
   const handleResetForm = () => {
     setNewItem(initialStateItem);
@@ -70,9 +68,9 @@ function CoursePartForm({ type, items, setItems, isForm, setIsForm }: any) {
         <Button
           text="Save"
           onClick={() => {
+            createNewCoursePart();
             handleResetForm();
             setIsForm(!isForm);
-            handleAddPart();
           }}
         />
       </form>

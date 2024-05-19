@@ -1,50 +1,49 @@
-import { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { MODULE } from '../../consts';
+import { IModule } from '../../types';
+import { Loader } from '../../ui/Loader/Loader';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
 
+const serverUrl = process.env.REACT_APP_SERVER_URL;
+
 function ModulesPage() {
+  const { courseId } = useParams();
   const [isForm, setIsForm] = useState(false);
-  const [modules, setModules]: any = useState([
-    {
-      id: '1',
-      name: 'Module React courses',
-      description:
-        'Shop-coursesbjhbhsdbchsbchjbsjcb sdcbjhdbchjdb cdbchjsbhjcbhdjsbc dcbhdjsbchjdsbhjcbsdhj cdbchjsdbchjbds cbcdshjbcjhdsbchj sdcbhjdsbcjhsd cbsdjhcbdsjh cbjhsd cbhjdsbchjs bc',
-      courseId: '1',
-      lessons: [
-        {
-          id: '1',
-          name: 'Lesson React courses',
-          description: 'This lesson for React to Shop-courses',
-          courseId: '4',
-          moduleId: '1',
-        },
-        {
-          id: '2',
-          name: 'Lesson 2 React courses',
-          description: 'This 2 lesson for React to Shop-courses',
-          courseId: '4',
-          moduleId: '1',
-        },
-      ],
-    },
-    {
-      id: '2',
-      name: 'Module React courses 2',
-      description: 'Shop-courses',
-      courseId: '1',
-    },
-  ]);
+  const [modulesData, setModulesData] = useState<IModule[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<any>('');
+
+  useEffect(() => {
+    const getAllModules = async () => {
+      try {
+        const allModulesApiUrl = `${serverUrl}/course/${courseId}/module`;
+        const response = await axios.get(allModulesApiUrl);
+        setModulesData(response.data);
+      } catch (error) {
+        setError(error || 'Failed to fetch modules');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getAllModules();
+  }, [courseId]);
+
+  if (isLoading) return <Loader />;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <CoursePartPage
       type={MODULE}
-      items={modules}
-      setItems={setModules}
+      parentId={courseId}
+      items={modulesData}
+      setItems={setModulesData}
       isForm={isForm}
       setIsForm={setIsForm}
     />
   );
 }
 
-export default ModulesPage;
+export default React.memo(ModulesPage);
