@@ -19,7 +19,7 @@ function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
   const [newItem, setNewItem] = useState(initialStateItem);
 
   async function createNewCoursePart() {
-    tg.sendData(JSON.stringify({ ...newItem, parentId, type, method: CREATE }));
+    tg.sendData(JSON.stringify({ type, parentId, method: CREATE, ...newItem }));
   }
 
   const handleResetForm = () => {

@@ -1,16 +1,22 @@
 import React, { useCallback } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { MdDeleteForever } from 'react-icons/md';
+import { DELETE } from '../../consts';
 import styles from './ReadyCoursePart.module.css';
 
-function ReadyCoursePart({ item, onDelete, isEdit, setIsEdit, navigate }: any) {
-  const handleDelete = useCallback(
-    (event: any) => {
-      event.stopPropagation();
-      onDelete(item.id);
-    },
-    [onDelete, item.id]
-  );
+function ReadyCoursePart({ item, type, isEdit, setIsEdit, navigate }: any) {
+  const tg = window.Telegram.WebApp;
+
+  async function handleDelete(event: any) {
+    event.stopPropagation();
+    tg.sendData(
+      JSON.stringify({
+        type,
+        id: item.id,
+        method: DELETE,
+      })
+    );
+  }
 
   const handleEdit = useCallback(
     (event: any) => {

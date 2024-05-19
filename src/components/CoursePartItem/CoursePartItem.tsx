@@ -9,7 +9,6 @@ function CoursePartItem({ type, item, onDelete, parentId }: any) {
   const navigate = useNavigate();
   const [isEdit, setIsEdit]: any = useState(false);
   const [itemState] = useState(item);
-  console.log('itemState', itemState);
   const navigateHandler = useCallback(() => {
     if (type === MODULE) {
       navigate(`/module/${item.id}/lesson`);
@@ -21,6 +20,7 @@ function CoursePartItem({ type, item, onDelete, parentId }: any) {
       {!isEdit ? (
         <ReadyCoursePart
           item={itemState}
+          type={type}
           onDelete={onDelete}
           isEdit={isEdit}
           setIsEdit={setIsEdit}

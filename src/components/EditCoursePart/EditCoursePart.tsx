@@ -15,10 +15,10 @@ function EditCoursePart({ item, type, isEdit, setIsEdit }: any) {
   async function updatePartData() {
     tg.sendData(
       JSON.stringify({
+        type,
+        description,
         id: item.id,
         name: title,
-        description,
-        type,
         method: UPDATE,
       })
     );
