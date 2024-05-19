@@ -5,10 +5,9 @@ import EditCoursePart from '../EditCoursePart/EditCoursePart';
 import ReadyCoursePart from '../ReadyCoursePart/ReadyCoursePart';
 import styles from './CoursePartItem.module.css';
 
-function CoursePartItem({ type, item, onDelete, parentId }: any) {
+function CoursePartItem({ type, item, onDelete, }: any) {
   const navigate = useNavigate();
   const [isEdit, setIsEdit]: any = useState(false);
-  const [itemState] = useState(item);
   const navigateHandler = useCallback(() => {
     if (type === MODULE) {
       navigate(`/module/${item.id}/lesson`);
@@ -19,16 +18,15 @@ function CoursePartItem({ type, item, onDelete, parentId }: any) {
     <div className={styles.container}>
       {!isEdit ? (
         <ReadyCoursePart
-          item={itemState}
+          item={item}
           type={type}
-          onDelete={onDelete}
           isEdit={isEdit}
           setIsEdit={setIsEdit}
           navigate={navigateHandler}
         />
       ) : (
         <EditCoursePart
-          item={itemState}
+          item={item}
           type={type}
           isEdit={isEdit}
           setIsEdit={setIsEdit}

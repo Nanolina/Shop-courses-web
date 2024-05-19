@@ -35,7 +35,6 @@ const CoursesList = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllCourses();
-    return () => console.log('CourseList');
   }, []);
 
   if (isLoading) return <Loader />;

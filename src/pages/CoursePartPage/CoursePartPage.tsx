@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import CoursePartForm from '../../components/CoursePartForm/CoursePartForm';
 import CoursePartList from '../../components/CoursePartList/CoursePartList';
 import Header from '../../components/Header/Header';
+import { capitalizeFirstLetter } from '../../functions';
 import Container from '../../ui/Container/Container';
 
 const tg = window.Telegram.WebApp;
@@ -26,12 +27,11 @@ function CoursePartPage({
 
   useEffect(() => {
     isForm ? tg.MainButton.hide() : tg.MainButton.show();
-    return () => console.log('CoursePartPage2');
   }, [isForm]);
 
   return (
     <Container>
-      <Header label={`${type.charAt(0).toUpperCase() + type.slice(1)}s`} />
+      <Header label={`${capitalizeFirstLetter(type)}s`} />
       {isForm ? (
         <CoursePartForm
           type={type}

@@ -29,8 +29,6 @@ function ModulesPage() {
     };
 
     getAllModules();
-
-    return () => console.log('ModulesPage');
   }, [courseId]);
 
   if (isLoading) return <Loader />;
