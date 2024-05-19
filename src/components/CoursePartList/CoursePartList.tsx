@@ -1,9 +1,13 @@
+import React, { useCallback } from 'react';
 import CoursePartItem from '../CoursePartItem/CoursePartItem';
 
-function CoursePartList({ type, items, setItems }: any) {
-  function deleteItem(id: any) {
-    setItems(items.filter((item: any) => item.id !== id));
-  }
+function CoursePartList({ type, items, setItems, parentId }: any) {
+  const deleteItem = useCallback(
+    (id: string) => {
+      setItems((prevItems: any) => prevItems.filter((item: any) => item.id !== id));
+    },
+    [setItems]
+  );
 
   return (
     <>
@@ -12,6 +16,7 @@ function CoursePartList({ type, items, setItems }: any) {
           key={item.id}
           type={type}
           item={item}
+          parentId={parentId}
           onDelete={() => deleteItem(item.id)}
         />
       ))}
@@ -19,4 +24,4 @@ function CoursePartList({ type, items, setItems }: any) {
   );
 }
 
-export default CoursePartList;
+export default React.memo(CoursePartList);

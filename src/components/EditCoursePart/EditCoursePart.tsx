@@ -1,18 +1,29 @@
+import React, { useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
+import { UPDATE } from '../../consts';
 import Button from '../../ui/Button/Button';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import styles from './EditCoursePart.module.css';
 
-function EditCoursePart({
-  type,
-  description,
-  setDescription,
-  title,
-  setTitle,
-  isEdit,
-  setIsEdit,
-}: any) {
+function EditCoursePart({ item, type, isEdit, setIsEdit }: any) {
+  const [title, setTitle] = useState(item.name);
+  const [description, setDescription] = useState(item.description);
+
+  const tg = window.Telegram.WebApp;
+
+  async function updatePartData() {
+    tg.sendData(
+      JSON.stringify({
+        id: item.id,
+        name: title,
+        description,
+        type,
+        method: UPDATE,
+      })
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.icons}>
@@ -29,7 +40,7 @@ function EditCoursePart({
       <TextInput
         value={title}
         onChange={(event: any) => setTitle(event.target.value)}
-        placeholder={`Enter the ${type} description`}
+        placeholder={`Enter the ${type} title`}
       />
 
       <Textarea
@@ -43,6 +54,7 @@ function EditCoursePart({
         color="var(--tg-theme-accent-text-color)"
         size={18}
         onClick={() => {
+          updatePartData();
           setIsEdit(() => !isEdit);
         }}
       />
@@ -50,4 +62,4 @@ function EditCoursePart({
   );
 }
 
-export default EditCoursePart;
+export default React.memo(EditCoursePart);

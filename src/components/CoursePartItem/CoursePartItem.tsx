@@ -1,38 +1,35 @@
-import { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MODULE } from '../../consts';
 import EditCoursePart from '../EditCoursePart/EditCoursePart';
 import ReadyCoursePart from '../ReadyCoursePart/ReadyCoursePart';
 import styles from './CoursePartItem.module.css';
 
-function CoursePartItem({ type, item, onDelete }: any) {
+function CoursePartItem({ type, item, onDelete, parentId }: any) {
   const navigate = useNavigate();
   const [isEdit, setIsEdit]: any = useState(false);
-  const [description, setDescription] = useState(item.description);
-  const [title, setTitle] = useState(item.name);
+  const [itemState] = useState(item);
+  console.log('itemState', itemState);
+  const navigateHandler = useCallback(() => {
+    if (type === MODULE) {
+      navigate(`/module/${item.id}/lesson`);
+    }
+  }, [navigate, item.id, type]);
 
   return (
     <div className={styles.container}>
-      {!isEdit && (
+      {!isEdit ? (
         <ReadyCoursePart
-          item={item}
+          item={itemState}
           onDelete={onDelete}
           isEdit={isEdit}
           setIsEdit={setIsEdit}
-          navigate={
-            type === MODULE
-              ? () => navigate(`/module/${item.id}/lesson`)
-              : () => {}
-          }
+          navigate={navigateHandler}
         />
-      )}
-      {isEdit && (
+      ) : (
         <EditCoursePart
+          item={itemState}
           type={type}
-          description={description}
-          setDescription={setDescription}
-          title={title}
-          setTitle={setTitle}
           isEdit={isEdit}
           setIsEdit={setIsEdit}
         />
@@ -41,4 +38,4 @@ function CoursePartItem({ type, item, onDelete }: any) {
   );
 }
 
-export default CoursePartItem;
+export default React.memo(CoursePartItem);

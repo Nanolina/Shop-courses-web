@@ -39,6 +39,7 @@ function LessonPage() {
 
   return (
     <CoursePartPage
+      //getAllPart={getAllLessons}
       type={LESSON}
       parentId={moduleId}
       items={lessonsData}
