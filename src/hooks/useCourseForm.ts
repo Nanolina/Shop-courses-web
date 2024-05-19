@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { IOption } from '../types';
+import { useTonConnect } from './useTonConnect';
 
 export const categoryOptions: IOption[] = [
   { value: 'technology', label: 'Technology' },
@@ -38,6 +39,7 @@ export function useCourseForm() {
   const [subcategory, setSubcategory] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [currency, setCurrency] = useState<string>('');
+  const { wallet } = useTonConnect();
 
   const tg = window.Telegram.WebApp;
 
@@ -49,9 +51,10 @@ export function useCourseForm() {
       subcategory,
       price,
       currency,
+      walletAddressSeller: wallet,
     };
     tg.sendData(JSON.stringify(course));
-  }, [name, description, category, subcategory, price, currency, tg]);
+  }, [name, description, category, subcategory, price, currency, tg, wallet]);
 
   useEffect(() => {
     tg.MainButton.setParams({

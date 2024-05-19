@@ -6,7 +6,7 @@ export interface IImage {
 }
 
 export interface ICourse {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   category: string;
