@@ -1,11 +1,11 @@
 import { toNano } from '@ton/core';
-import { NftItem } from '../wrappers/NftItem';
+import { Factory } from '../wrappers/Factory';
 import { NetworkProvider } from '@ton/blueprint';
 
 export async function run(provider: NetworkProvider) {
-    const nftItem = provider.open(await NftItem.fromInit());
+    const factory = provider.open(await Factory.fromInit());
 
-    await nftItem.send(
+    await factory.send(
         provider.sender(),
         {
             value: toNano('0.05'),
@@ -13,10 +13,10 @@ export async function run(provider: NetworkProvider) {
         {
             $$type: 'Deploy',
             queryId: 0n,
-        }
+        },
     );
 
-    await provider.waitForDeploy(nftItem.address);
+    await provider.waitForDeploy(factory.address);
 
-    // run methods on `nftItem`
+    // run methods on `factory`
 }

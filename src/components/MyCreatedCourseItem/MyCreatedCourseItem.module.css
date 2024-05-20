@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  max-width: 200px;
+  background-color: var(--tg-theme-bg-color);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.image {
+  width: 150px;
+  height: 130px;
+  border-radius: 8px;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.name {
+  white-space: normal;
+  text-align: center;
+}
+
+.toncoin {
+  width: 20px;
+  height: 20px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 5px;
+  font-size: large;
+}
+
+.price {
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 5px;
+  align-items: center;
+}
+
+.walletContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
