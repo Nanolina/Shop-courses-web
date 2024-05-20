@@ -10,24 +10,18 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 function MyCreatedCoursesPage() {
   const { userId } = useParams<{ userId: string }>();
   const [coursesData, setCoursesData] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
 
   async function getAllMyCreatedCourses() {
     try {
       const apiUrl = `${serverUrl}/course/user/${userId}`;
       const response = await axios.get(apiUrl);
       setCoursesData(response.data);
-      setIsLoading(false);
+
       return response.data;
-    } catch (error: any) {
-      setError(error?.message || error);
-      setIsLoading(false);
-    }
+    } catch (error: any) {}
   }
 
   useEffect(() => {
-    setIsLoading(true);
     getAllMyCreatedCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
