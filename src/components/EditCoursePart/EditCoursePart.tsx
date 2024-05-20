@@ -9,12 +9,14 @@ import styles from './EditCoursePart.module.css';
 function EditCoursePart({ item, type, isEdit, setIsEdit }: any) {
   const [title, setTitle] = useState(item.name);
   const [description, setDescription] = useState(item.description);
+  const [url, setUrl] = useState(item.imageUrl);
 
   const tg = window.Telegram.WebApp;
 
   async function updatePartData() {
     tg.sendData(
       JSON.stringify({
+        url,
         type,
         description,
         id: item.id,
@@ -47,6 +49,12 @@ function EditCoursePart({ item, type, isEdit, setIsEdit }: any) {
         value={description}
         onChange={(event: any) => setDescription(event.target.value)}
         placeholder={`Enter the ${type} description`}
+      />
+
+      <TextInput
+        value={url}
+        onChange={(event: any) => setUrl(event.target.value)}
+        placeholder="URL"
       />
 
       <Button

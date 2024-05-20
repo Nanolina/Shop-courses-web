@@ -1,7 +1,7 @@
 import React from 'react';
 import CoursePartItem from '../CoursePartItem/CoursePartItem';
 
-function CoursePartList({ type, items, setItems, parentId }: any) {
+function CoursePartList({ type, items}: any) {
   return (
     <>
       {items.map((item: any) => (

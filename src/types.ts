@@ -22,6 +22,7 @@ export interface IModule {
   name: string;
   description?: string;
   courseId: string;
+  imageUrl: string;
 }
 
 export interface ILesson {
@@ -29,6 +30,7 @@ export interface ILesson {
   name: string;
   description?: string;
   moduleId: string;
+  imageUrl: string;
   videos: string[];
 }
 

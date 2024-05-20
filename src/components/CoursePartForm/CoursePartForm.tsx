@@ -12,10 +12,10 @@ function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
   const initialStateItem = {
     name: '',
     description: '',
+    url: '',
   };
 
   const tg = window.Telegram.WebApp;
-
   const [newItem, setNewItem] = useState(initialStateItem);
 
   async function createNewCoursePart() {
@@ -61,6 +61,20 @@ function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
               setNewItem((prevState) => ({
                 ...prevState,
                 description: event.target.value,
+              }))
+            }
+          />
+        </div>
+        <div className={styles.labelInputContainer}>
+          <Label text={`Add a link to the image for ${type}`} />
+
+          <TextInput
+            value={newItem.url}
+            placeholder="URL"
+            onChange={(event: any) =>
+              setNewItem((prevState) => ({
+                ...prevState,
+                url: event.target.value,
               }))
             }
           />

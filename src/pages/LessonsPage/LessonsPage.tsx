@@ -8,7 +8,8 @@ import CoursePartPage from '../CoursePartPage/CoursePartPage';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
-function LessonPage() {
+function LessonsPage() {
+  console.log('LessonPage');
   const { moduleId } = useParams();
   const [isForm, setIsForm] = useState(false);
   const [lessonsData, setLessonsData] = useState<ILesson[]>([]);
@@ -49,4 +50,4 @@ function LessonPage() {
   );
 }
 
-export default LessonPage;
+export default LessonsPage;
