@@ -8,10 +8,7 @@ function CourseItem({ course }: { course: ICourse }) {
   return (
     <div
       className={styles.container}
-      onClick={(event: any) => {
-        event.stopPropagation();
-        navigate(`/course/${course.id}`);
-      }}
+      onClick={() => navigate(`/course/${course.id}/module`)}
     >
       <img
         src={course.image?.url || ''}

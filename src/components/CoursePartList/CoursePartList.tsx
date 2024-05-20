@@ -1,21 +1,14 @@
+import React from 'react';
 import CoursePartItem from '../CoursePartItem/CoursePartItem';
 
-function CoursePartList({ type, items, setItems }: any) {
-  function deleteItem(id: any) {
-    setItems(items.filter((item: any) => item.id !== id));
-  }
-
+function CoursePartList({ type, items, setItems, parentId }: any) {
   return (
     <>
       {items.map((item: any) => (
-        <CoursePartItem
-          type={type}
-          item={item}
-          onDelete={() => deleteItem(item.id)}
-        />
+        <CoursePartItem key={item.id} type={type} item={item} />
       ))}
     </>
   );
 }
 
-export default CoursePartList;
+export default React.memo(CoursePartList);
