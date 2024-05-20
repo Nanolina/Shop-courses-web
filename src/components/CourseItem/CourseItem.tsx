@@ -1,13 +1,9 @@
-import { TonConnectButton } from '@tonconnect/ui-react';
 import { useNavigate } from 'react-router-dom';
-import { useContract } from '../../hooks/useContract';
 import { ICourse } from '../../types';
-import Button from '../../ui/Button/Button';
 import styles from './CourseItem.module.css';
 
 function CourseItem({ course }: { course: ICourse }) {
   const navigate = useNavigate();
-  const { createCourse } = useContract();
 
   return (
     <div
@@ -33,27 +29,6 @@ function CourseItem({ course }: { course: ICourse }) {
             course.currency
           )}
         </div>
-      </div>
-      <div className={styles.walletContainer}>
-        <div>
-          In order for your course to appear in the store, it must be submitted
-          to the blockchain. You need to click on the button below to connect
-          your wallet. This wallet will receive funds from the sale of your
-          course.
-        </div>
-        <TonConnectButton />
-        <div>
-          Click on the button below to activate the course. You will have to pay
-          to rent a smart contract on the blockchain for your course to exist
-          there
-        </div>
-        <Button
-          text="Activate"
-          onClick={(event: any) => {
-            event.stopPropagation();
-            createCourse(course.id, course.price);
-          }}
-        />
       </div>
     </div>
   );

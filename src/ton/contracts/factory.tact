@@ -3,21 +3,19 @@ import "./messages";
 import "./seller";
 
 contract Factory with Deployable {
+    const gasFee: Int = ton("0.2");
+    const storageFee: Int = ton("0.1");
+    const marketplaceFee: Int = ton("0.4");
     // Address wallet marketplace
     owner: Address;
     init(){
-        self.owner = address("0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK");
+        self.owner = address("0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh");
     }
 
     receive(msg: NewSeller){
         let sellerInit: StateInit = self.sellerInit(sender(), msg.courseId);
-        let gasFee: Int = ton("0.1");
-        let storageFee: Int = ton("0.4");
-        let marketplaceFee: Int = ton("0.5");
-        let deployFee: Int = (gasFee + storageFee);
-        let totalFee: Int = (deployFee + marketplaceFee);
-        dump(deployFee);
-        dump(totalFee);
+        let deployFee: Int = (self.gasFee + self.storageFee);
+        let totalFee: Int = (deployFee + self.marketplaceFee);
         require(context().value >= totalFee, "Insufficient funds to create course");
         // Deploy Seller
         send(SendParameters{
@@ -30,7 +28,7 @@ contract Factory with Deployable {
             }
         );
         // Sending marketplaceFee to the address of the FactoryContract owner
-        send(SendParameters{to: self.owner, value: marketplaceFee, mode: SendIgnoreErrors});
+        send(SendParameters{to: self.owner, value: self.marketplaceFee});
         // Response about success
         self.reply("Course created".asComment());
     }

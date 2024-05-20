@@ -18,9 +18,7 @@ export function useContract() {
   }, [client]);
 
   return {
-    createCourse: (courseId: string, coursePrice: any) => {
-      console.log('courseId', courseId);
-      console.log('coursePrice', coursePrice);
+    createCourse: (courseId: string, coursePrice: bigint) => {
       const message: NewSeller = {
         $$type: 'NewSeller',
         courseId,
@@ -29,7 +27,7 @@ export function useContract() {
       factoryContract?.send(
         sender,
         {
-          value: toNano('0.1') + toNano(coursePrice.toString()),
+          value: toNano('1'),
         },
         message
       );

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import CourseItem from '../../components/CourseItem/CourseItem';
+import MyCreatedCourseItem from '../../components/MyCreatedCourseItem/MyCreatedCourseItem';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 
@@ -39,7 +39,7 @@ function MyCreatedCoursesPage() {
   return (
     <Container>
       {coursesData.map((course: ICourse) => (
-        <CourseItem course={course} key={course.id} />
+        <MyCreatedCourseItem course={course} key={course.id} />
       ))}
     </Container>
   );
