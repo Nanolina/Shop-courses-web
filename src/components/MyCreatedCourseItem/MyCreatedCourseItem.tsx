@@ -4,7 +4,7 @@ import { useContract } from '../../hooks/useContract';
 import { ICourse } from '../../types';
 import Button from '../../ui/Button/Button';
 import Container from '../../ui/Container/Container';
-import styles from './CourseItem.module.css';
+import styles from './MyCreatedCourseItem.module.css';
 
 function MyCreatedCourseItem({ course }: { course: ICourse }) {
   const navigate = useNavigate();
