@@ -1,11 +1,13 @@
 import React, { useCallback } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { MdDeleteForever } from 'react-icons/md';
-import { DELETE } from '../../consts';
+import { useNavigate } from 'react-router-dom';
+import { DELETE, LESSON, MODULE } from '../../consts';
 import styles from './ReadyCoursePart.module.css';
 
-function ReadyCoursePart({ item, type, isEdit, setIsEdit, navigate }: any) {
+function ReadyCoursePart({ item, type, isEdit, setIsEdit }: any) {
   const tg = window.Telegram.WebApp;
+  const navigate = useNavigate();
 
   async function handleDelete(event: any) {
     event.stopPropagation();
@@ -25,14 +27,18 @@ function ReadyCoursePart({ item, type, isEdit, setIsEdit, navigate }: any) {
     },
     [isEdit, setIsEdit]
   );
+  
+  const navigateHandler = useCallback(() => {
+    if (type === MODULE) {
+      navigate(`/module/${item.id}/lesson`);
+    } else if (type === LESSON) {
+      navigate(`/lesson/${item.id}`);
+    }
+  }, [navigate, item.id, type]);
 
   return (
-    <div className={styles.container} onClick={navigate}>
-      <img
-        className={styles.cover}
-        src="https://avatars.githubusercontent.com/u/39895671?v=4"
-        alt="cover"
-      />
+    <div className={styles.container} onClick={navigateHandler}>
+      <img className={styles.cover} src={`${item.imageUrl}`} alt="cover" />
       <div className={styles.info}>
         <div className={styles.name}>{item.name}</div>
         <p className={styles.description}>{item.description}</p>
