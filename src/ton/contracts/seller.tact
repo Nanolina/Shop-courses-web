@@ -12,12 +12,15 @@ contract Seller with Deployable {
     }
 
     receive(msg: InternalNewSeller){
-        // require(self.seller == sender(), "Only the course creator");
         self.coursePrice = msg.coursePrice;
         self.numCustomers = (self.numCustomers + 1);
     }
 
     get fun numCustomers(): Int {
         return self.numCustomers;
+    }
+
+    get fun balance(): Int {
+        return myBalance();
     }
 }
