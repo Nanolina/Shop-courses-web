@@ -28,7 +28,7 @@ contract Factory with Deployable {
             }
         );
         // Sending marketplaceFee to the address of the FactoryContract owner
-        send(SendParameters{to: self.owner, value: self.marketplaceFee});
+        send(SendParameters{to: self.owner, value: self.marketplaceFee, mode: SendIgnoreErrors});
         // Response about success
         self.reply("Course created".asComment());
     }
@@ -37,7 +37,11 @@ contract Factory with Deployable {
         return initOf Seller(seller, courseId);
     }
 
-    get fun myAddress(): Address {
-        return myAddress();
+    get fun balance(): Int {
+        return myBalance();
+    }
+
+    get fun sellerAddress(seller: Address, courseId: String): Address {
+        return contractAddress(initOf Seller(seller, courseId));
     }
 }
