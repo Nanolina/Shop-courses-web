@@ -12,7 +12,7 @@ function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
   const initialStateItem = {
     name: '',
     description: '',
-    url: '',
+    imageUrl: '',
   };
 
   const tg = window.Telegram.WebApp;
@@ -69,12 +69,12 @@ function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
           <Label text={`Add a link to the image for ${type}`} />
 
           <TextInput
-            value={newItem.url}
+            value={newItem.imageUrl}
             placeholder="URL"
             onChange={(event: any) =>
               setNewItem((prevState) => ({
                 ...prevState,
-                url: event.target.value,
+                imageUrl: event.target.value,
               }))
             }
           />

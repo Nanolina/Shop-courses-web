@@ -22,22 +22,23 @@ function LessonPage() {
   };
   const { lessonId } = useParams();
   const [lessonData, setLessonData] = useState<ILesson>(initialLessonData);
-  const [url, setUrl] = useState(lessonData.videoUrl);
+  const [videoUrl, setVideoUrl] = useState(lessonData.videoUrl);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>('');
+
   useEffect(() => {
     const getAllLessonData = async () => {
       try {
         const allLessonDataApiUrl = `${serverUrl}/lesson/${lessonId}`;
         const response = await axios.get(allLessonDataApiUrl);
         setLessonData(response.data);
-        console.log(response.data);
       } catch (error) {
         setError(error || 'Failed to fetch modules');
       } finally {
         setIsLoading(false);
       }
     };
+
     getAllLessonData();
   }, [lessonId]);
 
@@ -46,7 +47,7 @@ function LessonPage() {
 
   return (
     <Container>
-      {<Header /* label={`${capitalizeFirstLetter(lessonData.name)}`}*/ />}
+      {<Header />}
       <div className={styles.container}>
         <img className={styles.cover} src={lessonData.imageUrl} alt="cover" />
         <p
@@ -57,8 +58,8 @@ function LessonPage() {
         <p>{lessonData.description}</p>
       </div>
       <VideoPlayer
-        url={url}
-        setUrl={setUrl}
+        url={videoUrl}
+        setUrl={setVideoUrl}
         lessonId={lessonId}
         type={LESSON}
       />

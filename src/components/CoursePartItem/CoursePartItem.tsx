@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { LESSON, MODULE } from '../../consts';
 import EditCoursePart from '../EditCoursePart/EditCoursePart';
 import ReadyCoursePart from '../ReadyCoursePart/ReadyCoursePart';
 import styles from './CoursePartItem.module.css';

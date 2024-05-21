@@ -50,10 +50,9 @@ function VideoPlayer({ url, setUrl, lessonId, type }: any) {
       )}
       <ReactPlayer
         controls={true}
-        url="https://res.cloudinary.com/dbrquscbv/video/upload/v1716293942/course/IMG_2117_px4vgd.mp4"
+        url={url}
         height="40vh"
         width="95vw"
-        playing={true}
       />
     </div>
   );
