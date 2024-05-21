@@ -31,7 +31,7 @@ export interface ILesson {
   description?: string;
   moduleId: string;
   imageUrl: string;
-  videos: string[];
+  videoUrl: string;
 }
 
 export interface IOption {

@@ -1,12 +1,14 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Header from '../../components/Header/Header';
+import VideoPlayer from '../../components/VideoPlayer/VideoPlayer';
+import { LESSON } from '../../consts';
+import { capitalizeFirstLetter } from '../../functions';
 import { ILesson } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import styles from './LessonPage.module.css';
-//import { MdDeleteForever } from 'react-icons/md';
-//import { FiEdit } from 'react-icons/fi';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
@@ -16,20 +18,20 @@ function LessonPage() {
     name: '',
     moduleId: '',
     imageUrl: '',
-    videos: [],
+    videoUrl: '',
   };
   const { lessonId } = useParams();
-  //const [isForm, setIsForm] = useState(false);
   const [lessonData, setLessonData] = useState<ILesson>(initialLessonData);
+  const [url, setUrl] = useState(lessonData.videoUrl);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>('');
   useEffect(() => {
     const getAllLessonData = async () => {
       try {
-        const allLessonDataApiUrl = `${serverUrl}/${lessonId}`;
+        const allLessonDataApiUrl = `${serverUrl}/lesson/${lessonId}`;
         const response = await axios.get(allLessonDataApiUrl);
         setLessonData(response.data);
-        console.log(`response.data : ${response.data}`);
+        console.log(response.data);
       } catch (error) {
         setError(error || 'Failed to fetch modules');
       } finally {
@@ -44,26 +46,22 @@ function LessonPage() {
 
   return (
     <Container>
+      {<Header /* label={`${capitalizeFirstLetter(lessonData.name)}`}*/ />}
       <div className={styles.container}>
         <img className={styles.cover} src={lessonData.imageUrl} alt="cover" />
-        <div className={styles.info}>
-          <div className={styles.name}>{lessonData.name}</div>
-          <p className={styles.description}>{lessonData.description}</p>
-        </div>
-        {/* <div className={styles.icons}>
-          <MdDeleteForever
-            className={styles.cross}
-            color="var(--tg-theme-accent-text-color)"
-            size={24}
-            // onClick={handleDelete}
-          />
-          <FiEdit
-            color="var(--tg-theme-accent-text-color)"
-            size={20}
-            // onClick={handleEdit}
-          />
-        </div> */}
+        <p
+          className={styles.name}
+        >{`${capitalizeFirstLetter(lessonData.name)}`}</p>
       </div>
+      <div className={styles.info}>
+        <p>{lessonData.description}</p>
+      </div>
+      <VideoPlayer
+        url={url}
+        setUrl={setUrl}
+        lessonId={lessonId}
+        type={LESSON}
+      />
     </Container>
   );
 }
