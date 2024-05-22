@@ -6,11 +6,11 @@ import VideoPlayer from '../../components/VideoPlayer/VideoPlayer';
 import { LESSON } from '../../consts';
 import { capitalizeFirstLetter } from '../../functions';
 import { ILesson } from '../../types';
-import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import styles from './LessonPage.module.css';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
+const tg = window.Telegram.WebApp;
 
 function LessonPage() {
   const initialLessonData: ILesson = {
@@ -42,11 +42,19 @@ function LessonPage() {
     getAllLessonData();
   }, [lessonId]);
 
+  useEffect(() => {
+    setVideoUrl(lessonData.videoUrl);
+  }, [lessonData]);
+
+  useEffect(() => {
+    tg.MainButton.hide();
+  }, []);
+
   if (isLoading) return <Loader />;
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <Container>
+    <div className={styles.mainContainer}>
       {<Header />}
       <div className={styles.container}>
         <img className={styles.cover} src={lessonData.imageUrl} alt="cover" />
@@ -63,7 +71,7 @@ function LessonPage() {
         lessonId={lessonId}
         type={LESSON}
       />
-    </Container>
+    </div>
   );
 }
 

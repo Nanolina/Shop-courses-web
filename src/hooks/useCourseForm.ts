@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { COURSE, CREATE } from '../consts';
 import { IOption } from '../types';
 import { useTonConnect } from './useTonConnect';
 
@@ -35,6 +36,7 @@ export const currencyOptions: IOption[] = [
 export function useCourseForm() {
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
+  const [imageUrl, setImageUrl] = useState<string>('');
   const [category, setCategory] = useState<string>('');
   const [subcategory, setSubcategory] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
@@ -47,14 +49,27 @@ export function useCourseForm() {
     const course = {
       name,
       description,
+      imageUrl,
       category,
       subcategory,
       price,
       currency,
       walletAddressSeller: wallet,
+      type: COURSE,
+      method: CREATE,
     };
     tg.sendData(JSON.stringify(course));
-  }, [name, description, category, subcategory, price, currency, tg, wallet]);
+  }, [
+    name,
+    description,
+    imageUrl,
+    category,
+    subcategory,
+    price,
+    currency,
+    tg,
+    wallet,
+  ]);
 
   useEffect(() => {
     tg.MainButton.setParams({
@@ -77,6 +92,8 @@ export function useCourseForm() {
     setName,
     description,
     setDescription,
+    imageUrl,
+    setImageUrl,
     category,
     setCategory,
     subcategory,

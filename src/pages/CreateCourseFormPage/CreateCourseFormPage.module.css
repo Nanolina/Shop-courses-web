@@ -1,8 +1,9 @@
-.video {
+.walletContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: end;
+  align-items: center;
   gap: 10px;
-  width: 90vw;
+  width: 100%;
 }
+
