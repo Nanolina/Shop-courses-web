@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
-import { CREATE } from '../../consts';
+import { CREATE, LESSON } from '../../consts';
 import { capitalizeFirstLetter } from '../../functions';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
@@ -13,6 +13,9 @@ function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
     name: '',
     description: '',
     imageUrl: '',
+    ...(type === LESSON && {
+      videoUrl: '',
+    }),
   };
 
   const tg = window.Telegram.WebApp;
@@ -79,6 +82,18 @@ function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
             }
           />
         </div>
+        {type === LESSON && (
+          <TextInput
+            value={newItem.videoUrl}
+            placeholder="URL"
+            onChange={(event: any) =>
+              setNewItem((prevState) => ({
+                ...prevState,
+                videoUrl: event.target.value,
+              }))
+            }
+          />
+        )}
         <Button
           text="Save"
           onClick={() => {
