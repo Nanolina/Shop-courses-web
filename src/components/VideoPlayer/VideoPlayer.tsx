@@ -48,12 +48,7 @@ function VideoPlayer({ url, setUrl, lessonId, type }: any) {
           />{' '}
         </>
       )}
-      <ReactPlayer
-        controls={true}
-        url={url}
-        height="40vh"
-        width="95vw"
-      />
+      <ReactPlayer controls={true} url={url} height="40vh" width="95vw" />
     </div>
   );
 }

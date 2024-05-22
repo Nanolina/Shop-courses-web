@@ -1,10 +1,3 @@
-export interface IImage {
-  courseId: number;
-  id: string;
-  publicId: string;
-  url: string;
-}
-
 export interface ICourse {
   id: string;
   name: string;
@@ -13,7 +6,8 @@ export interface ICourse {
   subcategory?: string;
   price: number;
   currency: string;
-  image?: IImage;
+  imageUrl?: string;
+  walletAddressSeller: string;
   modules: IModule[];
 }
 
@@ -22,7 +16,8 @@ export interface IModule {
   name: string;
   description?: string;
   courseId: string;
-  imageUrl: string;
+  imageUrl?: string;
+  lessons: ILesson[];
 }
 
 export interface ILesson {
@@ -30,7 +25,7 @@ export interface ILesson {
   name: string;
   description?: string;
   moduleId: string;
-  imageUrl: string;
+  imageUrl?: string;
   videoUrl: string;
 }
 
