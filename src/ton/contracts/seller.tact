@@ -1,17 +1,47 @@
 import "@stdlib/deploy";
+import "@stdlib/ownable";
 import "./messages";
 
-contract Seller with Deployable {
-    seller: Address;
+contract Seller with Deployable, Ownable {
+    const gasFee: Int = ton("0.1");
+    const storageFee: Int = ton("0.1");
+    const marketplaceFee: Int = ton("0.3");
+    const marketplaceWalletAddress: Address = address("0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh");
+    owner: Address;
     courseId: String;
-    coursePrice: Int as coins = 0;
-    init(seller: Address, courseId: String){
-        self.seller = seller;
+    init(courseId: String){
+        self.owner = sender();
         self.courseId = courseId;
     }
 
-    receive(msg: InternalNewSeller){
-        self.coursePrice = msg.coursePrice;
+    receive(msg: NewSeller){
+        require(self.owner == sender(), "Access denied");
+        let sellerInit: StateInit = initOf Seller(msg.courseId);
+        let sellerAddress: Address = contractAddress(sellerInit);
+        let deployFee: Int = self.deployFee(); // 0.2
+        let totalFee: Int = self.totalFee(); // 0.5
+        require(context().value >= totalFee, "Insufficient funds to create new course");
+        // Create new seller contract
+        send(SendParameters{
+                to: sellerAddress,
+                value: deployFee,
+                mode: SendIgnoreErrors,
+                body: Deploy{queryId: 0}.toCell(),
+                code: sellerInit.code,
+                data: sellerInit.data
+            }
+        );
+        // Send marketplaceFee
+        send(SendParameters{to: self.marketplaceWalletAddress, value: self.marketplaceFee, mode: SendIgnoreErrors});
+        self.reply("The course has been created successfully".asComment());
+    }
+
+    fun deployFee(): Int {
+        return (self.gasFee + self.storageFee);
+    }
+
+    fun totalFee(): Int {
+        return (self.deployFee() + self.marketplaceFee);
     }
 
     get fun balance(): Int {
