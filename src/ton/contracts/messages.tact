@@ -1,9 +1,8 @@
-// Create a new course
 message NewSeller {
     courseId: String;
-    coursePrice: Int as coins;
 }
-// FactoryContract => SellerContract
-message InternalNewSeller {
+message NewCustomer {
+    courseId: String;
+    seller: Address;
     coursePrice: Int as coins;
 }
