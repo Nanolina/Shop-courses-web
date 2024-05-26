@@ -1,20 +1,17 @@
-import { TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useState } from 'react';
+import { BsInfoCircleFill } from 'react-icons/bs';
 import { FiEdit } from 'react-icons/fi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDeleteForever } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { COURSE, DELETE } from '../../consts';
-import { useContract } from '../../hooks/useContract';
 import CreateCourseFormPage from '../../pages/CreateCourseFormPage/CreateCourseFormPage';
 import { ICourse } from '../../types';
-import Button from '../../ui/Button/Button';
 import Container from '../../ui/Container/Container';
 import styles from './MyCreatedCourseItem.module.css';
 
 function MyCreatedCourseItem({ course }: { course: ICourse }) {
   const navigate = useNavigate();
-  const { createCourse } = useContract();
   const [isEdit, setIsEdit]: any = useState(false);
 
   const tg = window.Telegram.WebApp;
@@ -81,25 +78,12 @@ function MyCreatedCourseItem({ course }: { course: ICourse }) {
                   course.currency
                 )}
               </div>
-            </div>
-            <div className={styles.walletContainer}>
-              <div>
-                In order for your course to appear in the store, it must be
-                submitted to the blockchain. You need to click on the button
-                below to connect your wallet. This wallet will receive funds
-                from the sale of your course.
-              </div>
-              <TonConnectButton />
-              <div>
-                Click on the button below to activate the course. You will have
-                to pay to rent a smart contract on the blockchain for your
-                course to exist there
-              </div>
-              <Button
-                text="Activate"
-                onClick={(event: any) => {
+              <BsInfoCircleFill
+                color="var(--tg-theme-accent-text-color)"
+                size={28}
+                onClick={(event) => {
                   event.stopPropagation();
-                  createCourse(course.id, BigInt(course.price));
+                  navigate(`/course/${course.id}`);
                 }}
               />
             </div>

@@ -1,11 +1,13 @@
-import { CHAIN, TonConnectButton } from '@tonconnect/ui-react';
+import { TonConnectButton } from '@tonconnect/ui-react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
-import { useTonConnect } from '../../hooks';
+import { useContract } from '../../hooks/useContract';
 import { ICourse } from '../../types';
+import Button from '../../ui/Button/Button';
 import Container from '../../ui/Container/Container';
+import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
 import styles from './CourseDetailsPage.module.css';
 
@@ -17,13 +19,8 @@ function CourseDetailsPage() {
   const [course, setCourse] = useState<ICourse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const { network } = useTonConnect();
+  const { createCourse } = useContract();
 
-  const networkType = network
-    ? network === CHAIN.MAINNET
-      ? 'mainnet'
-      : 'testnet'
-    : 'N/A';
   async function getCourseDetails() {
     try {
       const courseApiUrl = `${serverUrl}/course/${courseId}`;
@@ -54,21 +51,33 @@ function CourseDetailsPage() {
   }, [course]);
 
   if (isLoading) return <Loader />;
-  // if (!id) {
-  //   return <p>Course is not found</p>;
-  // }
+  if (!course) {
+    return <p>Course is not found</p>;
+  }
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className={styles.container}>
-      <TonConnectButton />
-      <button>{networkType}</button>
-      <div>{courseId}</div>
       <Header label="Explore course" isLabelRight />
       <img src={course?.imageUrl} alt="Course" width="100%" height="50%" />
       <Container grayContainer={false}>
-        {/* <Label text={course?.name} /> */}
+        <Label text={course.name} />
         <div className={styles.description}>{course?.description}</div>
+        <div className={styles.walletContainer}>
+          <div>
+            In order for your course to appear in the store, it must be
+            submitted to the blockchain. You need to click on the button below
+            to connect your wallet. This wallet will receive funds from the sale
+            of your course.
+          </div>
+          <TonConnectButton />
+          <div>
+            Click on the button below to activate the course. You will have to
+            pay to rent a smart contract on the blockchain for your course to
+            exist there
+          </div>
+          <Button text="Activate" onClick={() => createCourse(course.id)} />
+        </div>
       </Container>
     </div>
   );
