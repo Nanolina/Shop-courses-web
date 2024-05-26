@@ -19,7 +19,6 @@ contract Customer with Deployable, Ownable {
     }
 
     receive(msg: NewCustomer){
-        require(self.owner == sender(), "Access denied");
         let customerInit: StateInit = initOf Customer(msg.courseId, msg.seller, msg.coursePrice);
         let customerAddress: Address = contractAddress(customerInit);
         let deployFee: Int = self.deployFee(); // 0.2

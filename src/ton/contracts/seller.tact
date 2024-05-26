@@ -15,7 +15,6 @@ contract Seller with Deployable, Ownable {
     }
 
     receive(msg: NewSeller){
-        require(self.owner == sender(), "Access denied");
         let sellerInit: StateInit = initOf Seller(msg.courseId);
         let sellerAddress: Address = contractAddress(sellerInit);
         let deployFee: Int = self.deployFee(); // 0.2
