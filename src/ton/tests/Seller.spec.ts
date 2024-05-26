@@ -1,4 +1,4 @@
-import { toNano } from '@ton/core';
+import { fromNano, toNano } from '@ton/core';
 import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
 import '@ton/test-utils';
 import { Seller } from '../wrappers/Seller';
@@ -51,9 +51,9 @@ describe('Seller', () => {
             },
         );
 
-        console.log('result', result.events);
-        const balanceOldContract = await seller.getBalance();
-        console.log('balanceOldContract', balanceOldContract);
+        // console.log('result', result.events);
+        // const balanceOldContract = await seller.getBalance();
+        // console.log('balanceOldContract', fromNano(balanceOldContract));
         // console.log('oldAddress', await seller.address);
 
         // const newSeller: SandboxContract<Seller> = blockchain.openContract(await Seller.fromInit('123'));

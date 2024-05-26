@@ -2,7 +2,7 @@ message NewSeller {
     courseId: String;
 }
 message NewCustomer {
-    seller: Address;
     courseId: String;
+    seller: Address;
     coursePrice: Int as coins;
 }

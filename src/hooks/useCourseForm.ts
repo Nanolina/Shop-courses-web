@@ -65,12 +65,12 @@ export function useCourseForm() {
   }, [onSendData, tg]);
 
   useEffect(() => {
-    if (!name || !category || !price || !currency) {
+    if (!name || !category || !price || !currency || !wallet) {
       tg.MainButton.hide();
     } else {
       tg.MainButton.show();
     }
-  }, [name, category, price, currency, tg.MainButton]);
+  }, [name, category, price, currency, tg.MainButton, wallet]);
 
   return {
     name,

@@ -57,7 +57,7 @@ function MyCreatedCourseItem({ course }: { course: ICourse }) {
             text="Activate"
             onClick={(event: any) => {
               event.stopPropagation();
-              createCourse(course.id, BigInt(course.price));
+              createCourse(course.id);
             }}
           />
         </div>

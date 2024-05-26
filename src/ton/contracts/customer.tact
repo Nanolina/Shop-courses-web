@@ -1,26 +1,35 @@
 import "@stdlib/deploy";
+import "@stdlib/ownable";
 import "./messages";
 
-contract Customer with Deployable {
+contract Customer with Deployable, Ownable {
     const gasFee: Int = ton("0.1");
     const storageFee: Int = ton("0.1");
     const marketplaceFee: Int = ton("0.3");
-    const marketplaceWallet: Address = address("0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh");
-    customer: Address;
+    const marketplaceWalletAddress: Address = address("0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh");
+    owner: Address;
     courseId: String;
-    coursePrice: Int as coins = 0;
-    seller: Address = address("0:0000000000000000000000000000000000000000000000000000000000000000");
-    init(customer: Address, courseId: String){
-        self.customer = customer;
+    coursePrice: Int as coins;
+    seller: Address;
+    init(courseId: String, seller: Address, coursePrice: Int){
+        self.owner = sender();
         self.courseId = courseId;
+        self.seller = seller;
+        self.coursePrice = coursePrice;
     }
 
     receive(msg: NewCustomer){
-        let customerInit: StateInit = initOf Customer(sender(), msg.courseId);
+        require(self.owner == sender(), "Access denied");
+        let customerInit: StateInit = initOf Customer(msg.courseId, msg.seller, msg.coursePrice);
         let customerAddress: Address = contractAddress(customerInit);
         let deployFee: Int = self.deployFee(); // 0.2
         let totalFee: Int = self.totalFee(msg.coursePrice);
         require(context().value >= totalFee, "Insufficient funds to buy a course");
+        // Sending money to seller
+        send(SendParameters{to: msg.seller, value: msg.coursePrice, mode: SendIgnoreErrors});
+        // Sending marketplaceFee
+        send(SendParameters{to: self.marketplaceWalletAddress, value: self.marketplaceFee, mode: SendIgnoreErrors});
+        // Response about success
         send(SendParameters{
                 to: customerAddress,
                 value: 0,
@@ -31,11 +40,6 @@ contract Customer with Deployable {
             }
         );
         dump(myBalance());
-        // Sending money to seller
-        send(SendParameters{to: msg.seller, value: msg.coursePrice, mode: SendIgnoreErrors});
-        // Sending marketplaceFee
-        send(SendParameters{to: self.marketplaceWallet, value: self.marketplaceFee, mode: SendIgnoreErrors});
-        // Response about success
         self.reply("Course purchased successfully".asComment());
     }
 

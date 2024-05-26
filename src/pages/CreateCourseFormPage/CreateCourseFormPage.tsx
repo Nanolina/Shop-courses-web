@@ -1,3 +1,4 @@
+import { TonConnectButton } from '@tonconnect/ui-react';
 import { ChangeEvent } from 'react';
 import { useCourseForm } from '../../hooks';
 import Container from '../../ui/Container/Container';
@@ -5,6 +6,7 @@ import Label from '../../ui/Label/Label';
 import Select from '../../ui/Select/Select';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
+import styles from './CreateCourseFormPage.module.css';
 
 function CreateCourseFormPage() {
   const {
@@ -79,6 +81,9 @@ function CreateCourseFormPage() {
         }
         options={currencyOptions}
       />
+      <div className={styles.walletContainer}>
+        <TonConnectButton />
+      </div>
     </Container>
   );
 }

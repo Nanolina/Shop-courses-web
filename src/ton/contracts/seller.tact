@@ -21,18 +21,19 @@ contract Seller with Deployable, Ownable {
         let deployFee: Int = self.deployFee(); // 0.2
         let totalFee: Int = self.totalFee(); // 0.5
         require(context().value >= totalFee, "Insufficient funds to create new course");
+        // Send marketplaceFee
+        send(SendParameters{to: self.marketplaceWalletAddress, value: self.marketplaceFee, mode: SendIgnoreErrors});
         // Create new seller contract
         send(SendParameters{
                 to: sellerAddress,
-                value: deployFee,
-                mode: SendIgnoreErrors,
+                value: 0,
+                mode: (SendIgnoreErrors + SendRemainingValue),
                 body: Deploy{queryId: 0}.toCell(),
                 code: sellerInit.code,
                 data: sellerInit.data
             }
         );
-        // Send marketplaceFee
-        send(SendParameters{to: self.marketplaceWalletAddress, value: self.marketplaceFee, mode: SendIgnoreErrors});
+        dump(myBalance());
         self.reply("The course has been created successfully".asComment());
     }
 
