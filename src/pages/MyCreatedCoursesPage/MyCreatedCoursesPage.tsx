@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MyCreatedCourseItem from '../../components/MyCreatedCourseItem/MyCreatedCourseItem';
 import { ICourse } from '../../types';
-import Container from '../../ui/Container/Container';
+import styles from './MyCreatedCoursesPage.module.css';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
@@ -31,11 +31,11 @@ function MyCreatedCoursesPage() {
   }
 
   return (
-    <Container>
+    <div className={styles.container}>
       {coursesData.map((course: ICourse) => (
         <MyCreatedCourseItem course={course} key={course.id} />
       ))}
-    </Container>
+    </div>
   );
 }
 

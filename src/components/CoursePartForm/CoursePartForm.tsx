@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
-import { CREATE } from '../../consts';
+import { CREATE, LESSON } from '../../consts';
 import { capitalizeFirstLetter } from '../../functions';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
@@ -12,10 +12,13 @@ function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
   const initialStateItem = {
     name: '',
     description: '',
+    imageUrl: '',
+    ...(type === LESSON && {
+      videoUrl: '',
+    }),
   };
 
   const tg = window.Telegram.WebApp;
-
   const [newItem, setNewItem] = useState(initialStateItem);
 
   async function createNewCoursePart() {
@@ -65,6 +68,32 @@ function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
             }
           />
         </div>
+        <div className={styles.labelInputContainer}>
+          <Label text={`Add a link to the image for ${type}`} />
+
+          <TextInput
+            value={newItem.imageUrl}
+            placeholder="URL"
+            onChange={(event: any) =>
+              setNewItem((prevState) => ({
+                ...prevState,
+                imageUrl: event.target.value,
+              }))
+            }
+          />
+        </div>
+        {type === LESSON && (
+          <TextInput
+            value={newItem.videoUrl}
+            placeholder="URL"
+            onChange={(event: any) =>
+              setNewItem((prevState) => ({
+                ...prevState,
+                videoUrl: event.target.value,
+              }))
+            }
+          />
+        )}
         <Button
           text="Save"
           onClick={() => {

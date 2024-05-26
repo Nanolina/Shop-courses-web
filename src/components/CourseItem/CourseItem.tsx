@@ -1,17 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { ICourse } from '../../types';
 import styles from './CourseItem.module.css';
-
 function CourseItem({ course }: { course: ICourse }) {
   const navigate = useNavigate();
 
   return (
     <div
       className={styles.container}
-      onClick={() => navigate(`/course/${course.id}/module`)}
+      onClick={() => navigate(`/course/${course.id}`)}
     >
       <img
-        src={course.image?.url || ''}
+        src={course.imageUrl || ''}
         alt={course.name}
         className={styles.image}
       />

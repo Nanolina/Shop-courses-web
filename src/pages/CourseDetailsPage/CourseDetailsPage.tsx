@@ -6,7 +6,6 @@ import Header from '../../components/Header/Header';
 import { useTonConnect } from '../../hooks';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
-import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
 import styles from './CourseDetailsPage.module.css';
 
@@ -14,7 +13,7 @@ const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 function CourseDetailsPage() {
-  const { id } = useParams<{ id: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
   const [course, setCourse] = useState<ICourse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -27,7 +26,7 @@ function CourseDetailsPage() {
     : 'N/A';
   async function getCourseDetails() {
     try {
-      const courseApiUrl = `${serverUrl}/course/${id}`;
+      const courseApiUrl = `${serverUrl}/course/${courseId}`;
       const response = await axios.get(courseApiUrl);
       setCourse(response.data);
       setIsLoading(false);
@@ -42,7 +41,7 @@ function CourseDetailsPage() {
     setIsLoading(true);
     getCourseDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [courseId]);
 
   useEffect(() => {
     if (course) {
@@ -55,22 +54,23 @@ function CourseDetailsPage() {
   }, [course]);
 
   if (isLoading) return <Loader />;
-  if (!course) {
-    return <p>Course is not found</p>;
-  }
+  // if (!id) {
+  //   return <p>Course is not found</p>;
+  // }
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <>
+    <div className={styles.container}>
       <TonConnectButton />
       <button>{networkType}</button>
+      <div>{courseId}</div>
       <Header label="Explore course" isLabelRight />
-      <img src={course.image?.url} alt="Course" width="100%" height="50%" />
+      <img src={course?.imageUrl} alt="Course" width="100%" height="50%" />
       <Container grayContainer={false}>
-        <Label text={course.name} />
-        <div className={styles.description}>{course.description}</div>
+        {/* <Label text={course?.name} /> */}
+        <div className={styles.description}>{course?.description}</div>
       </Container>
-    </>
+    </div>
   );
 }
 

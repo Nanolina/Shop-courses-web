@@ -33,19 +33,19 @@ function CoursePartPage({
     <Container>
       <Header label={`${capitalizeFirstLetter(type)}s`} />
       {isForm ? (
-        <CoursePartForm
-          type={type}
-          parentId={parentId}
-          isForm={isForm}
-          setIsForm={setIsForm}
-        />
+          <CoursePartForm
+            type={type}
+            parentId={parentId}
+            isForm={isForm}
+            setIsForm={setIsForm}
+          />
       ) : (
-        <CoursePartList
-          type={type}
-          items={items}
-          setItems={setItems}
-          parentId={parentId}
-        />
+          <CoursePartList
+            type={type}
+            items={items}
+            setItems={setItems}
+            parentId={parentId}
+          />
       )}
     </Container>
   );
