@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import VideoPlayer from '../../components/VideoPlayer/VideoPlayer';
 import { LESSON } from '../../consts';
-import { capitalizeFirstLetter } from '../../functions';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import styles from './LessonPage.module.css';
@@ -57,21 +56,15 @@ function LessonPage() {
   return (
     <div className={styles.mainContainer}>
       {<Header />}
-      <div className={styles.container}>
-        <img className={styles.cover} src={lessonData.imageUrl} alt="cover" />
-        <p
-          className={styles.name}
-        >{`${capitalizeFirstLetter(lessonData.name)}`}</p>
-      </div>
-      <div className={styles.info}>
-        <p>{lessonData.description}</p>
-      </div>
       <VideoPlayer
         url={videoUrl}
         setUrl={setVideoUrl}
         lessonId={lessonId}
         type={LESSON}
       />
+      <div className={styles.info}>
+        <p>{lessonData.description}</p>
+      </div>
     </div>
   );
 }

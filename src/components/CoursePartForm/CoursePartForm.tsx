@@ -89,16 +89,19 @@ function CoursePartForm({
           />
         </div>
         {type === LESSON && (
-          <TextInput
-            value={newItem.videoUrl || ''}
-            placeholder="URL"
-            onChange={(event: any) =>
-              setNewItem((prevState) => ({
-                ...prevState,
-                videoUrl: event.target.value,
-              }))
-            }
-          />
+          <>
+            <Label text={`Add a link to the video for ${type}`} />{' '}
+            <TextInput
+              value={newItem.videoUrl || ''}
+              placeholder="URL"
+              onChange={(event: any) =>
+                setNewItem((prevState) => ({
+                  ...prevState,
+                  videoUrl: event.target.value,
+                }))
+              }
+            />
+          </>
         )}
         <Button
           text="Save"

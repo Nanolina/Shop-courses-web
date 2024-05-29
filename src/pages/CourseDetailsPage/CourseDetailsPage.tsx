@@ -6,7 +6,6 @@ import Header from '../../components/Header/Header';
 import { useContract } from '../../hooks/useContract';
 import { ICourse } from '../../types';
 import Button from '../../ui/Button/Button';
-import Container from '../../ui/Container/Container';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
 import styles from './CourseDetailsPage.module.css';
@@ -16,7 +15,9 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 function CourseDetailsPage() {
   const { courseId } = useParams<{ courseId: string }>();
+
   const [course, setCourse] = useState<ICourse | null>(null);
+  const [name, setName] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const { createCourse } = useContract();
@@ -26,6 +27,7 @@ function CourseDetailsPage() {
       const courseApiUrl = `${serverUrl}/course/${courseId}`;
       const response = await axios.get<ICourse>(courseApiUrl);
       setCourse(response.data);
+      setName(response.data.name);
       setIsLoading(false);
       return response.data;
     } catch (error: any) {
@@ -56,10 +58,11 @@ function CourseDetailsPage() {
   return (
     <div className={styles.container}>
       <Header label="Explore course" isLabelRight />
-      <img src={course?.imageUrl} alt="Course" width="100%" height="50%" />
-      <Container grayContainer={false}>
-        <Label text={course.name} />
-        <div className={styles.description}>{course?.description}</div>
+      <img src={course?.imageUrl} alt="Course" className={styles.image} />
+      <div className={styles.description}>
+        {course?.description}
+        <Label text={name} style={{ isCenter: true }} />
+      </div>
         <div className={styles.walletContainer}>
           <div>
             In order for your course to appear in the store, it must be
@@ -75,7 +78,6 @@ function CourseDetailsPage() {
           </div>
           <Button text="Activate" onClick={() => createCourse(course.id)} />
         </div>
-      </Container>
     </div>
   );
 }
