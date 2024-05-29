@@ -37,6 +37,7 @@ function CreateCourseFormPage() {
           setName(event.target.value)
         }
         placeholder="Course name"
+        isRequired
       />
       <TextInput
         value={imageUrl}
@@ -59,6 +60,7 @@ function CreateCourseFormPage() {
           setCategory(event.target.value)
         }
         options={categoryOptions}
+        isRequired
       />
       {category && category !== 'other' && (
         <Select
@@ -75,12 +77,14 @@ function CreateCourseFormPage() {
         style={{
           isCenter: true,
         }}
+        isRequired
       />
       <TextInput
         value={price}
         onChange={(event: ChangeEvent<HTMLInputElement>) =>
           setPrice(parseFloat(event.target.value) || 0)
         }
+        isRequired
       />
       <Select
         type="currency"
@@ -89,11 +93,13 @@ function CreateCourseFormPage() {
           setCurrency(event.target.value)
         }
         options={currencyOptions}
+        isRequired
       />
       <div className={styles.walletContainer}>
         <Label
           text="Connect the wallet where you want to receive funds for the sale of this course"
           style={{ isCenter: true }}
+          isRequired
         />
         <TonConnectButton />
       </div>

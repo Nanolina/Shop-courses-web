@@ -2,9 +2,11 @@ import styles from './Label.module.css';
 
 function Label({
   text,
+  isRequired,
   style = {},
 }: {
   text: string;
+  isRequired?: boolean;
   style?: Record<string, boolean>;
 }) {
   let className = styles.text;
@@ -19,7 +21,12 @@ function Label({
     className += ` ${styles.right}`;
   }
 
-  return <div className={className}>{text}</div>;
+  return (
+    <div className={className}>
+      {text}
+      {isRequired ? ' *' : ''}
+    </div>
+  );
 }
 
 export default Label;
