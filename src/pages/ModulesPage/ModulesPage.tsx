@@ -5,25 +5,25 @@ import { MODULE } from '../../consts';
 import { IModule } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
+import { IModulesPageParams } from '../types';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
-function ModulesPage() {
-  const { courseId } = useParams();
-  const [isForm, setIsForm] = useState(false);
+const ModulesPage: React.FC = () => {
+  const { courseId = '' } = useParams<IModulesPageParams>();
+  const [isForm, setIsForm] = useState<boolean>(false);
   const [modulesData, setModulesData] = useState<IModule[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<any>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const getAllModules = async () => {
       try {
         const allModulesApiUrl = `${serverUrl}/course/${courseId}/module`;
-        const response = await axios.get(allModulesApiUrl);
+        const response = await axios.get<IModule[]>(allModulesApiUrl);
         setModulesData(response.data);
-      } catch (error) {
-        setError(error || 'Failed to fetch modules');
-      } finally {
+      } catch (error: any) {
+        setError(error.response?.data.message || 'Failed to fetch modules');
         setIsLoading(false);
       }
     };
@@ -44,6 +44,6 @@ function ModulesPage() {
       setIsForm={setIsForm}
     />
   );
-}
+};
 
 export default React.memo(ModulesPage);

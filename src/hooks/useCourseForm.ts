@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { COURSE, CREATE } from '../consts';
-import { IOption } from '../types';
+import { IOption } from '../ui';
 import { useTonConnect } from './useTonConnect';
 
 export const categoryOptions: IOption[] = [

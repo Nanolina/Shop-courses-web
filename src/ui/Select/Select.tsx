@@ -1,4 +1,4 @@
-import { IOption } from '../../types';
+import { IOption } from '../types';
 import styles from './Select.module.css';
 
 function Select({ type, selectValue, onChange, options, isRequired }: any) {

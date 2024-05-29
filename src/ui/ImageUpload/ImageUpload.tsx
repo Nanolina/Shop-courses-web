@@ -1,5 +1,5 @@
 import React from 'react';
-import { IImageUploadProps } from '../../types';
+import { IImageUploadProps } from '../types';
 import styles from './ImageUpload.module.css';
 
 function ImageUpload({ onImageChange }: IImageUploadProps) {

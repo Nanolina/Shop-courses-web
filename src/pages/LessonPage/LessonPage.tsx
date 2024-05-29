@@ -16,24 +16,25 @@ function LessonPage() {
   const initialLessonData: ILesson = {
     id: '',
     name: '',
+    description: '',
     moduleId: '',
     imageUrl: '',
     videoUrl: '',
   };
-  const { lessonId } = useParams();
+  const { lessonId } = useParams<{ lessonId: string }>();
   const [lessonData, setLessonData] = useState<ILesson>(initialLessonData);
-  const [videoUrl, setVideoUrl] = useState(lessonData.videoUrl);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<any>('');
+  const [videoUrl, setVideoUrl] = useState<string>(lessonData.videoUrl);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const getAllLessonData = async () => {
       try {
         const allLessonDataApiUrl = `${serverUrl}/lesson/${lessonId}`;
-        const response = await axios.get(allLessonDataApiUrl);
+        const response = await axios.get<ILesson>(allLessonDataApiUrl);
         setLessonData(response.data);
-      } catch (error) {
-        setError(error || 'Failed to fetch modules');
+      } catch (error: any) {
+        setError(error.message || 'Failed to fetch lesson');
       } finally {
         setIsLoading(false);
       }
