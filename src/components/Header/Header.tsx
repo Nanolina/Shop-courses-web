@@ -16,16 +16,11 @@ const Header = ({ label, hasButtonBack = true, isLabelRight = true }: any) => {
             size={20}
           />
         )}
-
-        <Label
-          text={label}
-          style={{
-            isForHeader: true,
-            ...(isLabelRight && {
-              isRight: true,
-            }),
-          }}
-        />
+        {isLabelRight ? (
+          <Label text={label} isForHeader={true} isRight={true} />
+        ) : (
+          <Label text={label} isForHeader={true} />
+        )}
       </>
     </div>
   );

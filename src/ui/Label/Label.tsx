@@ -3,21 +3,22 @@ import styles from './Label.module.css';
 function Label({
   text,
   isRequired,
-  style = {},
+  isForHeader = false,
+  isCenter = false,
+  isRight = false,
 }: {
   text: string;
   isRequired?: boolean;
-  style?: Record<string, boolean>;
+  isForHeader?: boolean;
+  isCenter?: boolean;
+  isRight?: boolean;
 }) {
-  let className = styles.text;
-  if (style.isForHeader) {
-    className = styles.textForHeader;
-  }
+  let className = isForHeader ? styles.textForHeader : styles.text;
 
-  if (style.isCenter) {
+  if (isCenter) {
     className += ` ${styles.center}`;
   }
-  if (style.isRight) {
+  if (isRight) {
     className += ` ${styles.right}`;
   }
 

@@ -72,13 +72,7 @@ function CreateCourseFormPage() {
           options={subcategoryOptions[category]}
         />
       )}
-      <Label
-        text="Enter the cost"
-        style={{
-          isCenter: true,
-        }}
-        isRequired
-      />
+      <Label text="Enter the cost" isCenter={true} isRequired />
       <TextInput
         value={price}
         onChange={(event: ChangeEvent<HTMLInputElement>) =>
@@ -98,7 +92,7 @@ function CreateCourseFormPage() {
       <div className={styles.walletContainer}>
         <Label
           text="Connect the wallet where you want to receive funds for the sale of this course"
-          style={{ isCenter: true }}
+          isCenter={true}
           isRequired
         />
         <TonConnectButton />
