@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import EditCoursePart from '../EditCoursePart/EditCoursePart';
 import ReadyCoursePart from '../ReadyCoursePart/ReadyCoursePart';
+import { ICoursePartItemProps } from '../types';
 import styles from './CoursePartItem.module.css';
 
-function CoursePartItem({ type, item }: any) {
-  const [isEdit, setIsEdit]: any = useState(false);
+function CoursePartItem({ type, item }: ICoursePartItemProps) {
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   return (
     <div className={styles.container}>

@@ -3,13 +3,19 @@ import { FiEdit } from 'react-icons/fi';
 import { MdDeleteForever } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { DELETE, LESSON, MODULE } from '../../consts';
+import { IReadyCoursePartProps } from '../types';
 import styles from './ReadyCoursePart.module.css';
 
-function ReadyCoursePart({ item, type, isEdit, setIsEdit }: any) {
+function ReadyCoursePart({
+  item,
+  type,
+  isEdit,
+  setIsEdit,
+}: IReadyCoursePartProps) {
   const tg = window.Telegram.WebApp;
   const navigate = useNavigate();
 
-  async function handleDelete(event: any) {
+  async function handleDelete(event: React.MouseEvent<SVGElement>) {
     event.stopPropagation();
     tg.sendData(
       JSON.stringify({
@@ -21,13 +27,13 @@ function ReadyCoursePart({ item, type, isEdit, setIsEdit }: any) {
   }
 
   const handleEdit = useCallback(
-    (event: any) => {
+    (event: React.MouseEvent<SVGElement>) => {
       event.stopPropagation();
       setIsEdit(!isEdit);
     },
     [isEdit, setIsEdit]
   );
-  
+
   const navigateHandler = useCallback(() => {
     if (type === MODULE) {
       navigate(`/module/${item.id}/lesson`);

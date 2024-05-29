@@ -4,12 +4,13 @@ import ReactPlayer from 'react-player';
 import { UPDATE } from '../../consts';
 import Button from '../../ui/Button/Button';
 import TextInput from '../../ui/TextInput/TextInput';
+import { IVideoPlayerProps } from '../types';
 import styles from './VideoPlayer.module.css';
 
 const tg = window.Telegram.WebApp;
 
-function VideoPlayer({ url, setUrl, lessonId, type }: any) {
-  const [isEdit, setIsEdit]: any = useState(false);
+function VideoPlayer({ url, setUrl, lessonId, type }: IVideoPlayerProps) {
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   async function updateVideoUrl() {
     tg.sendData(

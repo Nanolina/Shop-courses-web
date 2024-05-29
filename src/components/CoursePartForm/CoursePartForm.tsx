@@ -6,10 +6,16 @@ import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
+import { ICoursePartFormProps, ICoursePartFormState } from '../types';
 import styles from './CoursePartForm.module.css';
 
-function CoursePartForm({ type, isForm, setIsForm, parentId }: any) {
-  const initialStateItem = {
+function CoursePartForm({
+  type,
+  isForm,
+  setIsForm,
+  parentId,
+}: ICoursePartFormProps) {
+  const initialStateItem: ICoursePartFormState = {
     name: '',
     description: '',
     imageUrl: '',

@@ -3,9 +3,13 @@ import { capitalizeFirstLetter } from '../../functions';
 import { ICourse } from '../../types';
 import Label from '../../ui/Label/Label';
 import CourseItem from '../CourseItem/CourseItem';
+import { ICoursesListByCategoryProps } from '../types';
 import styles from './CoursesListByCategory.module.css';
 
-function CoursesListByCategory({ category, courses }: any) {
+function CoursesListByCategory({
+  category,
+  courses,
+}: ICoursesListByCategoryProps) {
   return (
     <div className={styles.container}>
       <div className={styles.labelsContainer}>

@@ -1,9 +1,14 @@
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import Label from '../../ui/Label/Label';
+import { IHeaderProps } from '../types';
 import styles from './Header.module.css';
 
-const Header = ({ label, hasButtonBack = true, isLabelRight = true }: any) => {
+const Header = ({
+  label,
+  hasButtonBack = true,
+  isLabelRight = true,
+}: IHeaderProps) => {
   const navigate = useNavigate();
 
   return (
