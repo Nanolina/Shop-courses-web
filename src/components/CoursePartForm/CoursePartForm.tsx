@@ -90,7 +90,7 @@ function CoursePartForm({
         </div>
         {type === LESSON && (
           <TextInput
-            value={newItem.videoUrl}
+            value={newItem.videoUrl || ''}
             placeholder="URL"
             onChange={(event: any) =>
               setNewItem((prevState) => ({
