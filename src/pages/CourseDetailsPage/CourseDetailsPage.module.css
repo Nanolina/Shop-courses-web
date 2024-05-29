@@ -1,3 +1,24 @@
-.description {
+.container {
   color: var(--tg-theme-hint-color);
+  width: 95vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.image {
+  width: 80vw;
+  height: 40vh;
+  border-radius: 20px;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }

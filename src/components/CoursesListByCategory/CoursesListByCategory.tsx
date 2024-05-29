@@ -1,16 +1,27 @@
 import { IoIosArrowForward } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 import { capitalizeFirstLetter } from '../../functions';
 import { ICourse } from '../../types';
 import Label from '../../ui/Label/Label';
+
 import CourseItem from '../CourseItem/CourseItem';
 import styles from './CoursesListByCategory.module.css';
 
 function CoursesListByCategory({ category, courses }: any) {
+  const navigate = useNavigate();
+  const categoryToLowerCase = category.toLowerCase();
+
   return (
     <div className={styles.container}>
       <div className={styles.labelsContainer}>
         <Label text={capitalizeFirstLetter(category)} />
-        <div className={styles.textAll}>
+        <div
+          className={styles.textAll}
+          onClick={() => {
+            console.log(category);
+            navigate(`course/category/${categoryToLowerCase}`);
+          }}
+        >
           All <IoIosArrowForward size={15} />
         </div>
       </div>
