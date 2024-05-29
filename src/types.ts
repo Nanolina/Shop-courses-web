@@ -28,12 +28,3 @@ export interface ILesson {
   imageUrl?: string;
   videoUrl: string;
 }
-
-export interface IOption {
-  value: string;
-  label: string;
-}
-
-export interface IImageUploadProps {
-  onImageChange: (file: File | null) => void;
-}

@@ -4,6 +4,7 @@ import CoursePartList from '../../components/CoursePartList/CoursePartList';
 import Header from '../../components/Header/Header';
 import { capitalizeFirstLetter } from '../../functions';
 import Container from '../../ui/Container/Container';
+import { ICoursePartPageProps } from '../types';
 
 const tg = window.Telegram.WebApp;
 
@@ -14,7 +15,7 @@ function CoursePartPage({
   setItems,
   isForm,
   setIsForm,
-}: any) {
+}: ICoursePartPageProps) {
   useEffect(() => {
     tg.MainButton.setParams({
       text: isForm ? 'Cancel' : `Create new ${type}`,
@@ -33,19 +34,19 @@ function CoursePartPage({
     <Container>
       <Header label={`${capitalizeFirstLetter(type)}s`} />
       {isForm ? (
-          <CoursePartForm
-            type={type}
-            parentId={parentId}
-            isForm={isForm}
-            setIsForm={setIsForm}
-          />
+        <CoursePartForm
+          type={type}
+          parentId={parentId}
+          isForm={isForm}
+          setIsForm={setIsForm}
+        />
       ) : (
-          <CoursePartList
-            type={type}
-            items={items}
-            setItems={setItems}
-            parentId={parentId}
-          />
+        <CoursePartList
+          type={type}
+          items={items}
+          setItems={setItems}
+          parentId={parentId}
+        />
       )}
     </Container>
   );

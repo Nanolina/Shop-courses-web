@@ -6,13 +6,13 @@ import { MdDeleteForever } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { COURSE, DELETE } from '../../consts';
 import CreateCourseFormPage from '../../pages/CreateCourseFormPage/CreateCourseFormPage';
-import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
+import { IMyCreatedCourseItemProps } from '../types';
 import styles from './MyCreatedCourseItem.module.css';
 
-function MyCreatedCourseItem({ course }: { course: ICourse }) {
+function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
   const navigate = useNavigate();
-  const [isEdit, setIsEdit]: any = useState(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const tg = window.Telegram.WebApp;
 

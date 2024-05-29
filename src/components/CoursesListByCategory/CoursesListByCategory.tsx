@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { capitalizeFirstLetter } from '../../functions';
 import { ICourse } from '../../types';
 import Label from '../../ui/Label/Label';
-
 import CourseItem from '../CourseItem/CourseItem';
+import { ICoursesListByCategoryProps } from '../types';
 import styles from './CoursesListByCategory.module.css';
 
-function CoursesListByCategory({ category, courses }: any) {
+function CoursesListByCategory({
+  category,
+  courses,
+}: ICoursesListByCategoryProps) {
   const navigate = useNavigate();
   const categoryToLowerCase = category.toLowerCase();
 

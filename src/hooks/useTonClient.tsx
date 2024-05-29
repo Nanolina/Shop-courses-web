@@ -6,6 +6,7 @@ import { useTonConnect } from './useTonConnect';
 
 export function useTonClient() {
   const { network } = useTonConnect();
+
   return {
     client: useAsyncInitialize(async () => {
       if (!network) return;

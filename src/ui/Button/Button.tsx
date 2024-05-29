@@ -1,9 +1,10 @@
+import { IButtonProps } from '../types';
 import styles from './Button.module.css';
 
-function Button(props: any) {
+function Button({ text, ...props }: IButtonProps) {
   return (
     <button {...props} className={styles.button} onClick={props.onClick}>
-      {props.text}
+      {text}
     </button>
   );
 }

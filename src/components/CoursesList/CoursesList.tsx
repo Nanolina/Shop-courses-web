@@ -10,8 +10,8 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const CoursesList = () => {
   const [coursesData, setCoursesData] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   // Grouping data by categories
   const groupedData = useMemo(
@@ -22,12 +22,12 @@ const CoursesList = () => {
   async function getAllCourses() {
     try {
       const allCoursesApiUrl = `${serverUrl}/course`;
-      const response = await axios.get(allCoursesApiUrl);
+      const response = await axios.get<ICourse[]>(allCoursesApiUrl);
       setCoursesData(response.data);
       setIsLoading(false);
       return response.data;
     } catch (error: any) {
-      setError(error?.message || error);
+      setError(error.response?.data.message || String(error));
       setIsLoading(false);
     }
   }
@@ -45,7 +45,7 @@ const CoursesList = () => {
       {Object.entries(groupedData).map(([category, courses]) => (
         <CoursesListByCategory
           category={category}
-          courses={courses}
+          courses={courses as ICourse[]}
           key={category}
         />
       ))}

@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { ICourse } from '../../types';
+import { ICourseItemProps } from '../types';
 import styles from './CourseItem.module.css';
-function CourseItem({ course }: { course: ICourse }) {
+
+function CourseItem({ course }: ICourseItemProps) {
   const navigate = useNavigate();
 
   return (

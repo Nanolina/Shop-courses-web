@@ -6,6 +6,7 @@ import Label from '../../ui/Label/Label';
 import Select from '../../ui/Select/Select';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
+import { IUseCourseFormReturnType } from '../types';
 import styles from './CreateCourseFormPage.module.css';
 
 function CreateCourseFormPage() {
@@ -27,7 +28,7 @@ function CreateCourseFormPage() {
     categoryOptions,
     subcategoryOptions,
     currencyOptions,
-  } = useCourseForm();
+  } = useCourseForm() as IUseCourseFormReturnType;
 
   return (
     <Container>
@@ -37,6 +38,7 @@ function CreateCourseFormPage() {
           setName(event.target.value)
         }
         placeholder="Course name"
+        isRequired
       />
       <TextInput
         value={imageUrl}
@@ -59,6 +61,7 @@ function CreateCourseFormPage() {
           setCategory(event.target.value)
         }
         options={categoryOptions}
+        isRequired
       />
       {category && category !== 'other' && (
         <Select
@@ -70,17 +73,13 @@ function CreateCourseFormPage() {
           options={subcategoryOptions[category]}
         />
       )}
-      <Label
-        text="Enter the cost"
-        style={{
-          isCenter: true,
-        }}
-      />
+      <Label text="Enter the cost" isCenter={true} isRequired />
       <TextInput
         value={price}
         onChange={(event: ChangeEvent<HTMLInputElement>) =>
           setPrice(parseFloat(event.target.value) || 0)
         }
+        isRequired
       />
       <Select
         type="currency"
@@ -89,11 +88,13 @@ function CreateCourseFormPage() {
           setCurrency(event.target.value)
         }
         options={currencyOptions}
+        isRequired
       />
       <div className={styles.walletContainer}>
         <Label
           text="Connect the wallet where you want to receive funds for the sale of this course"
-          style={{ isCenter: true }}
+          isCenter={true}
+          isRequired
         />
         <TonConnectButton />
       </div>

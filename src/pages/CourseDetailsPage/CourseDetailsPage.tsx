@@ -15,22 +15,23 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 function CourseDetailsPage() {
   const { courseId } = useParams<{ courseId: string }>();
-  const [course, setCourse] = useState<ICourse>();
-  const [name, setName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+
+  const [course, setCourse] = useState<ICourse | null>(null);
+  const [name, setName] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
   const { createCourse } = useContract();
 
   async function getCourseDetails() {
     try {
       const courseApiUrl = `${serverUrl}/course/${courseId}`;
-      const response = await axios.get(courseApiUrl);
+      const response = await axios.get<ICourse>(courseApiUrl);
       setCourse(response.data);
       setName(response.data.name);
       setIsLoading(false);
       return response.data;
     } catch (error: any) {
-      setError(error?.message || error);
+      setError(error?.message || String(error));
       setIsLoading(false);
     }
   }
@@ -46,15 +47,12 @@ function CourseDetailsPage() {
       tg.MainButton.setParams({
         text: `Buy for ${course.price} ${course.currency}`,
       });
-
       tg.MainButton.show();
     }
   }, [course]);
 
   if (isLoading) return <Loader />;
-  if (!course) {
-    return <p>Course is not found</p>;
-  }
+  if (!course) return <p>Course is not found</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
