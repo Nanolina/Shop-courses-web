@@ -5,7 +5,7 @@ import styles from './ImageUpload.module.css';
 function ImageUpload({ onImageChange }: IImageUploadProps) {
   // Function to simulate clicking on a hidden input
   const handleButtonClick = () => {
-    const fileInput = document.getElementById('fileInput');
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     fileInput?.click();
   };
 

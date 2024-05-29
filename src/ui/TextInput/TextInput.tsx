@@ -1,6 +1,12 @@
+import { ITextInputProps } from '../types';
 import styles from './TextInput.module.css';
 
-function TextInput({ value, onChange, placeholder, isRequired }: any) {
+function TextInput({
+  value,
+  onChange,
+  placeholder = '',
+  isRequired = false,
+}: ITextInputProps) {
   return (
     <input
       className={styles.input}

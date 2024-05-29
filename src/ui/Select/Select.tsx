@@ -1,7 +1,13 @@
-import { IOption } from '../types';
+import { IOption, ISelectProps } from '../types';
 import styles from './Select.module.css';
 
-function Select({ type, selectValue, onChange, options, isRequired }: any) {
+function Select({
+  type,
+  selectValue,
+  onChange,
+  options,
+  isRequired = false,
+}: ISelectProps) {
   return (
     <select value={selectValue} onChange={onChange} className={styles.select}>
       <option value="">

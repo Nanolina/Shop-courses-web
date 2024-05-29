@@ -1,6 +1,7 @@
+import { IContainerProps } from '../types';
 import styles from './Container.module.css';
 
-function Container({ grayContainer = true, children }: any) {
+function Container({ grayContainer = true, children }: IContainerProps) {
   const className = `${styles.container} ${
     grayContainer ? styles.grayContainer : ''
   }`;

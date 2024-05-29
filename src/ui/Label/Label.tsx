@@ -1,18 +1,13 @@
+import { ILabelProps } from '../types';
 import styles from './Label.module.css';
 
 function Label({
   text,
-  isRequired,
+  isRequired = false,
   isForHeader = false,
   isCenter = false,
   isRight = false,
-}: {
-  text: string;
-  isRequired?: boolean;
-  isForHeader?: boolean;
-  isCenter?: boolean;
-  isRight?: boolean;
-}) {
+}: ILabelProps) {
   let className = isForHeader ? styles.textForHeader : styles.text;
 
   if (isCenter) {

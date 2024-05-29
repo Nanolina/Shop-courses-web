@@ -1,7 +1,8 @@
 import { RxCross2 } from 'react-icons/rx';
+import { IImagePreviewProps } from '../types';
 import styles from './ImagePreview.module.css';
 
-function ImagePreview({ imagePreview, removeImage }: any) {
+function ImagePreview({ imagePreview, removeImage }: IImagePreviewProps) {
   return (
     <div className={styles.containerWithFullWidth}>
       <div className={styles.container}>

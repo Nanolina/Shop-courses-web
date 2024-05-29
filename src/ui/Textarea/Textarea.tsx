@@ -1,6 +1,12 @@
+import { ITextareaProps } from '../types';
 import styles from './Textarea.module.css';
 
-function Textarea({ value, onChange, placeholder, isRequired }: any) {
+function Textarea({
+  value,
+  onChange,
+  placeholder = '',
+  isRequired = false,
+}: ITextareaProps) {
   return (
     <textarea
       className={styles.textarea}
