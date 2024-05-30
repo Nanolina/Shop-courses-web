@@ -4,6 +4,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage';
 import CoursesOneCategoryPage from './pages/CoursesOneCategoryPage/CoursesOneCategoryPage';
 import { default as CreateCourseFormPage } from './pages/CreateCourseFormPage/CreateCourseFormPage';
+import EditPartCoursePage from './pages/EditPartCoursePage/EditPartCoursePage';
 import LessonPage from './pages/LessonPage/LessonPage';
 import LessonsPage from './pages/LessonsPage/LessonsPage';
 import MainPage from './pages/MainPage/MainPage';
@@ -30,13 +31,11 @@ function App() {
             element={<CoursesOneCategoryPage />}
           />
           <Route path="/course/create" element={<CreateCourseFormPage />} />
-          <Route
-            path="/course/user"
-            element={<MyCreatedCoursesPage />}
-          />
+          <Route path="/course/user" element={<MyCreatedCoursesPage />} />
           <Route path="/course/:courseId/module" element={<ModulesPage />} />
           <Route path="/module/:moduleId/lesson" element={<LessonsPage />} />
           <Route path="/lesson/:lessonId" element={<LessonPage />} />
+          <Route path="/course-part/:type/:itemId" element={<EditPartCoursePage />} />
         </Routes>
       </Router>
     </TonConnectUIProvider>

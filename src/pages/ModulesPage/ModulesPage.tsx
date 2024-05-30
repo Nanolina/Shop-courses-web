@@ -22,6 +22,7 @@ const ModulesPage: React.FC = () => {
         const allModulesApiUrl = `${serverUrl}/course/${courseId}/module`;
         const response = await axios.get<IModule[]>(allModulesApiUrl);
         setModulesData(response.data);
+        setIsLoading(false);
       } catch (error: any) {
         setError(error.response?.data.message || 'Failed to fetch modules');
         setIsLoading(false);
