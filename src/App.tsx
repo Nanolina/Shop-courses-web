@@ -31,7 +31,7 @@ function App() {
           />
           <Route path="/course/create" element={<CreateCourseFormPage />} />
           <Route
-            path="/course/user/:userId"
+            path="/course/user"
             element={<MyCreatedCoursesPage />}
           />
           <Route path="/course/:courseId/module" element={<ModulesPage />} />

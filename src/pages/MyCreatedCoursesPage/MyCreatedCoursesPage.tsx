@@ -1,34 +1,38 @@
-import axios from 'axios';
+import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import MyCreatedCourseItem from '../../components/MyCreatedCourseItem/MyCreatedCourseItem';
 import { ICourse } from '../../types';
-import { IMyCreatedCoursesPageParams } from '../types';
+import { createAxiosWithAuth } from '../../utils';
 import styles from './MyCreatedCoursesPage.module.css';
-
-const serverUrl = process.env.REACT_APP_SERVER_URL;
+import { Loader } from '../../ui/Loader/Loader';
 
 function MyCreatedCoursesPage() {
-  const { userId } = useParams<IMyCreatedCoursesPageParams>();
   const [coursesData, setCoursesData] = useState<ICourse[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const { initDataRaw } = retrieveLaunchParams();
 
   async function getAllMyCreatedCourses() {
     try {
-      const apiUrl = `${serverUrl}/course/user/${userId}`;
-      const response = await axios.get<ICourse[]>(apiUrl);
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth.get<ICourse[]>('/course/user');
       setCoursesData(response.data);
+      setIsLoading(false);
     } catch (error: any) {
-      console.error(
-        'Failed to fetch courses:',
-        error.message || error.toString()
-      );
+      setError(error.response?.data.message || String(error));
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
+    setIsLoading(true);
     getAllMyCreatedCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, []);
+
+  if (isLoading) return <Loader />;
+  if (error) return <p>Error: {error}</p>;
 
   if (coursesData.length === 0) {
     return (
