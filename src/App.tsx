@@ -30,10 +30,8 @@ function App() {
             element={<CoursesOneCategoryPage />}
           />
           <Route path="/course/create" element={<CreateCourseFormPage />} />
-          <Route
-            path="/course/user"
-            element={<MyCreatedCoursesPage />}
-          />
+          <Route path="/course/created" element={<MyCreatedCoursesPage />} />
+          <Route path="/course/purchased" element={<MyCreatedCoursesPage />} />
           <Route path="/course/:courseId/module" element={<ModulesPage />} />
           <Route path="/module/:moduleId/lesson" element={<LessonsPage />} />
           <Route path="/lesson/:lessonId" element={<LessonPage />} />
