@@ -61,23 +61,23 @@ function CourseDetailsPage() {
       <img src={course?.imageUrl} alt="Course" className={styles.image} />
       <div className={styles.description}>
         {course?.description}
-        <Label text={name} style={{ isCenter: true }} />
+        <Label text={name} isCenter={true} />
       </div>
-        <div className={styles.walletContainer}>
-          <div>
-            In order for your course to appear in the store, it must be
-            submitted to the blockchain. You need to click on the button below
-            to connect your wallet. This wallet will receive funds from the sale
-            of your course.
-          </div>
-          <TonConnectButton />
-          <div>
-            Click on the button below to activate the course. You will have to
-            pay to rent a smart contract on the blockchain for your course to
-            exist there
-          </div>
-          <Button text="Activate" onClick={() => createCourse(course.id)} />
+      <div className={styles.walletContainer}>
+        <div>
+          In order for your course to appear in the store, it must be submitted
+          to the blockchain. You need to click on the button below to connect
+          your wallet. This wallet will receive funds from the sale of your
+          course.
         </div>
+        <TonConnectButton />
+        <div>
+          Click on the button below to activate the course. You will have to pay
+          to rent a smart contract on the blockchain for your course to exist
+          there
+        </div>
+        <Button text="Activate" onClick={() => createCourse(course.id)} />
+      </div>
     </div>
   );
 }

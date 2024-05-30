@@ -28,3 +28,5 @@ export interface ILesson {
   imageUrl?: string;
   videoUrl: string;
 }
+
+export type EntityType = 'module' | 'lesson';

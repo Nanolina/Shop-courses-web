@@ -41,7 +41,6 @@ function VideoPlayer({ url, setUrl, lessonId, type }: IVideoPlayerProps) {
           <Button
             text="Send"
             color="var(--tg-theme-accent-text-color)"
-            size={18}
             onClick={() => {
               updateVideoUrl();
               setIsEdit(!isEdit);
