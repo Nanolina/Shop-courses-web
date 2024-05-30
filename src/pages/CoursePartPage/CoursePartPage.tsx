@@ -41,12 +41,7 @@ function CoursePartPage({
           setIsForm={setIsForm}
         />
       ) : (
-        <CoursePartList
-          type={type}
-          items={items}
-          setItems={setItems}
-          parentId={parentId}
-        />
+        <CoursePartList type={type} items={items} />
       )}
     </Container>
   );

@@ -1,6 +1,4 @@
-import { ICourse } from '../types';
-
-export type EntityType = 'module' | 'lesson';
+import { EntityType, ICourse } from '../types';
 
 export interface ICoursePartItem {
   id: string;
@@ -53,7 +51,7 @@ export interface IEditCoursePartProps {
 }
 
 export interface IHeaderProps {
-  label: string;
+  label?: string;
   hasButtonBack?: boolean;
   isLabelRight?: boolean;
 }

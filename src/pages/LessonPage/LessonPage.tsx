@@ -52,6 +52,7 @@ function LessonPage() {
 
   if (isLoading) return <Loader />;
   if (error) return <p>Error: {error}</p>;
+  if (!lessonId) return <div>Lesson not found</div>;
 
   return (
     <div className={styles.mainContainer}>

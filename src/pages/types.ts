@@ -1,8 +1,9 @@
 import { ICoursePartItem } from '../components';
+import { EntityType } from '../types';
 import { IOption } from '../ui';
 
 export interface ICoursePartPageProps {
-  type: string;
+  type: EntityType;
   parentId: string;
   items: ICoursePartItem[];
   setItems: (items: any[]) => void;

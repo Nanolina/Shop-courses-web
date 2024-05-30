@@ -21,11 +21,10 @@ const Header = ({
             size={20}
           />
         )}
-        {isLabelRight ? (
+        {isLabelRight && label && (
           <Label text={label} isForHeader={true} isRight={true} />
-        ) : (
-          <Label text={label} isForHeader={true} />
         )}
+        {!isLabelRight && label && <Label text={label} isForHeader={true} />}
       </>
     </div>
   );

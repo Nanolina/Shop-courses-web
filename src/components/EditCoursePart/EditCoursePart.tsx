@@ -72,7 +72,6 @@ function EditCoursePart({
       <Button
         text="Send"
         color="var(--tg-theme-accent-text-color)"
-        size={18}
         onClick={() => {
           updatePartData();
           setIsEdit(!isEdit);
