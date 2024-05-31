@@ -10,6 +10,7 @@ import LessonsPage from './pages/LessonsPage/LessonsPage';
 import MainPage from './pages/MainPage/MainPage';
 import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
+import EditCourseFormPage from './pages/EditCourseFormPage/EditCourseFormPage';
 
 const tg = window.Telegram.WebApp;
 const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
@@ -31,6 +32,7 @@ function App() {
             element={<CoursesOneCategoryPage />}
           />
           <Route path="/course/create" element={<CreateCourseFormPage />} />
+          <Route path="/course/edit/:courseId" element={<EditCourseFormPage />} />
           <Route path="/course/user" element={<MyCreatedCoursesPage />} />
           <Route path="/course/:courseId/module" element={<ModulesPage />} />
           <Route path="/module/:moduleId/lesson" element={<LessonsPage />} />

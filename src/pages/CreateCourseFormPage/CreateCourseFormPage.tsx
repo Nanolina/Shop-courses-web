@@ -8,8 +8,10 @@ import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import { IUseCourseFormReturnType } from '../types';
 import styles from './CreateCourseFormPage.module.css';
+import { IoIosArrowBack } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 
-function CreateCourseFormPage() {
+function CreateCourseFormPage({item}) {
   const {
     name,
     setName,
@@ -29,9 +31,17 @@ function CreateCourseFormPage() {
     subcategoryOptions,
     currencyOptions,
   } = useCourseForm() as IUseCourseFormReturnType;
+  const navigate = useNavigate();
 
   return (
     <Container>
+        <div className={styles.arrowBack}>
+              <IoIosArrowBack
+                onClick={()=>navigate(-1)}
+                style={{ cursor: 'pointer' }}
+                size={24}
+              />
+            </div>
       <TextInput
         value={name}
         onChange={(event: ChangeEvent<HTMLInputElement>) =>

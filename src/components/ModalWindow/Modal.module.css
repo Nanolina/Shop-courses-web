@@ -13,10 +13,11 @@
 
 .modalContent {
   position: relative;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   padding: 20px;
   align-items: center;
   text-align: center;
+  color: black;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   z-index: 1001; /* Убедитесь, что само модальное окно выше затемнения */
@@ -43,6 +44,23 @@
   background: none;
   font-size: 16px;
   cursor: pointer;
+  border: 2px solid rgb(71, 78, 96);
+  border-radius: 10px;
+  background-color: rgb(221, 221, 221);
+  width: 120px;
+}
+
+.btn_del {
+  position: relative;
+  bottom: 0px;
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+  border: 2px solid rgb(71, 78, 96);
+  border-radius: 10px;
+  background-color: rgb(241, 90, 85);
+  width: 120px;
 }
 
 @keyframes fadeIn {

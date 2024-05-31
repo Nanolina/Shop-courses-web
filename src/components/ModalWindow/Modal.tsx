@@ -15,7 +15,7 @@ function Modal({ isOpen, onClose, content, confirm }: any) {
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <img
           className={styles.image}
-          src="https://static.javatpoint.com/computer/images/what-is-delete.png"
+          src="https://regmedia.co.uk/2022/08/04/shutterstock_delete_trash_button.jpg"
           alt="delete"
         ></img>
         {content}
@@ -23,7 +23,7 @@ function Modal({ isOpen, onClose, content, confirm }: any) {
           <button onClick={onClose} className={styles.btn}>
             Закрыть
           </button>
-          <button onClick={confirm} className={styles.btn}>
+          <button onClick={confirm} className={styles.btn_del}>
             Подтвердить
           </button>
         </div>
@@ -33,3 +33,25 @@ function Modal({ isOpen, onClose, content, confirm }: any) {
 }
 
 export default Modal;
+
+//Using modal: 
+//import Modal from '../../components/ModalWindow/Modal';
+//import React, { useState } from 'react'; // UseState for Modal!
+
+//const [modalOpen, setModalOpen] = useState(false);
+
+// function confirm() {
+//   console.log('Work!');
+// }
+
+/* <div>
+<button onClick={() => setModalOpen(true)}>
+  Открыть модальное окно
+</button>
+<Modal
+  isOpen={modalOpen}
+  onClose={() => setModalOpen(false)}
+  content={<><h2>Delete course?</h2><p>Вы уверены, что хотите удалить это?</p></>}
+  confirm={confirm}
+/>
+</div> */
