@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { LESSON } from '../../consts';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { createAxiosWithAuth } from '../../utils';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
 import { ILessonsPageParams } from '../types';
@@ -37,17 +38,19 @@ function LessonsPage() {
   }, [moduleId]);
 
   if (isLoading) return <Loader />;
-  if (error) return <p>Error: {error}</p>;
 
   return (
-    <CoursePartPage
-      type={LESSON}
-      parentId={moduleId}
-      items={lessonsData}
-      setItems={setLessonsData}
-      isForm={isForm}
-      setIsForm={setIsForm}
-    />
+    <>
+      <CoursePartPage
+        type={LESSON}
+        parentId={moduleId}
+        items={lessonsData}
+        setItems={setLessonsData}
+        isForm={isForm}
+        setIsForm={setIsForm}
+      />
+      {error && <MessageBox errorMessage={error} />}
+    </>
   );
 }
 

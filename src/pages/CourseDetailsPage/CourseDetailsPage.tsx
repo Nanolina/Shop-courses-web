@@ -8,6 +8,7 @@ import { ICourse } from '../../types';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import styles from './CourseDetailsPage.module.css';
 
 const tg = window.Telegram.WebApp;
@@ -52,8 +53,7 @@ function CourseDetailsPage() {
   }, [course]);
 
   if (isLoading) return <Loader />;
-  if (!course) return <p>Course is not found</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (!course) return <MessageBox errorMessage="Course is not found" />;
 
   return (
     <div className={styles.container}>
@@ -78,6 +78,7 @@ function CourseDetailsPage() {
         </div>
         <Button text="Activate" onClick={() => createCourse(course.id)} />
       </div>
+      {error && <MessageBox errorMessage={error} />}
     </div>
   );
 }

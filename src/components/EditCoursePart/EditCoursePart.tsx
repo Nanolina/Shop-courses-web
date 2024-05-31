@@ -4,6 +4,7 @@ import { RxCross2 } from 'react-icons/rx';
 import { useNavigate } from 'react-router-dom';
 import { MODULE, UPDATE } from '../../consts';
 import { Loader } from '../../ui/Loader/Loader';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import { IEditCoursePartProps } from '../types';
@@ -59,7 +60,6 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
   }, [tg, updatePartData]);
 
   if (isLoading) return <Loader />;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className={styles.container}>
@@ -103,6 +103,7 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
           setIsEdit(!isEdit);
         }}
       /> */}
+      {error && <MessageBox errorMessage={error} />}
     </div>
   );
 }

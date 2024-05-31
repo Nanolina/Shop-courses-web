@@ -6,6 +6,7 @@ import VideoPlayer from '../../components/VideoPlayer/VideoPlayer';
 import { LESSON } from '../../consts';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import styles from './LessonPage.module.css';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
@@ -51,8 +52,7 @@ function LessonPage() {
   }, []);
 
   if (isLoading) return <Loader />;
-  if (error) return <p>Error: {error}</p>;
-  if (!lessonId) return <div>Lesson not found</div>;
+  if (!lessonId) return <MessageBox errorMessage="Lesson not found" />;
 
   return (
     <div className={styles.mainContainer}>
@@ -66,6 +66,7 @@ function LessonPage() {
       <div className={styles.info}>
         <p>{lessonData.description}</p>
       </div>
+      {error && <MessageBox errorMessage={error} />}
     </div>
   );
 }

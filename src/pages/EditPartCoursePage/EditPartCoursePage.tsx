@@ -6,6 +6,7 @@ import { LESSON, MODULE } from '../../consts';
 import { EntityType, ILesson, IModule } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { createAxiosWithAuth } from '../../utils';
 
 function EditPartCoursePage() {
@@ -47,11 +48,11 @@ function EditPartCoursePage() {
   }, []);
 
   if (isLoading) return <Loader />;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <Container>
       <EditCoursePart item={itemData} type={type} />
+      {error && <MessageBox errorMessage={error} />}
     </Container>
   );
 }
