@@ -8,6 +8,7 @@ import ImagePreview from '../../ui/ImagePreview/ImagePreview';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import Select from '../../ui/Select/Select';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
@@ -43,7 +44,6 @@ function CreateCourseFormPage() {
   const navigate = useNavigate();
 
   if (isLoading) return <Loader />;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <Container>
@@ -138,6 +138,7 @@ function CreateCourseFormPage() {
         />
         <TonConnectButton />
       </div>
+      {error && <MessageBox errorMessage={error} />}
     </Container>
   );
 }

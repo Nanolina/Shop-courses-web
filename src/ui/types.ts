@@ -58,3 +58,8 @@ export interface IInputUploadProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   acceptFiles: string;
 }
+
+export interface IMessageBox {
+  errorMessage?: string;
+  successMessage?: string;
+}

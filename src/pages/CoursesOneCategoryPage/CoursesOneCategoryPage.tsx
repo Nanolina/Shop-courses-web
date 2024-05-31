@@ -6,6 +6,7 @@ import Header from '../../components/Header/Header';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import styles from './CoursesOneCategoryPage.module.css';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
@@ -36,7 +37,6 @@ function CoursesOneCategoryPage() {
   }, []);
 
   if (isLoading) return <Loader />;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <Container>
@@ -46,6 +46,7 @@ function CoursesOneCategoryPage() {
           <CourseItem key={course.id} course={course} />
         ))}
       </div>
+      {error && <MessageBox errorMessage={error} />}
     </Container>
   );
 }

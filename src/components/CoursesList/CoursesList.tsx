@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { groupCoursesByCategory } from '../../functions';
 import { ICourse } from '../../types.ts';
 import { Loader } from '../../ui/Loader/Loader.tsx';
+import { MessageBox } from '../../ui/MessageBox/MessageBox.tsx';
 import CoursesListByCategory from '../CoursesListByCategory/CoursesListByCategory.tsx';
 import styles from './CoursesList.module.css';
 
@@ -38,7 +39,6 @@ const CoursesList = () => {
   }, []);
 
   if (isLoading) return <Loader />;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className={styles.container}>
@@ -49,6 +49,7 @@ const CoursesList = () => {
           key={category}
         />
       ))}
+      {error && <MessageBox errorMessage={error} />}
     </div>
   );
 };

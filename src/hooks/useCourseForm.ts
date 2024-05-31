@@ -56,6 +56,7 @@ export function useCourseForm() {
   const tg = window.Telegram.WebApp;
 
   const onCreateCourse = useCallback(async () => {
+    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const formData = new FormData();
@@ -69,8 +70,6 @@ export function useCourseForm() {
       formData.append('walletAddressSeller', wallet || '');
       if (image) {
         formData.append('image', image);
-      } else {
-        formData.append('isRemoveImage', 'true');
       }
 
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
