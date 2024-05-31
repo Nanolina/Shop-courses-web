@@ -1,5 +1,7 @@
 import { TonConnectButton } from '@tonconnect/ui-react';
 import { ChangeEvent } from 'react';
+import { IoIosArrowBack } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 import { useCourseForm } from '../../hooks';
 import Container from '../../ui/Container/Container';
 import ImagePreview from '../../ui/ImagePreview/ImagePreview';
@@ -11,10 +13,8 @@ import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import { IUseCourseFormReturnType } from '../types';
 import styles from './CreateCourseFormPage.module.css';
-import { IoIosArrowBack } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
 
-function CreateCourseFormPage({item}) {
+function CreateCourseFormPage() {
   const {
     name,
     setName,
@@ -47,13 +47,13 @@ function CreateCourseFormPage({item}) {
 
   return (
     <Container>
-        <div className={styles.arrowBack}>
-              <IoIosArrowBack
-                onClick={()=>navigate(-1)}
-                style={{ cursor: 'pointer' }}
-                size={24}
-              />
-            </div>
+      <div className={styles.arrowBack}>
+        <IoIosArrowBack
+          onClick={() => navigate(-1)}
+          style={{ cursor: 'pointer' }}
+          size={24}
+        />
+      </div>
       <TextInput
         value={name}
         onChange={(event: ChangeEvent<HTMLInputElement>) =>

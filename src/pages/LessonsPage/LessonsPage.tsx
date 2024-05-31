@@ -1,13 +1,12 @@
-import axios from 'axios';
+import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { LESSON } from '../../consts';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
+import { createAxiosWithAuth } from '../../utils';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
 import { ILessonsPageParams } from '../types';
-
-const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 function LessonsPage() {
   const { moduleId = '' } = useParams<ILessonsPageParams>();
@@ -16,10 +15,13 @@ function LessonsPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
+  const { initDataRaw } = retrieveLaunchParams();
+
   async function getAllLessons() {
     try {
-      const allLessonsApiUrl = `${serverUrl}/module/${moduleId}/lessons`;
-      const response = await axios.get<ILesson[]>(allLessonsApiUrl);
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth.get(`/lesson/module/${moduleId}`);
       setLessonsData(response.data);
       setIsLoading(false);
     } catch (error: any) {

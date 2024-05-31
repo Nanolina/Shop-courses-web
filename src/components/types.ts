@@ -45,9 +45,7 @@ export interface ICoursesListByCategoryProps {
 
 export interface IEditCoursePartProps {
   item: ICoursePartItem;
-  type: EntityType;
-  isEdit: boolean;
-  setIsEdit: (isEdit: boolean) => void;
+  type: EntityType | undefined;
 }
 
 export interface IHeaderProps {

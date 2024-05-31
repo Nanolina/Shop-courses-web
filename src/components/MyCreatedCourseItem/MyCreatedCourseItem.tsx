@@ -30,7 +30,7 @@ function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
   const handleEdit = useCallback(
     (event: any) => {
       event.stopPropagation();
-      navigate(`/course/edit/${course.id}`)
+      navigate(`/course/edit/${course.id}`);
     },
     [navigate, course.id]
   );
@@ -41,7 +41,7 @@ function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
         className={styles.container}
         onClick={(event: any) => {
           event.stopPropagation();
-          navigate(`/course/${course.id}/module`);
+          navigate(`/module/course/${course.id}`);
         }}
       >
         <img
@@ -49,22 +49,23 @@ function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
           alt={course.name}
           className={styles.image}
         />
-         <div className={styles.info}>
-              <div className={styles.name}>{course.name}</div>
-              <div className={styles.price}>
-                {course.price}{' '}
-                {course.currency === 'TON' ? (
-                  <img
-                    src="/toncoin-logo.png"
-                    alt="TON"
-                    className={styles.toncoin}
-                  />
-                ) : (
-                  course.currency
-                )}
-              </div>
-            </div>
-         {isSeller && <>
+        <div className={styles.info}>
+          <div className={styles.name}>{course.name}</div>
+          <div className={styles.price}>
+            {course.price}{' '}
+            {course.currency === 'TON' ? (
+              <img
+                src="/toncoin-logo.png"
+                alt="TON"
+                className={styles.toncoin}
+              />
+            ) : (
+              course.currency
+            )}
+          </div>
+        </div>
+        {isSeller && (
+          <>
             <div className={styles.icons}>
               <MdDeleteForever
                 className={styles.cross}
@@ -79,14 +80,15 @@ function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
               />
             </div>
             <BsInfoCircleFill
-                color="var(--tg-theme-accent-text-color)"
-                size={28}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  navigate(`/course/${course.id}`);
-                }}
-              />
-          </>}
+              color="var(--tg-theme-accent-text-color)"
+              size={28}
+              onClick={(event) => {
+                event.stopPropagation();
+                navigate(`/course/${course.id}`);
+              }}
+            />
+          </>
+        )}
       </div>
     </Container>
   );
