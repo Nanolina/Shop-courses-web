@@ -2,9 +2,9 @@ import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
 import MyCreatedCourseItem from '../../components/MyCreatedCourseItem/MyCreatedCourseItem';
 import { ICourse } from '../../types';
+import { Loader } from '../../ui/Loader/Loader';
 import { createAxiosWithAuth } from '../../utils';
 import styles from './MyCreatedCoursesPage.module.css';
-import { Loader } from '../../ui/Loader/Loader';
 
 function MyCreatedCoursesPage() {
   const [coursesData, setCoursesData] = useState<ICourse[]>([]);
@@ -16,9 +16,9 @@ function MyCreatedCoursesPage() {
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get<ICourse[]>('/course/user');
-      setCoursesData(response.data);
+      const response = await axiosWithAuth.get<ICourse[]>('/course/created');
       setIsLoading(false);
+      setCoursesData(response.data);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
       setIsLoading(false);

@@ -29,9 +29,10 @@ function ReadyCoursePart({
   const handleEdit = useCallback(
     (event: React.MouseEvent<SVGElement>) => {
       event.stopPropagation();
-      setIsEdit(!isEdit);
+      //setIsEdit(!isEdit);
+      navigate(`/course-part/${type}/${item.id}`);
     },
-    [isEdit, setIsEdit]
+    [ item.id, navigate, type]
   );
 
   const navigateHandler = useCallback(() => {

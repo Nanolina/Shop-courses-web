@@ -1,18 +1,18 @@
 import { useCallback, useState } from 'react';
 import { BsInfoCircleFill } from 'react-icons/bs';
 import { FiEdit } from 'react-icons/fi';
-import { IoIosArrowBack } from 'react-icons/io';
+// import { IoIosArrowBack } from 'react-icons/io';
 import { MdDeleteForever } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { COURSE, DELETE } from '../../consts';
-import CreateCourseFormPage from '../../pages/CreateCourseFormPage/CreateCourseFormPage';
+// import CreateCourseFormPage from '../../pages/CreateCourseFormPage/CreateCourseFormPage';
 import Container from '../../ui/Container/Container';
 import { IMyCreatedCourseItemProps } from '../types';
 import styles from './MyCreatedCourseItem.module.css';
 
 function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
   const navigate = useNavigate();
-  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isSeller, setIsSeller] = useState<boolean>(false);
 
   const tg = window.Telegram.WebApp;
 
@@ -30,9 +30,9 @@ function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
   const handleEdit = useCallback(
     (event: any) => {
       event.stopPropagation();
-      setIsEdit(!isEdit);
+      navigate(`/course/edit/${course.id}`)
     },
-    [isEdit, setIsEdit]
+    [navigate, course.id]
   );
 
   return (
@@ -49,22 +49,7 @@ function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
           alt={course.name}
           className={styles.image}
         />
-        {!isEdit ? (
-          <>
-            <div className={styles.icons}>
-              <MdDeleteForever
-                className={styles.cross}
-                color="var(--tg-theme-accent-text-color)"
-                size={28}
-                onClick={handleDelete}
-              />
-              <FiEdit
-                color="var(--tg-theme-accent-text-color)"
-                size={22}
-                onClick={handleEdit}
-              />
-            </div>
-            <div className={styles.info}>
+         <div className={styles.info}>
               <div className={styles.name}>{course.name}</div>
               <div className={styles.price}>
                 {course.price}{' '}
@@ -78,7 +63,22 @@ function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
                   course.currency
                 )}
               </div>
-              <BsInfoCircleFill
+            </div>
+         {isSeller && <>
+            <div className={styles.icons}>
+              <MdDeleteForever
+                className={styles.cross}
+                color="var(--tg-theme-accent-text-color)"
+                size={28}
+                onClick={handleDelete}
+              />
+              <FiEdit
+                color="var(--tg-theme-accent-text-color)"
+                size={22}
+                onClick={handleEdit}
+              />
+            </div>
+            <BsInfoCircleFill
                 color="var(--tg-theme-accent-text-color)"
                 size={28}
                 onClick={(event) => {
@@ -86,20 +86,7 @@ function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
                   navigate(`/course/${course.id}`);
                 }}
               />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className={styles.arrowBack}>
-              <IoIosArrowBack
-                onClick={handleEdit}
-                style={{ cursor: 'pointer' }}
-                size={24}
-              />
-            </div>
-            <CreateCourseFormPage />
-          </>
-        )}
+          </>}
       </div>
     </Container>
   );
