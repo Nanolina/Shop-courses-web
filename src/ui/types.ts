@@ -19,10 +19,6 @@ export interface IImagePreviewProps {
   removeImage: () => void;
 }
 
-export interface IImageUploadProps {
-  onImageChange: (file: File | null) => void;
-}
-
 export interface ILabelProps {
   text: string;
   isRequired?: boolean;
@@ -62,4 +58,9 @@ export interface IInputUploadProps {
 export interface IMessageBox {
   errorMessage?: string;
   successMessage?: string;
+}
+
+export interface IVideoPreviewProps {
+  videoPreview: string;
+  removeVideo: () => void;
 }

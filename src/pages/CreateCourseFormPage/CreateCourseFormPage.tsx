@@ -114,7 +114,7 @@ function CreateCourseFormPage() {
         placeholder="Cover URL for the course"
       />
       <InputUpload
-        name={name}
+        name="image"
         onChange={handleImageChange}
         acceptFiles="image/*"
       />
