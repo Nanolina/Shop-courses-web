@@ -1,35 +1,33 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
+import { useNavigate } from 'react-router-dom';
 import { MODULE, UPDATE } from '../../consts';
 import { Loader } from '../../ui/Loader/Loader';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import { IEditCoursePartProps } from '../types';
 import styles from './EditCoursePart.module.css';
-import { useNavigate } from 'react-router-dom';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
-function EditCoursePart({
-  item,
-  type,
-  isEdit,
-  setIsEdit,
-}: IEditCoursePartProps) {
+function EditCoursePart({ item, type }: IEditCoursePartProps) {
   const [title, setTitle] = useState<string>(item.name);
   const [description, setDescription] = useState<string>(
     item.description || ''
   );
   const [imageUrl, setImageUrl] = useState<string>(item.imageUrl || '');
-  const updateData = useMemo(() => ({
-    type,
-    imageUrl,
-    description,
-    id: item.id,
-    name: title,
-    method: UPDATE,
-  }), [type, imageUrl, description, item.id, title]);
+  const updateData = useMemo(
+    () => ({
+      type,
+      imageUrl,
+      description,
+      id: item.id,
+      name: title,
+      method: UPDATE,
+    }),
+    [type, imageUrl, description, item.id, title]
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
@@ -47,11 +45,11 @@ function EditCoursePart({
       setIsLoading(false);
       navigate(-1);
     } catch (error) {
-      setError( String(error));
+      setError(String(error));
       setIsLoading(false);
     }
   }, [item.id, type, updateData, setIsLoading, navigate, setError]);
-  
+
   useEffect(() => {
     tg.MainButton.setParams({
       text: `Save`,
@@ -70,7 +68,7 @@ function EditCoursePart({
           className={styles.cross}
           color="var(--tg-theme-accent-text-color)"
           size={24}
-          onClick={() => setIsEdit(!isEdit)}
+          // onClick={() => setIsEdit(!isEdit)}
         />
       </div>
 
@@ -110,4 +108,3 @@ function EditCoursePart({
 }
 
 export default React.memo(EditCoursePart);
-

@@ -37,7 +37,7 @@ function ReadyCoursePart({
 
   const navigateHandler = useCallback(() => {
     if (type === MODULE) {
-      navigate(`/module/${item.id}/lesson`);
+      navigate(`/lesson/module/${item.id}`);
     } else if (type === LESSON) {
       navigate(`/lesson/${item.id}`);
     }

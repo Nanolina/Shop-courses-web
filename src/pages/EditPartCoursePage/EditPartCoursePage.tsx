@@ -2,15 +2,16 @@ import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import EditCoursePart from '../../components/EditCoursePart/EditCoursePart';
+import { LESSON, MODULE } from '../../consts';
 import { EntityType, ILesson, IModule } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { createAxiosWithAuth } from '../../utils';
-import { LESSON, MODULE } from '../../consts';
 
 function EditPartCoursePage() {
   const { type, itemId } = useParams<{ type: EntityType; itemId: string }>();
-  const [itemData, setItemData] = useState<IModule | ILesson>();
+
+  const [itemData, setItemData] = useState<any>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
@@ -27,7 +28,9 @@ function EditPartCoursePage() {
         response = await axiosWithAuth.get<ILesson>(`lesson/${itemId}`);
       }
       if (!response || !response.data) {
-        throw new Error('Something went wrong with getting the module or lesson data');
+        throw new Error(
+          'Something went wrong with getting the module or lesson data'
+        );
       }
       setIsLoading(false);
       setItemData(response.data);
@@ -48,7 +51,7 @@ function EditPartCoursePage() {
 
   return (
     <Container>
-      <EditCoursePart item={itemData} type={type}></EditCoursePart>
+      <EditCoursePart item={itemData} type={type} />
     </Container>
   );
 }
