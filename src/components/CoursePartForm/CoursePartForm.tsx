@@ -3,11 +3,15 @@ import { RxCross2 } from 'react-icons/rx';
 import { CREATE, LESSON } from '../../consts';
 import { capitalizeFirstLetter } from '../../functions';
 import Button from '../../ui/Button/Button';
+import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
+import VideoPreview from '../../ui/VideoPreview/VideoPreview';
 import { ICoursePartFormProps, ICoursePartFormState } from '../types';
 import styles from './CoursePartForm.module.css';
+
+const tg = window.Telegram.WebApp;
 
 function CoursePartForm({
   type,
@@ -21,11 +25,12 @@ function CoursePartForm({
     imageUrl: '',
     ...(type === LESSON && {
       videoUrl: '',
+      video: null,
     }),
   };
 
-  const tg = window.Telegram.WebApp;
   const [newItem, setNewItem] = useState(initialStateItem);
+  const [videoPreview, setVideoPreview] = useState('');
 
   async function createNewCoursePart() {
     tg.sendData(JSON.stringify({ type, parentId, method: CREATE, ...newItem }));
@@ -33,6 +38,32 @@ function CoursePartForm({
 
   const handleResetForm = () => {
     setNewItem(initialStateItem);
+  };
+
+  const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setNewItem((prevState) => ({
+        ...prevState,
+        video: file,
+      }));
+      const videoUrl = URL.createObjectURL(file);
+      setVideoPreview(videoUrl);
+    } else {
+      setNewItem((prevState) => ({
+        ...prevState,
+        video: null,
+      }));
+      setVideoPreview('');
+    }
+  };
+
+  const removeVideo = () => {
+    setNewItem((prevState) => ({
+      ...prevState,
+      video: null,
+    }));
+    setVideoPreview('');
   };
 
   return (
@@ -90,7 +121,7 @@ function CoursePartForm({
         </div>
         {type === LESSON && (
           <>
-            <Label text={`Add a link to the video for ${type}`} />{' '}
+            <Label text={'Add a link to the video for lesson'} />
             <TextInput
               value={newItem.videoUrl || ''}
               placeholder="URL"
@@ -101,6 +132,22 @@ function CoursePartForm({
                 }))
               }
             />
+            <Label
+              text={
+                "If you don't have video, you can upload it here. Supported video formats are mp4 and avi and maximum size for video - 500MB"
+              }
+            />
+            <InputUpload
+              name="video"
+              onChange={handleVideoChange}
+              acceptFiles="video/*"
+            />
+            {videoPreview && (
+              <VideoPreview
+                videoPreview={videoPreview}
+                removeVideo={removeVideo}
+              />
+            )}
           </>
         )}
         <Button
