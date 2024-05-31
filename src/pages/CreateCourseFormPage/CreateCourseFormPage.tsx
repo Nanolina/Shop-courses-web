@@ -2,7 +2,10 @@ import { TonConnectButton } from '@tonconnect/ui-react';
 import { ChangeEvent } from 'react';
 import { useCourseForm } from '../../hooks';
 import Container from '../../ui/Container/Container';
+import ImagePreview from '../../ui/ImagePreview/ImagePreview';
+import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
+import { Loader } from '../../ui/Loader/Loader';
 import Select from '../../ui/Select/Select';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
@@ -30,8 +33,17 @@ function CreateCourseFormPage({item}) {
     categoryOptions,
     subcategoryOptions,
     currencyOptions,
+    handleImageChange,
+    previewUrl,
+    setPreviewUrl,
+    setImage,
+    isLoading,
+    error,
   } = useCourseForm() as IUseCourseFormReturnType;
   const navigate = useNavigate();
+
+  if (isLoading) return <Loader />;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <Container>
@@ -49,13 +61,6 @@ function CreateCourseFormPage({item}) {
         }
         placeholder="Course name"
         isRequired
-      />
-      <TextInput
-        value={imageUrl}
-        onChange={(event: ChangeEvent<HTMLInputElement>) =>
-          setImageUrl(event.target.value)
-        }
-        placeholder="Cover URL for the course"
       />
       <Textarea
         value={description}
@@ -100,6 +105,31 @@ function CreateCourseFormPage({item}) {
         options={currencyOptions}
         isRequired
       />
+      <Label text="You can insert a link to the image or send the image as a file. The file size should be no more than 500KB. File format - jpeg or png" />
+      <TextInput
+        value={imageUrl}
+        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+          setImageUrl(event.target.value)
+        }
+        placeholder="Cover URL for the course"
+      />
+      <InputUpload
+        name={name}
+        onChange={handleImageChange}
+        acceptFiles="image/*"
+      />
+      {previewUrl && (
+        <div className={styles.image}>
+          <ImagePreview
+            imagePreview={previewUrl}
+            removeImage={() => {
+              setImage(null);
+              URL.revokeObjectURL(previewUrl);
+              setPreviewUrl(null);
+            }}
+          />
+        </div>
+      )}
       <div className={styles.walletContainer}>
         <Label
           text="Connect the wallet where you want to receive funds for the sale of this course"

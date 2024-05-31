@@ -1,6 +1,9 @@
+import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
-import { COURSE, CREATE } from '../consts';
+import { useNavigate } from 'react-router-dom';
+import { ICourse } from '../types';
 import { IOption } from '../ui';
+import { createAxiosWithAuth } from '../utils';
 import { useTonConnect } from './useTonConnect';
 
 export const categoryOptions: IOption[] = [
@@ -41,25 +44,47 @@ export function useCourseForm() {
   const [subcategory, setSubcategory] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [currency, setCurrency] = useState<string>('');
+  const [image, setImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+
   const { wallet } = useTonConnect();
+  const { initDataRaw } = retrieveLaunchParams();
+  const navigate = useNavigate();
 
   const tg = window.Telegram.WebApp;
 
-  const onSendData = useCallback(() => {
-    const course = {
-      name,
-      description,
-      imageUrl,
-      category,
-      subcategory,
-      price,
-      currency,
-      walletAddressSeller: wallet,
-      type: COURSE,
-      method: CREATE,
-    };
-    tg.sendData(JSON.stringify(course));
+  const onCreateCourse = useCallback(async () => {
+    try {
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description || '');
+      if (imageUrl) formData.append('imageUrl', imageUrl);
+      formData.append('category', category);
+      formData.append('subcategory', subcategory || '');
+      formData.append('price', price.toString());
+      formData.append('currency', currency);
+      formData.append('walletAddressSeller', wallet || '');
+      if (image) {
+        formData.append('image', image);
+      } else {
+        formData.append('isRemoveImage', 'true');
+      }
+
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth.post<ICourse>('/course', formData);
+      if (response.status === 201) {
+        navigate(`/course/${response.data.id}`);
+      }
+      setIsLoading(false);
+    } catch (error: any) {
+      setError(error.response?.data.message || String(error));
+      setIsLoading(false);
+    }
   }, [
+    initDataRaw,
     name,
     description,
     imageUrl,
@@ -67,17 +92,33 @@ export function useCourseForm() {
     subcategory,
     price,
     currency,
-    tg,
     wallet,
+    image,
+    navigate,
   ]);
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImage(file);
+      const fileUrl = URL.createObjectURL(file);
+      setPreviewUrl(fileUrl);
+    } else {
+      setImage(null);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
+      }
+    }
+  };
 
   useEffect(() => {
     tg.MainButton.setParams({
       text: 'Create',
     });
-    tg.onEvent('mainButtonClicked', onSendData);
-    return () => tg.offEvent('mainButtonClicked', onSendData);
-  }, [onSendData, tg]);
+    tg.onEvent('mainButtonClicked', onCreateCourse);
+    return () => tg.offEvent('mainButtonClicked', onCreateCourse);
+  }, [onCreateCourse, tg]);
 
   useEffect(() => {
     if (!name || !category || !price || !currency || !wallet) {
@@ -86,6 +127,15 @@ export function useCourseForm() {
       tg.MainButton.show();
     }
   }, [name, category, price, currency, tg.MainButton, wallet]);
+
+  // Clearing preview image URL to free up resources
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   return {
     name,
@@ -105,5 +155,12 @@ export function useCourseForm() {
     categoryOptions,
     subcategoryOptions,
     currencyOptions,
+    previewUrl,
+    setPreviewUrl,
+    handleImageChange,
+    image,
+    setImage,
+    isLoading,
+    error,
   };
 }
