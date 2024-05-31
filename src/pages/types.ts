@@ -29,6 +29,13 @@ export interface IUseCourseFormReturnType {
   categoryOptions: IOption[];
   subcategoryOptions: Record<string, IOption[]>;
   currencyOptions: IOption[];
+  handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  image: File | null;
+  setImage: React.Dispatch<React.SetStateAction<File | null>>;
+  previewUrl: string | null;
+  setPreviewUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  isLoading: boolean;
+  error: string;
 }
 
 export interface ILessonsPageParams {

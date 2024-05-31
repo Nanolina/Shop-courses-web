@@ -52,3 +52,9 @@ export interface ITextInputProps {
   placeholder?: string;
   isRequired?: boolean;
 }
+
+export interface IInputUploadProps {
+  name?: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  acceptFiles: string;
+}
