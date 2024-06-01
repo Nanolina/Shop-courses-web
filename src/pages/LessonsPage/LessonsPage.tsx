@@ -43,7 +43,12 @@ function LessonsPage() {
 
   return (
     <>
-      <CoursePartPage type={LESSON} parentId={moduleId} items={lessonsData} />
+      <CoursePartPage
+        type={LESSON}
+        parentId={moduleId}
+        items={lessonsData}
+        updatePageData={getAllLessons}
+      />
       {error && <MessageBox errorMessage={error} />}
     </>
   );

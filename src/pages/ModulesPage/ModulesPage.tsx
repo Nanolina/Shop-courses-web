@@ -1,5 +1,5 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MODULE } from '../../consts';
 import { IModule } from '../../types';
@@ -18,28 +18,34 @@ const ModulesPage: React.FC = () => {
 
   const { initDataRaw } = retrieveLaunchParams();
 
-  useEffect(() => {
-    const getAllModules = async () => {
-      try {
-        if (!initDataRaw) throw new Error('Not enough authorization data');
-        const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-        const response = await axiosWithAuth.get(`/module/course/${courseId}`);
-        setModulesData(response.data);
-        setIsLoading(false);
-      } catch (error: any) {
-        setError(error.response?.data.message || 'Failed to fetch modules');
-        setIsLoading(false);
-      }
-    };
+  const getAllModules = useCallback(async () => {
+    try {
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth.get(`/module/course/${courseId}`);
+      setModulesData(response.data);
+      setIsLoading(false);
+    } catch (error: any) {
+      setError(error.response?.data.message || 'Failed to fetch modules');
+      setIsLoading(false);
+    }
+  }, [courseId, initDataRaw]);
 
+  useEffect(() => {
     getAllModules();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId, initDataRaw]);
 
   if (isLoading) return <Loader />;
 
   return (
     <>
-      <CoursePartPage type={MODULE} parentId={courseId} items={modulesData} />
+      <CoursePartPage
+        type={MODULE}
+        parentId={courseId}
+        items={modulesData}
+        updatePageData={getAllModules}
+      />
       {error && <MessageBox errorMessage={error} />}
     </>
   );

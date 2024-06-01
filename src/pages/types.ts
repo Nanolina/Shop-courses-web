@@ -6,6 +6,7 @@ export interface ICoursePartPageProps {
   type: EntityType;
   parentId: string;
   items: ICoursePartItem[];
+  updatePageData:() => void;
 }
 
 export interface IUseCourseFormReturnType {
