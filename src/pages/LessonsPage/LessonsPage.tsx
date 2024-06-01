@@ -11,7 +11,7 @@ import { ILessonsPageParams } from '../types';
 
 function LessonsPage() {
   const { moduleId = '' } = useParams<ILessonsPageParams>();
-  const [isForm, setIsForm] = useState<boolean>(false);
+
   const [lessonsData, setLessonsData] = useState<ILesson[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -20,6 +20,7 @@ function LessonsPage() {
 
   async function getAllLessons() {
     try {
+      setIsLoading(true);
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       const response = await axiosWithAuth.get(`/lesson/module/${moduleId}`);
@@ -34,6 +35,7 @@ function LessonsPage() {
   useEffect(() => {
     setIsLoading(true);
     getAllLessons();
+    setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [moduleId]);
 
@@ -41,14 +43,7 @@ function LessonsPage() {
 
   return (
     <>
-      <CoursePartPage
-        type={LESSON}
-        parentId={moduleId}
-        items={lessonsData}
-        setItems={setLessonsData}
-        isForm={isForm}
-        setIsForm={setIsForm}
-      />
+      <CoursePartPage type={LESSON} parentId={moduleId} items={lessonsData} />
       {error && <MessageBox errorMessage={error} />}
     </>
   );

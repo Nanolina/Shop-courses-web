@@ -36,6 +36,8 @@ export const currencyOptions: IOption[] = [
   { value: 'TON', label: 'The Open Network (TON)' },
 ];
 
+const tg = window.Telegram.WebApp;
+
 export function useCourseForm() {
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -52,8 +54,6 @@ export function useCourseForm() {
   const { wallet } = useTonConnect();
   const { initDataRaw } = retrieveLaunchParams();
   const navigate = useNavigate();
-
-  const tg = window.Telegram.WebApp;
 
   const onCreateCourse = useCallback(async () => {
     setIsLoading(true);
@@ -117,7 +117,7 @@ export function useCourseForm() {
     });
     tg.onEvent('mainButtonClicked', onCreateCourse);
     return () => tg.offEvent('mainButtonClicked', onCreateCourse);
-  }, [onCreateCourse, tg]);
+  }, [onCreateCourse]);
 
   useEffect(() => {
     if (!name || !category || !price || !currency || !wallet) {
@@ -125,7 +125,7 @@ export function useCourseForm() {
     } else {
       tg.MainButton.show();
     }
-  }, [name, category, price, currency, tg.MainButton, wallet]);
+  }, [name, category, price, currency, wallet]);
 
   // Clearing preview image URL to free up resources
   useEffect(() => {

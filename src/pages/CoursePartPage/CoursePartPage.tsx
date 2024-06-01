@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CoursePartForm from '../../components/CoursePartForm/CoursePartForm';
 import CoursePartList from '../../components/CoursePartList/CoursePartList';
 import Header from '../../components/Header/Header';
@@ -8,27 +8,24 @@ import { ICoursePartPageProps } from '../types';
 
 const tg = window.Telegram.WebApp;
 
-function CoursePartPage({
-  type,
-  parentId,
-  items,
-  setItems,
-  isForm,
-  setIsForm,
-}: ICoursePartPageProps) {
+function CoursePartPage({ type, parentId, items }: ICoursePartPageProps) {
+  const [isForm, setIsForm] = useState<boolean>(false);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const toggleForm = useCallback(() => setIsForm(!isForm), []);
+
   useEffect(() => {
     tg.MainButton.setParams({
-      text: isForm ? 'Cancel' : `Create new ${type}`,
+      text: `Create new ${type}`,
     });
 
-    const toggleForm = () => setIsForm(!isForm);
     tg.onEvent('mainButtonClicked', toggleForm);
     return () => tg.offEvent('mainButtonClicked', toggleForm);
-  }, [isForm, setIsForm, type]);
+  }, [isForm, setIsForm, toggleForm, type, parentId]);
 
   useEffect(() => {
-    isForm ? tg.MainButton.hide() : tg.MainButton.show();
-  }, [isForm]);
+    tg.MainButton.show();
+  }, []);
 
   return (
     <Container>
