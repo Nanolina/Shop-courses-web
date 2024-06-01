@@ -8,7 +8,7 @@ import { ICoursePartPageProps } from '../types';
 
 const tg = window.Telegram.WebApp;
 
-function CoursePartPage({ type, parentId, items }: ICoursePartPageProps) {
+function CoursePartPage({ type, parentId, items, updatePageData }: ICoursePartPageProps) {
   const [isForm, setIsForm] = useState<boolean>(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -38,7 +38,7 @@ function CoursePartPage({ type, parentId, items }: ICoursePartPageProps) {
           setIsForm={setIsForm}
         />
       ) : (
-        <CoursePartList type={type} items={items} />
+        <CoursePartList type={type} items={items} updatePageData={updatePageData}/>
       )}
     </Container>
   );

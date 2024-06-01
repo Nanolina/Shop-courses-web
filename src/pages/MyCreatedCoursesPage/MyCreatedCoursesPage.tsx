@@ -46,7 +46,7 @@ function MyCreatedCoursesPage() {
   return (
     <div className={styles.container}>
       {coursesData.map((course) => (
-        <MyCreatedCourseItem course={course} key={course.id} />
+        <MyCreatedCourseItem course={course} key={course.id} updateItem={getAllMyCreatedCourses}/>
       ))}
     </div>
   );

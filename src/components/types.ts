@@ -32,11 +32,13 @@ export interface ICoursePartFormState {
 export interface ICoursePartItemProps {
   type: EntityType;
   item: ICoursePartItem;
+  updatePageData: () => void;
 }
 
 export interface ICoursePartListProps {
   type: EntityType;
   items: ICoursePartItem[];
+  updatePageData: () => void;
 }
 
 export interface ICoursesListByCategoryProps {
@@ -62,8 +64,7 @@ export interface IMyCreatedCourseItemProps {
 export interface IReadyCoursePartProps {
   item: ICoursePartItem;
   type: EntityType;
-  isEdit: boolean;
-  setIsEdit: (isEdit: boolean) => void;
+  updatePageData: () => void;
 }
 
 export interface IVideoPlayerProps {

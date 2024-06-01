@@ -17,14 +17,20 @@ function Modal({ isOpen, onClose, content, confirm }: any) {
           className={styles.image}
           src="https://regmedia.co.uk/2022/08/04/shutterstock_delete_trash_button.jpg"
           alt="delete"
-        ></img>
+        />
         {content}
         <div className={styles.containerBtn}>
           <button onClick={onClose} className={styles.btn}>
-            Закрыть
+            Cancel
           </button>
-          <button onClick={confirm} className={styles.btn_del}>
-            Подтвердить
+          <button
+            onClick={() => {
+              confirm();
+              onClose();
+            }}
+            className={styles.btn_del}
+          >
+            Continue
           </button>
         </div>
       </div>
@@ -34,7 +40,7 @@ function Modal({ isOpen, onClose, content, confirm }: any) {
 
 export default Modal;
 
-//Using modal: 
+//Using modal:
 //import Modal from '../../components/ModalWindow/Modal';
 //import React, { useState } from 'react'; // UseState for Modal!
 
