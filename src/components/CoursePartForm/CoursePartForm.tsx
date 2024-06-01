@@ -4,9 +4,10 @@ import { RxCross2 } from 'react-icons/rx';
 import { useNavigate } from 'react-router-dom';
 import { LESSON } from '../../consts';
 import { capitalizeFirstLetter } from '../../functions';
-import { IModule } from '../../types';
+import { ILesson, IModule } from '../../types';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
+import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
@@ -23,6 +24,7 @@ function CoursePartForm({
   setIsForm,
   parentId,
 }: ICoursePartFormProps) {
+  const navigate = useNavigate();
   const isLesson = type === LESSON;
   const initialStateItem: ICoursePartFormState = {
     name: '',
@@ -38,10 +40,8 @@ function CoursePartForm({
   const [videoPreview, setVideoPreview] = useState('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [uploadProgress, setUploadProgress] = useState(0);
 
   const { initDataRaw } = retrieveLaunchParams();
-  const navigate = useNavigate();
 
   const onCreateNewCoursePart = useCallback(async () => {
     try {
@@ -59,23 +59,13 @@ function CoursePartForm({
 
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       if (isLesson) {
-        axiosWithAuth
-          .post(`/lesson/module/${parentId}`, formData, {
-            onUploadProgress: (progressEvent: any) => {
-              const percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              );
-              setUploadProgress(percentCompleted);
-            },
-          })
-          .then((response) => {
-            navigate(`/lesson/${response.data.id}`);
-            setIsLoading(false);
-          })
-          .catch((error) => {
-            setError(error.response?.data.message || String(error));
-            setIsLoading(false);
-          });
+        const response = await axiosWithAuth.post<ILesson>(
+          `/lesson/module/${parentId}`,
+          formData
+        );
+        if (response.status === 201) {
+          navigate(`/lesson/module/${parentId}`);
+        }
       } else {
         const response = await axiosWithAuth.post<IModule>(
           `/module/course/${parentId}`,
@@ -89,10 +79,8 @@ function CoursePartForm({
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
       setIsLoading(false);
-    } finally {
-      setIsLoading(false);
     }
-  }, [newItem, initDataRaw, isLesson, parentId, navigate]);
+  }, [initDataRaw, isLesson, navigate, newItem, parentId]);
 
   const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -119,6 +107,7 @@ function CoursePartForm({
       video: null,
     }));
     setVideoPreview('');
+    URL.revokeObjectURL(videoPreview);
   };
 
   useEffect(() => {
@@ -127,7 +116,8 @@ function CoursePartForm({
     });
     tg.onEvent('mainButtonClicked', onCreateNewCoursePart);
     return () => tg.offEvent('mainButtonClicked', onCreateNewCoursePart);
-  }, [onCreateNewCoursePart, newItem, parentId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isForm]);
 
   useEffect(() => {
     // Lesson
@@ -150,16 +140,10 @@ function CoursePartForm({
     };
   }, [videoPreview]);
 
-  // if (isLoading) return <Loader />;
+  if (isLoading) return <Loader />;
 
   return (
     <div className={styles.container}>
-      {isLoading && (
-        <div>
-          Loading: {uploadProgress}%
-          <progress value={uploadProgress} max="100"></progress>
-        </div>
-      )}
       <form className={styles.formMod}>
         <div className={styles.header}>
           <RxCross2
