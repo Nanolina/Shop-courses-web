@@ -12,7 +12,6 @@ import { IModulesPageParams } from '../types';
 const ModulesPage: React.FC = () => {
   const { courseId = '' } = useParams<IModulesPageParams>();
 
-  const [isForm, setIsForm] = useState<boolean>(false);
   const [modulesData, setModulesData] = useState<IModule[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -40,14 +39,7 @@ const ModulesPage: React.FC = () => {
 
   return (
     <>
-      <CoursePartPage
-        type={MODULE}
-        parentId={courseId}
-        items={modulesData}
-        setItems={setModulesData}
-        isForm={isForm}
-        setIsForm={setIsForm}
-      />
+      <CoursePartPage type={MODULE} parentId={courseId} items={modulesData} />
       {error && <MessageBox errorMessage={error} />}
     </>
   );
