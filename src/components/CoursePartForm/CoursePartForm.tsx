@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import { retrieveLaunchParams } from '@tma.js/sdk';
+import { useCallback, useEffect, useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
-import { CREATE, LESSON } from '../../consts';
+import { useNavigate } from 'react-router-dom';
+import { LESSON } from '../../consts';
 import { capitalizeFirstLetter } from '../../functions';
-import Button from '../../ui/Button/Button';
+import { IModule } from '../../types';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import VideoPreview from '../../ui/VideoPreview/VideoPreview';
+import { createAxiosWithAuth } from '../../utils';
 import { ICoursePartFormProps, ICoursePartFormState } from '../types';
 import styles from './CoursePartForm.module.css';
 
@@ -19,11 +23,12 @@ function CoursePartForm({
   setIsForm,
   parentId,
 }: ICoursePartFormProps) {
+  const isLesson = type === LESSON;
   const initialStateItem: ICoursePartFormState = {
     name: '',
     description: '',
     imageUrl: '',
-    ...(type === LESSON && {
+    ...(isLesson && {
       videoUrl: '',
       video: null,
     }),
@@ -31,14 +36,63 @@ function CoursePartForm({
 
   const [newItem, setNewItem] = useState(initialStateItem);
   const [videoPreview, setVideoPreview] = useState('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [uploadProgress, setUploadProgress] = useState(0);
 
-  async function createNewCoursePart() {
-    tg.sendData(JSON.stringify({ type, parentId, method: CREATE, ...newItem }));
-  }
+  const { initDataRaw } = retrieveLaunchParams();
+  const navigate = useNavigate();
 
-  const handleResetForm = () => {
-    setNewItem(initialStateItem);
-  };
+  const onCreateNewCoursePart = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const { name, description, imageUrl, videoUrl, video } = newItem;
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description || '');
+      if (imageUrl) formData.append('imageUrl', imageUrl);
+      if (videoUrl && isLesson) formData.append('videoUrl', videoUrl);
+      if (video && isLesson) {
+        formData.append('files', video, video.name);
+      }
+
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      if (isLesson) {
+        axiosWithAuth
+          .post(`/lesson/module/${parentId}`, formData, {
+            onUploadProgress: (progressEvent: any) => {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              setUploadProgress(percentCompleted);
+            },
+          })
+          .then((response) => {
+            navigate(`/lesson/${response.data.id}`);
+            setIsLoading(false);
+          })
+          .catch((error) => {
+            setError(error.response?.data.message || String(error));
+            setIsLoading(false);
+          });
+      } else {
+        const response = await axiosWithAuth.post<IModule>(
+          `/module/course/${parentId}`,
+          formData
+        );
+        if (response.status === 201) {
+          navigate(`/module/course/${parentId}`);
+        }
+      }
+      setIsLoading(false);
+    } catch (error: any) {
+      setError(error.response?.data.message || String(error));
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [newItem, initDataRaw, isLesson, parentId, navigate]);
 
   const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -55,6 +109,7 @@ function CoursePartForm({
         video: null,
       }));
       setVideoPreview('');
+      URL.revokeObjectURL(videoPreview);
     }
   };
 
@@ -66,8 +121,45 @@ function CoursePartForm({
     setVideoPreview('');
   };
 
+  useEffect(() => {
+    tg.MainButton.setParams({
+      text: 'Save',
+    });
+    tg.onEvent('mainButtonClicked', onCreateNewCoursePart);
+    return () => tg.offEvent('mainButtonClicked', onCreateNewCoursePart);
+  }, [onCreateNewCoursePart, newItem, parentId]);
+
+  useEffect(() => {
+    // Lesson
+    if (isLesson && !(newItem.video || newItem.videoUrl)) {
+      tg.MainButton.hide();
+      // Module
+    } else if (!isLesson && !newItem.name) {
+      tg.MainButton.hide();
+    } else {
+      tg.MainButton.show();
+    }
+  }, [newItem.name, newItem.video, newItem.videoUrl, isLesson]);
+
+  // Clearing preview video URL to free up resources
+  useEffect(() => {
+    return () => {
+      if (videoPreview) {
+        URL.revokeObjectURL(videoPreview);
+      }
+    };
+  }, [videoPreview]);
+
+  // if (isLoading) return <Loader />;
+
   return (
     <div className={styles.container}>
+      {isLoading && (
+        <div>
+          Loading: {uploadProgress}%
+          <progress value={uploadProgress} max="100"></progress>
+        </div>
+      )}
       <form className={styles.formMod}>
         <div className={styles.header}>
           <RxCross2
@@ -107,7 +199,6 @@ function CoursePartForm({
         </div>
         <div className={styles.labelInputContainer}>
           <Label text={`Add a link to the image for ${type}`} />
-
           <TextInput
             value={newItem.imageUrl}
             placeholder="URL"
@@ -119,7 +210,8 @@ function CoursePartForm({
             }
           />
         </div>
-        {type === LESSON && (
+
+        {isLesson && (
           <>
             <Label text={'Add a link to the video for lesson'} />
             <TextInput
@@ -138,7 +230,7 @@ function CoursePartForm({
               }
             />
             <InputUpload
-              name="video"
+              name="files"
               onChange={handleVideoChange}
               acceptFiles="video/*"
             />
@@ -150,15 +242,8 @@ function CoursePartForm({
             )}
           </>
         )}
-        <Button
-          text="Save"
-          onClick={() => {
-            createNewCoursePart();
-            handleResetForm();
-            setIsForm(!isForm);
-          }}
-        />
       </form>
+      {error && <MessageBox errorMessage={error} />}
     </div>
   );
 }

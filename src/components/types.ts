@@ -26,6 +26,7 @@ export interface ICoursePartFormState {
   description: string;
   imageUrl: string;
   videoUrl?: string;
+  video?: File | null;
 }
 
 export interface ICoursePartItemProps {

@@ -42,7 +42,7 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
         type === MODULE
           ? `${serverUrl}/module/${item.id}`
           : `${serverUrl}/lesson/${item.id}`;
-      const response = await axios.patch(allLessonsApiUrl, updateData);
+      await axios.patch(allLessonsApiUrl, updateData);
       setIsLoading(false);
       navigate(-1);
     } catch (error) {

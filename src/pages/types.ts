@@ -6,9 +6,6 @@ export interface ICoursePartPageProps {
   type: EntityType;
   parentId: string;
   items: ICoursePartItem[];
-  setItems: (items: any[]) => void;
-  isForm: boolean;
-  setIsForm: (isForm: boolean) => void;
 }
 
 export interface IUseCourseFormReturnType {
