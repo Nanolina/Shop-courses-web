@@ -14,7 +14,7 @@ function Select({
         Choose {type}
         {isRequired ? ' *' : ''}
       </option>
-      {options.map((option: IOption) => (
+      {options?.map((option: IOption) => (
         <option key={option.value} value={option.value}>
           {option.label}
         </option>

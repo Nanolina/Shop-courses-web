@@ -1,15 +1,16 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { RxCross2 } from 'react-icons/rx';
 import { useNavigate } from 'react-router-dom';
 import { MODULE, UPDATE } from '../../consts';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
+import Header from '../Header/Header';
 import { IEditCoursePartProps } from '../types';
 import styles from './EditCoursePart.module.css';
 
+const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 function EditCoursePart({ item, type }: IEditCoursePartProps) {
@@ -34,7 +35,6 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
 
   const navigate = useNavigate();
 
-  const tg = window.Telegram.WebApp;
 
   const updatePartData = useCallback(async () => {
     try {
@@ -57,20 +57,13 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
     });
     tg.onEvent('mainButtonClicked', updatePartData);
     return () => tg.offEvent('mainButtonClicked', updatePartData);
-  }, [tg, updatePartData]);
+  }, [ updatePartData]);
 
   if (isLoading) return <Loader />;
 
   return (
     <div className={styles.container}>
-      <div className={styles.icons}>
-        <RxCross2
-          className={styles.cross}
-          color="var(--tg-theme-accent-text-color)"
-          size={24}
-          // onClick={() => setIsEdit(!isEdit)}
-        />
-      </div>
+      <Header label={type} />
 
       <TextInput
         value={title}
@@ -95,14 +88,7 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
         }
         placeholder="URL"
       />
-      {/* <Button
-        text="Send"
-        color="var(--tg-theme-accent-text-color)"
-        onClick={() => {
-          updatePartData();
-          setIsEdit(!isEdit);
-        }}
-      /> */}
+
       {error && <MessageBox errorMessage={error} />}
     </div>
   );

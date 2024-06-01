@@ -1,20 +1,43 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import CourseForm from '../../components/CourseForm/CourseForm';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
+import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import CreateCourseFormPage from '../CreateCourseFormPage/CreateCourseFormPage';
+import { createAxiosWithAuth } from '../../utils';
 
 function EditCourseFormPage() {
-  const { itemId } = useParams<{ itemId: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
   const [itemData, setItemData] = useState<ICourse>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
+
+  const getOneCourse = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth.get<ICourse>(`/course/${courseId}`);
+      setItemData(response.data);
+    } catch (error: any) {
+      setError(error.response?.data.message || String(error));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [courseId, initDataRaw]);
+
+  useEffect(() => {
+    getOneCourse();
+  }, [getOneCourse]);
+
+  if (isLoading) return <Loader />;
+
   return (
     <Container>
-      <CreateCourseFormPage item={itemData}></CreateCourseFormPage>
+      <CourseForm item={itemData}></CourseForm>
       {error && <MessageBox errorMessage={error} />}
     </Container>
   );

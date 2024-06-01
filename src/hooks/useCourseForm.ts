@@ -1,6 +1,7 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { IMyCreatedCoursesPageParams } from '../pages/types';
 import { ICourse } from '../types';
 import { IOption } from '../ui';
 import { createAxiosWithAuth } from '../utils';
@@ -39,6 +40,7 @@ export const currencyOptions: IOption[] = [
 const tg = window.Telegram.WebApp;
 
 export function useCourseForm() {
+  const { courseId = '' } = useParams<IMyCreatedCoursesPageParams>();
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>('');
@@ -111,13 +113,61 @@ export function useCourseForm() {
     }
   };
 
+  const updateCourse = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description || '');
+      if (imageUrl) formData.append('imageUrl', imageUrl);
+      formData.append('category', category);
+      formData.append('subcategory', subcategory || '');
+      formData.append('price', price.toString());
+      formData.append('currency', currency);
+      formData.append('walletAddressSeller', wallet || '');
+      if (image) {
+        formData.append('image', image);
+      }
+
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      await axiosWithAuth.patch<ICourse>(`/course/${courseId}`, formData);
+      setIsLoading(false);
+    } catch (error: any) {
+      setError(error.response?.data.message || String(error));
+      setIsLoading(false);
+    }
+  }, [
+    initDataRaw,
+    name,
+    description,
+    imageUrl,
+    category,
+    subcategory,
+    price,
+    currency,
+    wallet,
+    image,
+    courseId,
+  ]);
+
   useEffect(() => {
-    tg.MainButton.setParams({
-      text: 'Create',
-    });
-    tg.onEvent('mainButtonClicked', onCreateCourse);
-    return () => tg.offEvent('mainButtonClicked', onCreateCourse);
-  }, [onCreateCourse]);
+    if (!courseId) {
+      tg.MainButton.setParams({
+        text: 'Create',
+      });
+      tg.onEvent('mainButtonClicked', onCreateCourse);
+      return () => tg.offEvent('mainButtonClicked', onCreateCourse);
+    }
+    if (courseId) {
+      tg.MainButton.setParams({
+        text: `Save`,
+      });
+      tg.onEvent('mainButtonClicked', updateCourse);
+      return () => tg.offEvent('mainButtonClicked', updateCourse);
+    }
+  }, [onCreateCourse, updateCourse, courseId]);
 
   useEffect(() => {
     if (!name || !category || !price || !currency || !wallet) {

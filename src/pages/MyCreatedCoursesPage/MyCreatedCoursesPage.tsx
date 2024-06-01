@@ -6,6 +6,8 @@ import { Loader } from '../../ui/Loader/Loader';
 import { createAxiosWithAuth } from '../../utils';
 import styles from './MyCreatedCoursesPage.module.css';
 
+const tg = window.Telegram.WebApp;
+
 function MyCreatedCoursesPage() {
   const [coursesData, setCoursesData] = useState<ICourse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -28,6 +30,7 @@ function MyCreatedCoursesPage() {
   useEffect(() => {
     setIsLoading(true);
     getAllMyCreatedCourses();
+    tg.MainButton.hide()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

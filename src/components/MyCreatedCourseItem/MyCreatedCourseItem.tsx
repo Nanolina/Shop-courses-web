@@ -1,30 +1,25 @@
 import { useCallback, useState } from 'react';
 import { BsInfoCircleFill } from 'react-icons/bs';
 import { FiEdit } from 'react-icons/fi';
-// import { IoIosArrowBack } from 'react-icons/io';
 import { MdDeleteForever } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
-import { COURSE, DELETE } from '../../consts';
-// import CreateCourseFormPage from '../../pages/CreateCourseFormPage/CreateCourseFormPage';
+import { useNavigate } from 'react-router-dom'
 import Container from '../../ui/Container/Container';
 import { IMyCreatedCourseItemProps } from '../types';
 import styles from './MyCreatedCourseItem.module.css';
+import Modal from '../ModalWindow/Modal';
 
 function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
   const navigate = useNavigate();
-  const [isSeller, setIsSeller] = useState<boolean>(false);
-
-  const tg = window.Telegram.WebApp;
+  //const [isSeller, setIsSeller] = useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   async function handleDelete(event: any) {
     event.stopPropagation();
-    tg.sendData(
-      JSON.stringify({
-        type: COURSE,
-        id: course.id,
-        method: DELETE,
-      })
-    );
+    setModalOpen(true)
+  }
+
+  function deleteCourse(){
+    console.log('Delete')
   }
 
   const handleEdit = useCallback(
@@ -64,7 +59,7 @@ function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
             )}
           </div>
         </div>
-        {isSeller && (
+        {/* {isSeller && ( */}
           <>
             <div className={styles.icons}>
               <MdDeleteForever
@@ -88,8 +83,14 @@ function MyCreatedCourseItem({ course }: IMyCreatedCourseItemProps) {
               }}
             />
           </>
-        )}
+        {/* )}*/}
       </div>
+      <Modal
+  isOpen={modalOpen}
+  onClose={() => setModalOpen(false)}
+  content={<><h2>Delete course?</h2><p>Вы уверены, что хотите удалить это?</p></>}
+  confirm={deleteCourse}
+/>
     </Container>
   );
 }
