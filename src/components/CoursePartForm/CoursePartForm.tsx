@@ -25,7 +25,7 @@ function CoursePartForm({
   parentId,
 }: ICoursePartFormProps) {
   const navigate = useNavigate();
-  const isLesson = type === LESSON;
+  const [isLesson, setIsLesson] = useState(true);
   const initialStateItem: ICoursePartFormState = {
     name: '',
     description: '',
@@ -111,13 +111,16 @@ function CoursePartForm({
   };
 
   useEffect(() => {
+    setIsLesson(type === LESSON);
+  }, [type]);
+
+  useEffect(() => {
     tg.MainButton.setParams({
       text: 'Save',
     });
     tg.onEvent('mainButtonClicked', onCreateNewCoursePart);
     return () => tg.offEvent('mainButtonClicked', onCreateNewCoursePart);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isForm]);
+  }, [isForm, onCreateNewCoursePart]);
 
   useEffect(() => {
     // Lesson
