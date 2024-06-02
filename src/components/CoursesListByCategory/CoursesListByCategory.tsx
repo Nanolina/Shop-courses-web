@@ -21,7 +21,6 @@ function CoursesListByCategory({
         <div
           className={styles.textAll}
           onClick={() => {
-            console.log(category);
             navigate(`course/category/${categoryToLowerCase}`);
           }}
         >

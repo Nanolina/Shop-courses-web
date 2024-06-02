@@ -1,9 +1,9 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { MdDeleteForever } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
-import { LESSON, MODULE } from '../../consts';
+import { LESSON, MODULE, SELLER } from '../../consts';
 import { Loader } from '../../ui/Loader/Loader';
 import { createAxiosWithAuth } from '../../utils';
 import Modal from '../ModalWindow/Modal';
@@ -13,16 +13,17 @@ import styles from './ReadyCoursePart.module.css';
 function ReadyCoursePart({
   item,
   type,
+  role,
   updatePageData,
 }: IReadyCoursePartProps) {
   const navigate = useNavigate();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isSeller, setIsSeller] = useState<boolean>(true);
+  const [isSeller, setIsSeller] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const { initDataRaw } = retrieveLaunchParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const text = `Delete ${type} ${item.name} ?`
+
+  const text = `Delete ${type} ${item.name} ?`;
+  const { initDataRaw } = retrieveLaunchParams();
 
   async function handleDelete(event: any) {
     event.stopPropagation();
@@ -56,6 +57,12 @@ function ReadyCoursePart({
       navigate(`/lesson/${item.id}`);
     }
   }, [navigate, item.id, type]);
+
+  useEffect(() => {
+    if (role === SELLER) {
+      setIsSeller(true);
+    }
+  }, [role]);
 
   if (isLoading) return <Loader />;
   if (error) return <p>Error: {error}</p>;

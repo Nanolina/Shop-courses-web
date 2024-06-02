@@ -2,30 +2,36 @@ import React, { useCallback, useEffect, useState } from 'react';
 import CoursePartForm from '../../components/CoursePartForm/CoursePartForm';
 import CoursePartList from '../../components/CoursePartList/CoursePartList';
 import Header from '../../components/Header/Header';
+import { SELLER } from '../../consts';
 import { capitalizeFirstLetter } from '../../functions';
 import Container from '../../ui/Container/Container';
 import { ICoursePartPageProps } from '../types';
 
 const tg = window.Telegram.WebApp;
 
-function CoursePartPage({ type, parentId, items, updatePageData }: ICoursePartPageProps) {
+function CoursePartPage({
+  type,
+  parentId,
+  items,
+  role,
+  updatePageData,
+}: ICoursePartPageProps) {
   const [isForm, setIsForm] = useState<boolean>(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const toggleForm = useCallback(() => setIsForm(!isForm), []);
 
   useEffect(() => {
-    tg.MainButton.setParams({
-      text: `Create new ${type}`,
-    });
-
-    tg.onEvent('mainButtonClicked', toggleForm);
-    return () => tg.offEvent('mainButtonClicked', toggleForm);
-  }, [isForm, setIsForm, toggleForm, type, parentId]);
-
-  useEffect(() => {
-    tg.MainButton.show();
-  }, []);
+    tg.MainButton.hide();
+    if (role === SELLER) {
+      tg.MainButton.setParams({
+        text: `Create new ${type}`,
+      });
+      tg.MainButton.show();
+      tg.onEvent('mainButtonClicked', toggleForm);
+      return () => tg.offEvent('mainButtonClicked', toggleForm);
+    }
+  }, [isForm, setIsForm, toggleForm, type, parentId, role]);
 
   return (
     <Container>
@@ -38,7 +44,12 @@ function CoursePartPage({ type, parentId, items, updatePageData }: ICoursePartPa
           setIsForm={setIsForm}
         />
       ) : (
-        <CoursePartList type={type} items={items} updatePageData={updatePageData}/>
+        <CoursePartList
+          type={type}
+          items={items}
+          updatePageData={updatePageData}
+          role={role}
+        />
       )}
     </Container>
   );

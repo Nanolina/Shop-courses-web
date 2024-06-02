@@ -7,7 +7,7 @@ import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { createAxiosWithAuth } from '../../utils';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
-import { ILessonsPageParams } from '../types';
+import { IGetLessons, ILessonsPageParams } from '../types';
 
 function LessonsPage() {
   const { moduleId = '' } = useParams<ILessonsPageParams>();
@@ -15,6 +15,7 @@ function LessonsPage() {
   const [lessonsData, setLessonsData] = useState<ILesson[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [role, setRole] = useState<string>('')
 
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -23,8 +24,9 @@ function LessonsPage() {
       setIsLoading(true);
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get(`/lesson/module/${moduleId}`);
-      setLessonsData(response.data);
+      const response = await axiosWithAuth.get<IGetLessons>(`/lesson/module/${moduleId}`);
+      setLessonsData(response.data.lessons);
+      setRole(response.data.role)
       setIsLoading(false);
     } catch (error: any) {
       setError(error?.message || String(error));
@@ -48,6 +50,7 @@ function LessonsPage() {
         parentId={moduleId}
         items={lessonsData}
         updatePageData={getAllLessons}
+        role={role}
       />
       {error && <MessageBox errorMessage={error} />}
     </>
