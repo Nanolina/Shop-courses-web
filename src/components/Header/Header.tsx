@@ -14,11 +14,7 @@ const Header = ({
   const navigate = useNavigate();
 
   return (
-    <div
-      className={classNames(styles.container, {
-        [styles.rightLabel]: !hasButtonBack,
-      })}
-    >
+    <div className={styles.container}>
       {hasButtonBack && (
         <IoIosArrowBack
           onClick={() => navigate(-1)}
@@ -27,7 +23,9 @@ const Header = ({
         />
       )}
       {label && (
-        <div className={styles.iconLabelContainer}>
+        <div
+          className={classNames(styles.iconLabelContainer, styles.labelRight)}
+        >
           {icon}
           <Label
             text={label}

@@ -12,11 +12,6 @@
   border-radius: 8px;
 }
 
-.rightLabel {
-  justify-content: flex-end;
-  padding-right: 20px;
-}
-
 .backButton {
   cursor: pointer;
   position: absolute;
@@ -25,7 +20,10 @@
 
 .iconLabelContainer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 5px;
+}
+
+.labelRight {
+  margin-left: auto;
 }

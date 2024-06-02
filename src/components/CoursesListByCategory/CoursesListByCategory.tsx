@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
+import { categoryOptions } from '../../category-data';
 import { capitalizeFirstLetter } from '../../functions';
 import { ICourse } from '../../types';
 import Label from '../../ui/Label/Label';
@@ -12,16 +14,25 @@ function CoursesListByCategory({
   courses,
 }: ICoursesListByCategoryProps) {
   const navigate = useNavigate();
-  const categoryToLowerCase = category.toLowerCase();
+
+  const getCategoryLabel = useMemo(
+    () => (value: string) => {
+      const category = categoryOptions.find((option) => option.value === value);
+      return category ? category.label : capitalizeFirstLetter(value);
+    },
+    []
+  );
+
+  const categoryLabel = getCategoryLabel(category);
 
   return (
     <div className={styles.container}>
       <div className={styles.labelsContainer}>
-        <Label text={capitalizeFirstLetter(category)} isBold isBig />
+        <Label text={categoryLabel} isBold isBig />
         <div
           className={styles.textAll}
           onClick={() => {
-            navigate(`course/category/${categoryToLowerCase}`);
+            navigate(`course/category/${category}`);
           }}
         >
           All <IoIosArrowForward size={15} />

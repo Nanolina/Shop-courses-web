@@ -1,20 +1,23 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import { TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import CourseDetails from '../../components/CourseDetails/CourseDetails';
 import Header from '../../components/Header/Header';
 import { USER } from '../../consts';
+import { getCSSVariableValue } from '../../functions';
 import { useTonConnect } from '../../hooks';
 import { ICourse } from '../../types';
-import Label from '../../ui/Label/Label';
+import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { createAxiosWithAuth } from '../../utils';
+import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
 
 const tg = window.Telegram.WebApp;
 
 function CourseDetailsPage() {
+  const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
 
   const [course, setCourse] = useState<ICourse | null>(null);
@@ -23,16 +26,17 @@ function CourseDetailsPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [isUser, setIsUser] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   const { wallet } = useTonConnect();
   const { initDataRaw } = retrieveLaunchParams();
 
-  async function getCourseDetails() {
+  const getCourseDetails = useCallback(async () => {
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get(`/course/${courseId}`);
+      const response = await axiosWithAuth.get<IGetCourse>(
+        `/course/${courseId}`
+      );
       const { role, course } = response.data;
       setCourse(course);
       if (role === USER) {
@@ -46,7 +50,7 @@ function CourseDetailsPage() {
       setError(error?.message || String(error));
       setIsLoading(false);
     }
-  }
+  }, [courseId, initDataRaw]);
 
   const onPurchaseCourse = useCallback(async () => {
     setIsLoading(true);
@@ -75,44 +79,32 @@ function CourseDetailsPage() {
 
   useEffect(() => {
     if (course && showButtonBuy) {
+      const buttonColor = getCSSVariableValue('--tg-theme-button-color');
       tg.MainButton.setParams({
         text: `Buy for ${course.price} ${course.currency}`,
+        is_active: !!wallet,
+        color: !!wallet ? buttonColor : '#e6e9e9',
       });
       tg.MainButton.show();
       tg.onEvent('mainButtonClicked', onPurchaseCourse);
       return () => tg.offEvent('mainButtonClicked', onPurchaseCourse);
     }
-  }, [course, onPurchaseCourse, showButtonBuy]);
+  }, [course, onPurchaseCourse, showButtonBuy, wallet]);
 
   if (isLoading) return <Loader />;
-  if (!course) return <MessageBox errorMessage="Course is not found" />;
+  if (!course) return <div>Course is not found</div>;
 
   return (
-    <div className={styles.container}>
-      <Header label="Explore course" isLabelRight />
+    <Container>
+      <Header label="Explore course" />
       <img src={course?.imageUrl} alt="Course" className={styles.image} />
-      <div className={styles.description}>
-        {course?.description}
-        <Label text={name} isCenter={true} />
-      </div>
-      {isUser && (
-        <div className={styles.walletContainer}>
-          <div>
-            In order for your course to appear in the store, it must be
-            submitted to the blockchain. You need to click on the button below
-            to connect your wallet. This wallet will receive funds from the sale
-            of your course.
-          </div>
-          <TonConnectButton />
-          <div>
-            Click on the button below to activate the course. You will have to
-            pay to rent a smart contract on the blockchain for your course to
-            exist there
-          </div>
-        </div>
-      )}
+      <CourseDetails
+        name={name}
+        description={course?.description}
+        isUser={isUser}
+      />
       {error && <MessageBox errorMessage={error} />}
-    </div>
+    </Container>
   );
 }
 
