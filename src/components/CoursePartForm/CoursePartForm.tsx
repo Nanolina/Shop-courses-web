@@ -194,7 +194,6 @@ function CoursePartForm({
             }
           />
         </div>
-
         {isLesson && (
           <>
             <Label text={'Add a link to the video for lesson'} />
