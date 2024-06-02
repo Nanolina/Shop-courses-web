@@ -11,10 +11,12 @@ import { createAxiosWithAuth } from '../../utils';
 import Modal from '../ModalWindow/Modal';
 import { IMyCreatedCourseItemProps } from '../types';
 import styles from './MyCreatedCourseItem.module.css';
+import { SELLER } from '../../consts';
 
 function MyCreatedCourseItem({
   course,
   updateItem,
+  role,
 }: any | IMyCreatedCourseItemProps) {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
@@ -90,19 +92,21 @@ function MyCreatedCourseItem({
             )}
           </div>
         </div>
-        <div className={styles.icons}>
-          <MdDeleteForever
-            className={styles.cross}
-            color="var(--tg-theme-accent-text-color)"
-            size={34}
-            onClick={handleDelete}
-          />
-          <FiEdit
-            color="var(--tg-theme-accent-text-color)"
-            size={28}
-            onClick={handleEdit}
-          />
-        </div>
+        {role === SELLER && (
+          <div className={styles.icons}>
+            <MdDeleteForever
+              className={styles.cross}
+              color="var(--tg-theme-accent-text-color)"
+              size={34}
+              onClick={handleDelete}
+            />
+            <FiEdit
+              color="var(--tg-theme-accent-text-color)"
+              size={28}
+              onClick={handleEdit}
+            />
+          </div>
+        )}
       </div>
       <Modal
         isOpen={modalOpen}

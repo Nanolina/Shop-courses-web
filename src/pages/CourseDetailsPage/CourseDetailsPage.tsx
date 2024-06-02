@@ -1,41 +1,68 @@
+import { retrieveLaunchParams } from '@tma.js/sdk';
 import { TonConnectButton } from '@tonconnect/ui-react';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
-import { useContract } from '../../hooks/useContract';
+import { useTonConnect } from '../../hooks';
 import { ICourse } from '../../types';
-import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import { createAxiosWithAuth } from '../../utils';
 import styles from './CourseDetailsPage.module.css';
+import { USER } from '../../consts';
 
 const tg = window.Telegram.WebApp;
-const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 function CourseDetailsPage() {
   const { courseId } = useParams<{ courseId: string }>();
 
   const [course, setCourse] = useState<ICourse | null>(null);
+  const [showButtonBuy, setShowButtonBuy] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const { createCourse } = useContract();
+  const { wallet } = useTonConnect();
+  const { initDataRaw } = retrieveLaunchParams();
+  const navigate = useNavigate();
 
   async function getCourseDetails() {
     try {
-      const courseApiUrl = `${serverUrl}/course/${courseId}`;
-      const response = await axios.get<ICourse>(courseApiUrl);
-      setCourse(response.data);
-      setName(response.data.name);
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth.get(`/course/${courseId}`);
+      const { role, course } = response.data;
+      setCourse(course);
+      if (role === USER) {
+        setShowButtonBuy(true);
+      }
+      setName(course.name);
       setIsLoading(false);
-      return response.data;
+      return course;
     } catch (error: any) {
       setError(error?.message || String(error));
       setIsLoading(false);
     }
   }
+
+  const onPurchaseCourse = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth.post<ICourse>(
+        `/course/${course?.id}/purchase`,
+        { walletAddressCustomer: wallet }
+      );
+      if (response.status === 201) {
+        navigate('/course/purchased');
+      }
+      setIsLoading(false);
+    } catch (error: any) {
+      setError(error.response?.data.message || String(error));
+      setIsLoading(false);
+    }
+  }, [course?.id, initDataRaw, navigate, wallet]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -44,13 +71,15 @@ function CourseDetailsPage() {
   }, [courseId]);
 
   useEffect(() => {
-    if (course) {
+    if (course && showButtonBuy) {
       tg.MainButton.setParams({
         text: `Buy for ${course.price} ${course.currency}`,
       });
       tg.MainButton.show();
+      tg.onEvent('mainButtonClicked', onPurchaseCourse);
+      return () => tg.offEvent('mainButtonClicked', onPurchaseCourse);
     }
-  }, [course]);
+  }, [course, onPurchaseCourse, showButtonBuy]);
 
   if (isLoading) return <Loader />;
   if (!course) return <MessageBox errorMessage="Course is not found" />;
@@ -76,7 +105,6 @@ function CourseDetailsPage() {
           to rent a smart contract on the blockchain for your course to exist
           there
         </div>
-        <Button text="Activate" onClick={() => createCourse(course.id)} />
       </div>
       {error && <MessageBox errorMessage={error} />}
     </div>

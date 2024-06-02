@@ -30,3 +30,4 @@ export interface ILesson {
 }
 
 export type EntityType = 'module' | 'lesson';
+export type RoleType = 'user' | 'customer' | 'seller';

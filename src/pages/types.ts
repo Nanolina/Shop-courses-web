@@ -1,12 +1,12 @@
 import { ICoursePartItem } from '../components';
-import { EntityType } from '../types';
+import { EntityType, ICourse, RoleType } from '../types';
 import { IOption } from '../ui';
 
 export interface ICoursePartPageProps {
   type: EntityType;
   parentId: string;
   items: ICoursePartItem[];
-  updatePageData:() => void;
+  updatePageData: () => void;
 }
 
 export interface IUseCourseFormReturnType {
@@ -49,4 +49,9 @@ export interface IModulesPageParams {
 export interface IMyCreatedCoursesPageParams {
   [key: string]: string | undefined;
   userId: string;
+}
+
+export interface IGetCourse {
+  course: ICourse;
+  role: RoleType;
 }

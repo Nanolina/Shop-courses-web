@@ -7,6 +7,7 @@ import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { createAxiosWithAuth } from '../../utils';
+import { IGetCourse } from '../types';
 
 function EditCourseFormPage() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -20,8 +21,10 @@ function EditCourseFormPage() {
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get<ICourse>(`/course/${courseId}`);
-      setItemData(response.data);
+      const response = await axiosWithAuth.get<IGetCourse>(
+        `/course/${courseId}`
+      );
+      setItemData(response.data.course);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
     } finally {

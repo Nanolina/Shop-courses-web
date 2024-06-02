@@ -13,6 +13,7 @@ import LessonsPage from './pages/LessonsPage/LessonsPage';
 import MainPage from './pages/MainPage/MainPage';
 import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
+import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCoursesPage';
 
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
@@ -61,7 +62,10 @@ function App() {
             element={<EditCourseFormPage />}
           />
           <Route path="/course/created" element={<MyCreatedCoursesPage />} />
-          <Route path="/course/purchased" element={<MyCreatedCoursesPage />} />
+          <Route
+            path="/course/purchased"
+            element={<MyPurchasedCoursesPage />}
+          />
           <Route path="/module/course/:courseId" element={<ModulesPage />} />
           <Route path="/lesson/module/:moduleId" element={<LessonsPage />} />
           <Route path="/lesson/:lessonId" element={<LessonPage />} />
