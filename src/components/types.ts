@@ -55,6 +55,7 @@ export interface IHeaderProps {
   label?: string;
   hasButtonBack?: boolean;
   isLabelRight?: boolean;
+  icon?: any;
 }
 
 export interface IMyCreatedCourseItemProps {

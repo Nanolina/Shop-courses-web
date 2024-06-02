@@ -22,7 +22,6 @@ function MyPurchasedCoursesPage() {
       const response = await axiosWithAuth.get<ICourse[]>('/course/purchased');
       setIsLoading(false);
       setCoursesData(response.data);
-      console.log(`coursesData ${coursesData}`);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
       setIsLoading(false);

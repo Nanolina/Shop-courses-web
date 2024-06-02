@@ -7,6 +7,7 @@ export interface IOption {
 
 export interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
+  icon?: any;
 }
 
 export interface IContainerProps {
@@ -25,6 +26,10 @@ export interface ILabelProps {
   isForHeader?: boolean;
   isCenter?: boolean;
   isRight?: boolean;
+  isPadding?: boolean;
+  isBold?: boolean;
+  isBig?: boolean;
+  isHint?: boolean;
 }
 
 export interface ISelectProps {
@@ -53,6 +58,7 @@ export interface IInputUploadProps {
   name?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   acceptFiles: string;
+  maxSize: string;
 }
 
 export interface IMessageBox {

@@ -1,20 +1,20 @@
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
-  width: 160px;
-  height: 200px;
+  flex: 0 0 calc(50% - 30px);
+  height: 220px;
   background-color: var(--tg-theme-bg-color);
   border-radius: 8px;
-  padding: 10px;
+  padding: 10px 10px 15px 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .image {
   width: 150px;
-  height: 130px;
+  height: 150px;
   border-radius: 8px;
   background-position: center center;
   background-size: cover;
@@ -22,8 +22,13 @@
 }
 
 .name {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: normal;
   text-align: center;
+  width: 100%;
 }
 
 .toncoin {
@@ -34,18 +39,17 @@
 .info {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: center;
   gap: 5px;
-  font-size: large;
-  overflow: scroll;
+  width: 100%;
+  height: 70px;
 }
 
 .price {
-  font-weight: 600;
   display: flex;
   justify-content: center;
-  width: 100%;
-  gap: 5px;
   align-items: center;
+  gap: 5px;
+  font-weight: 500;
 }

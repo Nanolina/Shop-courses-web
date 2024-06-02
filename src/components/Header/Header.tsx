@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import Label from '../../ui/Label/Label';
@@ -8,24 +9,34 @@ const Header = ({
   label,
   hasButtonBack = true,
   isLabelRight = true,
+  icon,
 }: IHeaderProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className={styles.container}>
-      <>
-        {hasButtonBack && (
-          <IoIosArrowBack
-            onClick={() => navigate(-1)}
-            style={{ cursor: 'pointer' }}
-            size={20}
+    <div
+      className={classNames(styles.container, {
+        [styles.rightLabel]: !hasButtonBack,
+      })}
+    >
+      {hasButtonBack && (
+        <IoIosArrowBack
+          onClick={() => navigate(-1)}
+          className={styles.backButton}
+          size={20}
+        />
+      )}
+      {label && (
+        <div className={styles.iconLabelContainer}>
+          {icon}
+          <Label
+            text={label}
+            isRight={isLabelRight}
+            isCenter={!isLabelRight}
+            isForHeader
           />
-        )}
-        {isLabelRight && label && (
-          <Label text={label} isForHeader={true} isRight={true} />
-        )}
-        {!isLabelRight && label && <Label text={label} isForHeader={true} />}
-      </>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import CourseItem from '../../components/CourseItem/CourseItem';
 import Header from '../../components/Header/Header';
+import { capitalizeFirstLetter } from '../../functions';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
@@ -40,7 +41,7 @@ function CoursesOneCategoryPage() {
 
   return (
     <Container>
-      <Header label={category} />
+      <Header label={capitalizeFirstLetter(category)} />
       <div className={styles.container}>
         {coursesData.map((course: any) => (
           <CourseItem key={course.id} course={course} />

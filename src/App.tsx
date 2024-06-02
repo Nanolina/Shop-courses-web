@@ -17,7 +17,7 @@ import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCo
 
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
-const manifestUrl = `${serverUrl}/tonconnect-manifest.json`;
+const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
 
 function App() {
   useEffect(() => {
@@ -50,6 +50,7 @@ function App() {
     <TonConnectUIProvider manifestUrl={manifestUrl}>
       <Router>
         <Routes>
+          {/* all users */}
           <Route path="/" element={<MainPage />} />
           <Route path="/course/:courseId" element={<CourseDetailsPage />} />
           <Route
@@ -57,22 +58,25 @@ function App() {
             element={<CoursesOneCategoryPage />}
           />
           <Route path="/course/create" element={<CreateCourseFormPage />} />
+          {/* seller */}
           <Route
             path="/course/edit/:courseId"
             element={<EditCourseFormPage />}
           />
-          <Route path="/course/created" element={<MyCreatedCoursesPage />} />
-          <Route
-            path="/course/purchased"
-            element={<MyPurchasedCoursesPage />}
-          />
-          <Route path="/module/course/:courseId" element={<ModulesPage />} />
-          <Route path="/lesson/module/:moduleId" element={<LessonsPage />} />
-          <Route path="/lesson/:lessonId" element={<LessonPage />} />
           <Route
             path="/course-part/:type/:itemId"
             element={<EditPartCoursePage />}
           />
+          <Route path="/course/created" element={<MyCreatedCoursesPage />} />
+          {/* customer */}
+          <Route
+            path="/course/purchased"
+            element={<MyPurchasedCoursesPage />}
+          />
+          {/* customer & seller */}
+          <Route path="/module/course/:courseId" element={<ModulesPage />} />
+          <Route path="/lesson/module/:moduleId" element={<LessonsPage />} />
+          <Route path="/lesson/:lessonId" element={<LessonPage />} />
         </Routes>
         <ToastContainer
           position="top-center"

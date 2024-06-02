@@ -27,7 +27,7 @@
 .name {
   font-size: 1.2em;
   font-weight: 800;
-  font-family: Georgia, 'Times New Roman', Times, sans-serif;
+  /* font-family: Georgia, 'Times New Roman', Times, sans-serif; */
 }
 
 .info {
@@ -38,7 +38,7 @@
   box-shadow:
     3px 3px 6px rgb(236, 236, 236),
     -0.2em 0 0.4em rgb(236, 236, 236);
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  /* font-family: Georgia, 'Times New Roman', Times, serif; */
   font-size: 1.1em;
   padding: 5px 10px;
   border-radius: 10px;
