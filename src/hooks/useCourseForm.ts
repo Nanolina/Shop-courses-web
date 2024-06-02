@@ -7,32 +7,6 @@ import { IOption } from '../ui';
 import { createAxiosWithAuth } from '../utils';
 import { useTonConnect } from './useTonConnect';
 
-export const categoryOptions: IOption[] = [
-  { value: 'technology', label: 'Technology' },
-  { value: 'cooking', label: 'Cooking' },
-  { value: 'art', label: 'Art and design' },
-  { value: 'other', label: 'Other' },
-];
-
-export const subcategoryOptions: Record<string, IOption[]> = {
-  technology: [
-    { value: 'full-stack', label: 'Full-stack development' },
-    { value: 'data-science', label: 'Data Science' },
-    { value: 'other', label: 'Other' },
-  ],
-  cooking: [
-    { value: 'baking', label: 'Baking' },
-    { value: 'grilling', label: 'Grilling' },
-    { value: 'other', label: 'Other' },
-  ],
-  art: [
-    { value: 'painting', label: 'Painting' },
-    { value: 'sculpture', label: 'Sculpture' },
-    { value: 'other', label: 'Other' },
-  ],
-  other: [],
-};
-
 export const currencyOptions: IOption[] = [
   { value: 'TON', label: 'The Open Network (TON)' },
 ];
@@ -201,8 +175,6 @@ export function useCourseForm() {
     setPrice,
     currency,
     setCurrency,
-    categoryOptions,
-    subcategoryOptions,
     currencyOptions,
     previewUrl,
     setPreviewUrl,
