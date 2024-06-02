@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
@@ -7,9 +7,9 @@ import { LESSON } from '../../consts';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import { createAxiosWithAuth } from '../../utils';
 import styles from './LessonPage.module.css';
 
-const serverUrl = process.env.REACT_APP_SERVER_URL;
 const tg = window.Telegram.WebApp;
 
 function LessonPage() {
@@ -26,25 +26,30 @@ function LessonPage() {
   const [videoUrl, setVideoUrl] = useState<string>(lessonData.videoUrl);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+  const { initDataRaw } = retrieveLaunchParams();
+
+  async function getOneLesson() {
+    try {
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth.get<any>(`lesson/${lessonId}`);
+      setLessonData(response.data.lesson);
+      setIsLoading(false);
+    } catch (error: any) {
+      setError(error.response?.data.message || String(error));
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
-    const getAllLessonData = async () => {
-      try {
-        const allLessonDataApiUrl = `${serverUrl}/lesson/${lessonId}`;
-        const response = await axios.get<ILesson>(allLessonDataApiUrl);
-        setLessonData(response.data);
-      } catch (error: any) {
-        setError(error.message || 'Failed to fetch lesson');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getAllLessonData();
-  }, [lessonId]);
+    getOneLesson();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lessonId, initDataRaw]); // Добавляем зависимости, которые могут измениться
 
   useEffect(() => {
-    setVideoUrl(lessonData.videoUrl);
+    if (lessonData) {
+      setVideoUrl(lessonData.videoUrl || '');
+    }
   }, [lessonData]);
 
   useEffect(() => {
@@ -56,16 +61,16 @@ function LessonPage() {
 
   return (
     <div className={styles.mainContainer}>
-      {<Header />}
+      {<Header label={lessonData.name}/>}
+      <div className={styles.info}>
+        <p>{lessonData.description}</p>
+      </div>
       <VideoPlayer
         url={videoUrl}
         setUrl={setVideoUrl}
         lessonId={lessonId}
         type={LESSON}
       />
-      <div className={styles.info}>
-        <p>{lessonData.description}</p>
-      </div>
       {error && <MessageBox errorMessage={error} />}
     </div>
   );

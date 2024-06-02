@@ -3,6 +3,7 @@ import { TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
+import { USER } from '../../consts';
 import { useTonConnect } from '../../hooks';
 import { ICourse } from '../../types';
 import Label from '../../ui/Label/Label';
@@ -10,7 +11,6 @@ import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { createAxiosWithAuth } from '../../utils';
 import styles from './CourseDetailsPage.module.css';
-import { USER } from '../../consts';
 
 const tg = window.Telegram.WebApp;
 
@@ -22,9 +22,11 @@ function CourseDetailsPage() {
   const [name, setName] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [isUser, setIsUser] = useState<boolean>(false);
+  const navigate = useNavigate();
+
   const { wallet } = useTonConnect();
   const { initDataRaw } = retrieveLaunchParams();
-  const navigate = useNavigate();
 
   async function getCourseDetails() {
     try {
@@ -35,6 +37,7 @@ function CourseDetailsPage() {
       setCourse(course);
       if (role === USER) {
         setShowButtonBuy(true);
+        setIsUser(true);
       }
       setName(course.name);
       setIsLoading(false);
@@ -92,20 +95,22 @@ function CourseDetailsPage() {
         {course?.description}
         <Label text={name} isCenter={true} />
       </div>
-      <div className={styles.walletContainer}>
-        <div>
-          In order for your course to appear in the store, it must be submitted
-          to the blockchain. You need to click on the button below to connect
-          your wallet. This wallet will receive funds from the sale of your
-          course.
+      {isUser && (
+        <div className={styles.walletContainer}>
+          <div>
+            In order for your course to appear in the store, it must be
+            submitted to the blockchain. You need to click on the button below
+            to connect your wallet. This wallet will receive funds from the sale
+            of your course.
+          </div>
+          <TonConnectButton />
+          <div>
+            Click on the button below to activate the course. You will have to
+            pay to rent a smart contract on the blockchain for your course to
+            exist there
+          </div>
         </div>
-        <TonConnectButton />
-        <div>
-          Click on the button below to activate the course. You will have to pay
-          to rent a smart contract on the blockchain for your course to exist
-          there
-        </div>
-      </div>
+      )}
       {error && <MessageBox errorMessage={error} />}
     </div>
   );

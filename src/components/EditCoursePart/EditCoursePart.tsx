@@ -1,55 +1,60 @@
-import axios from 'axios';
+import { retrieveLaunchParams } from '@tma.js/sdk';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MODULE, UPDATE } from '../../consts';
+import { LESSON, MODULE } from '../../consts';
+import { ILesson, IModule } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
+import { createAxiosWithAuth } from '../../utils';
 import Header from '../Header/Header';
 import { IEditCoursePartProps } from '../types';
 import styles from './EditCoursePart.module.css';
 
 const tg = window.Telegram.WebApp;
-const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 function EditCoursePart({ item, type }: IEditCoursePartProps) {
+  const navigate = useNavigate();
   const [title, setTitle] = useState<string>(item.name);
   const [description, setDescription] = useState<string>(
     item.description || ''
   );
   const [imageUrl, setImageUrl] = useState<string>(item.imageUrl || '');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+
   const updateData = useMemo(
     () => ({
-      type,
       imageUrl,
       description,
       id: item.id,
       name: title,
-      method: UPDATE,
     }),
-    [type, imageUrl, description, item.id, title]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [imageUrl, description, item.id, title, type]
   );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
 
-  const navigate = useNavigate();
-
+  const { initDataRaw } = retrieveLaunchParams();
 
   const updatePartData = useCallback(async () => {
+    setIsLoading(true);
     try {
-      const allLessonsApiUrl =
-        type === MODULE
-          ? `${serverUrl}/module/${item.id}`
-          : `${serverUrl}/lesson/${item.id}`;
-      await axios.patch(allLessonsApiUrl, updateData);
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      if (type === MODULE) {
+        await axiosWithAuth.patch<IModule>(`/module/${item.id}`, updateData);
+      }
+      if (type === LESSON) {
+        await axiosWithAuth.patch<ILesson>(`/lesson/${item.id}`, updateData);
+      }
       setIsLoading(false);
       navigate(-1);
-    } catch (error) {
-      setError(String(error));
+    } catch (error: any) {
+      setError(error.response?.data.message || String(error));
       setIsLoading(false);
     }
-  }, [item.id, type, updateData, setIsLoading, navigate, setError]);
+  }, [initDataRaw, item.id, navigate, type, updateData]);
 
   useEffect(() => {
     tg.MainButton.setParams({
@@ -57,14 +62,13 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
     });
     tg.onEvent('mainButtonClicked', updatePartData);
     return () => tg.offEvent('mainButtonClicked', updatePartData);
-  }, [ updatePartData]);
+  }, [updatePartData, type]);
 
   if (isLoading) return <Loader />;
 
   return (
     <div className={styles.container}>
       <Header label={type} />
-
       <TextInput
         value={title}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>

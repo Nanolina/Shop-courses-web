@@ -1,10 +1,10 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { LESSON } from '../../consts';
 import { capitalizeFirstLetter } from '../../functions';
-import { ILesson, IModule } from '../../types';
+import { EntityType, ILesson, IModule } from '../../types';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
@@ -13,19 +13,20 @@ import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import VideoPreview from '../../ui/VideoPreview/VideoPreview';
 import { createAxiosWithAuth } from '../../utils';
-import { ICoursePartFormProps, ICoursePartFormState } from '../types';
+import { ICoursePartFormState } from '../types';
 import styles from './CoursePartForm.module.css';
 
 const tg = window.Telegram.WebApp;
 
-function CoursePartForm({
-  type,
-  isForm,
-  setIsForm,
-  parentId,
-}: ICoursePartFormProps) {
+function CoursePartForm() {
+  const { type = '', parentId } = useParams<{
+    type: EntityType;
+    parentId: string;
+  }>();
   const navigate = useNavigate();
+
   const [isLesson, setIsLesson] = useState(true);
+
   const initialStateItem: ICoursePartFormState = {
     name: '',
     description: '',
@@ -64,7 +65,7 @@ function CoursePartForm({
           formData
         );
         if (response.status === 201) {
-          navigate(`/lesson/module/${parentId}`);
+          navigate(-1);
         }
       } else {
         const response = await axiosWithAuth.post<IModule>(
@@ -72,7 +73,7 @@ function CoursePartForm({
           formData
         );
         if (response.status === 201) {
-          navigate(`/module/course/${parentId}`);
+          navigate(-1);
         }
       }
       setIsLoading(false);
@@ -120,7 +121,7 @@ function CoursePartForm({
     });
     tg.onEvent('mainButtonClicked', onCreateNewCoursePart);
     return () => tg.offEvent('mainButtonClicked', onCreateNewCoursePart);
-  }, [isForm, onCreateNewCoursePart]);
+  }, [onCreateNewCoursePart, navigate]);
 
   useEffect(() => {
     // Lesson
@@ -153,7 +154,7 @@ function CoursePartForm({
             className={styles.cross}
             size={24}
             color="var(--tg-theme-accent-text-color)"
-            onClick={() => setIsForm(!isForm)}
+            onClick={() => navigate(-1)}
           />
           <h3>Create a new {type}</h3>
         </div>

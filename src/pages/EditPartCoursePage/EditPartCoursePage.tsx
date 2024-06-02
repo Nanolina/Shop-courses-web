@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import EditCoursePart from '../../components/EditCoursePart/EditCoursePart';
 import { LESSON, MODULE } from '../../consts';
-import { EntityType, ILesson, IModule } from '../../types';
+import { EntityType, IModule } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
@@ -24,9 +24,11 @@ function EditPartCoursePage() {
       let response;
       if (type === MODULE) {
         response = await axiosWithAuth.get<IModule>(`module/${itemId}`);
+        setItemData(response.data);
       }
       if (type === LESSON) {
-        response = await axiosWithAuth.get<ILesson>(`lesson/${itemId}`);
+        response = await axiosWithAuth.get<any>(`lesson/${itemId}`);
+        setItemData(response.data.lesson);
       }
       if (!response || !response.data) {
         throw new Error(
@@ -34,7 +36,6 @@ function EditPartCoursePage() {
         );
       }
       setIsLoading(false);
-      setItemData(response.data);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
       setIsLoading(false);

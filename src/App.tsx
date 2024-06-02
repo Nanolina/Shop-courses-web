@@ -14,6 +14,7 @@ import MainPage from './pages/MainPage/MainPage';
 import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
 import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCoursesPage';
+import CoursePartForm from './components/CoursePartForm/CoursePartForm';
 
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
@@ -68,6 +69,7 @@ function App() {
             element={<EditPartCoursePage />}
           />
           <Route path="/course/created" element={<MyCreatedCoursesPage />} />
+          <Route path="/edit/coursePart/:type/:parentId" element={ <CoursePartForm />} />
           {/* customer */}
           <Route
             path="/course/purchased"

@@ -7,7 +7,7 @@ import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { createAxiosWithAuth } from '../../utils';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
-import { IModulesPageParams } from '../types';
+import { IGetModules, IModulesPageParams } from '../types';
 
 const ModulesPage: React.FC = () => {
   const { courseId = '' } = useParams<IModulesPageParams>();
@@ -15,6 +15,7 @@ const ModulesPage: React.FC = () => {
   const [modulesData, setModulesData] = useState<IModule[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+  const [role, setRole] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -22,8 +23,11 @@ const ModulesPage: React.FC = () => {
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get(`/module/course/${courseId}`);
-      setModulesData(response.data);
+      const response = await axiosWithAuth.get<IGetModules>(
+        `/module/course/${courseId}`
+      );
+      setModulesData(response.data.modules);
+      setRole(response.data.role);
       setIsLoading(false);
     } catch (error: any) {
       setError(error.response?.data.message || 'Failed to fetch modules');
@@ -33,9 +37,10 @@ const ModulesPage: React.FC = () => {
 
   useEffect(() => {
     getAllModules();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId, initDataRaw]);
 
+  if (!modulesData || !modulesData.length) return <div>No modules</div>;
   if (isLoading) return <Loader />;
 
   return (
@@ -45,6 +50,7 @@ const ModulesPage: React.FC = () => {
         parentId={courseId}
         items={modulesData}
         updatePageData={getAllModules}
+        role={role}
       />
       {error && <MessageBox errorMessage={error} />}
     </>

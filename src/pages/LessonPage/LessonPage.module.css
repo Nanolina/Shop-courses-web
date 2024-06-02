@@ -34,7 +34,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: max-content;
+  width: 95vw;
   box-shadow:
     3px 3px 6px rgb(236, 236, 236),
     -0.2em 0 0.4em rgb(236, 236, 236);

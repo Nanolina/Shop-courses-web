@@ -32,12 +32,14 @@ export interface ICoursePartFormState {
 export interface ICoursePartItemProps {
   type: EntityType;
   item: ICoursePartItem;
+  role: string;
   updatePageData: () => void;
 }
 
 export interface ICoursePartListProps {
   type: EntityType;
   items: ICoursePartItem[];
+  role: string;
   updatePageData: () => void;
 }
 
@@ -65,6 +67,7 @@ export interface IMyCreatedCourseItemProps {
 export interface IReadyCoursePartProps {
   item: ICoursePartItem;
   type: EntityType;
+  role: string;
   updatePageData: () => void;
 }
 
