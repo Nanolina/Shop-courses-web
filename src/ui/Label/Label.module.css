@@ -1,14 +1,11 @@
-.textForHeader {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--tg-theme-accent-text-color);
-  width: 100%;
+.text {
+  font-size: 16px;
+  font-weight: 400;
 }
 
-.text {
-  font-size: 18px;
-  font-weight: 700;
-  width: 100%;
+.textForHeader {
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .center {
@@ -17,4 +14,22 @@
 
 .right {
   text-align: right;
+}
+
+.paddingLeft {
+  padding-left: 5px;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.bigSize {
+  font-size: 18px;
+}
+
+.hint {
+  color: gray;
+  font-size: 14px;
+  font-style: italic;
 }

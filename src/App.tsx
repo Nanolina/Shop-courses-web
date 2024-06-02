@@ -17,7 +17,7 @@ import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCo
 
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
-const manifestUrl = `${serverUrl}/tonconnect-manifest.json`;
+const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
 
 function App() {
   useEffect(() => {

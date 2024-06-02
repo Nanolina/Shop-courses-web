@@ -4,12 +4,14 @@
   align-items: center;
   justify-content: start;
   gap: 10px;
-  height: 100%;
   width: 95vw;
+  min-height: 100vh;
   padding: 10px;
   overflow-x: hidden;
+  background-color: var(--tg-theme-secondary-bg-color);
 }
 
 .grayContainer {
   background-color: var(--tg-theme-secondary-bg-color);
+  flex-grow: 1;
 }

@@ -1,8 +1,8 @@
+html,
 body,
-html {
+#root {
   margin: 0;
   padding: 0;
-  width: 100%;
   overflow-x: hidden;
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -10,4 +10,15 @@ html {
   background-color: var(--tg-theme-bg-color);
   color: var(--tg-theme-text-color);
   font-size: 18px;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* turn off if need to catch errors */
+iframe#webpack-dev-server-client-overlay {
+  display: none;
 }
