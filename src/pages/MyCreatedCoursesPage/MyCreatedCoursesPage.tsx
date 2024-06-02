@@ -1,6 +1,7 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
 import MyCreatedCourseItem from '../../components/MyCreatedCourseItem/MyCreatedCourseItem';
+import { SELLER } from '../../consts';
 import { ICourse } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { createAxiosWithAuth } from '../../utils';
@@ -30,7 +31,7 @@ function MyCreatedCoursesPage() {
   useEffect(() => {
     setIsLoading(true);
     getAllMyCreatedCourses();
-    tg.MainButton.hide()
+    tg.MainButton.hide();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -46,7 +47,12 @@ function MyCreatedCoursesPage() {
   return (
     <div className={styles.container}>
       {coursesData.map((course) => (
-        <MyCreatedCourseItem course={course} key={course.id} updateItem={getAllMyCreatedCourses} role='seller'/>
+        <MyCreatedCourseItem
+          course={course}
+          key={course.id}
+          updateItem={getAllMyCreatedCourses}
+          role={SELLER}
+        />
       ))}
     </div>
   );

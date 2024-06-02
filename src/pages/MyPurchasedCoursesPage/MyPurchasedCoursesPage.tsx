@@ -1,6 +1,7 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
 import MyCreatedCourseItem from '../../components/MyCreatedCourseItem/MyCreatedCourseItem';
+import { CUSTOMER } from '../../consts';
 import { ICourse } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { createAxiosWithAuth } from '../../utils';
@@ -53,7 +54,7 @@ function MyPurchasedCoursesPage() {
           course={course}
           key={course.id}
           updateItem={getAllMyPurchasedCourses}
-          role='customer'
+          role={CUSTOMER}
         />
       ))}
     </div>

@@ -11,6 +11,7 @@ import { createAxiosWithAuth } from '../../utils';
 import Modal from '../ModalWindow/Modal';
 import { IMyCreatedCourseItemProps } from '../types';
 import styles from './MyCreatedCourseItem.module.css';
+import { SELLER } from '../../consts';
 
 function MyCreatedCourseItem({
   course,
@@ -91,7 +92,7 @@ function MyCreatedCourseItem({
             )}
           </div>
         </div>
-        {role === 'seller' && (
+        {role === SELLER && (
           <div className={styles.icons}>
             <MdDeleteForever
               className={styles.cross}
