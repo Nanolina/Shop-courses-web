@@ -10,7 +10,7 @@
 .noCourses {
   font-size: large;
   font-weight: 600;
-  font-family: 'Times New Roman', Times, serif;
+  /* font-family: 'Times New Roman', Times, serif; */
   text-decoration: line-through;
   text-align: center;
 }

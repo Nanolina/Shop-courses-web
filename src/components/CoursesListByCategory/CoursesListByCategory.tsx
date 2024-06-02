@@ -17,7 +17,7 @@ function CoursesListByCategory({
   return (
     <div className={styles.container}>
       <div className={styles.labelsContainer}>
-        <Label text={capitalizeFirstLetter(category)} />
+        <Label text={capitalizeFirstLetter(category)} isBold isBig />
         <div
           className={styles.textAll}
           onClick={() => {
@@ -28,7 +28,7 @@ function CoursesListByCategory({
         </div>
       </div>
       <div className={styles.courseWrapper}>
-        {courses.map((course: ICourse) => (
+        {courses.slice(0, 10).map((course: ICourse) => (
           <CourseItem course={course} key={course.id} />
         ))}
       </div>
