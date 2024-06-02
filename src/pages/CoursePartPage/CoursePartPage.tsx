@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import CoursePartForm from '../../components/CoursePartForm/CoursePartForm';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CoursePartList from '../../components/CoursePartList/CoursePartList';
 import Header from '../../components/Header/Header';
 import { SELLER } from '../../consts';
@@ -16,12 +16,12 @@ function CoursePartPage({
   role,
   updatePageData,
 }: ICoursePartPageProps) {
-  const [isForm, setIsForm] = useState<boolean>(false);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const toggleForm = useCallback(() => setIsForm(!isForm), []);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const toggleForm = () => {
+      navigate(`/edit/coursePart/${type}/${parentId}`);
+    };
     tg.MainButton.hide();
     if (role === SELLER) {
       tg.MainButton.setParams({
@@ -31,26 +31,17 @@ function CoursePartPage({
       tg.onEvent('mainButtonClicked', toggleForm);
       return () => tg.offEvent('mainButtonClicked', toggleForm);
     }
-  }, [isForm, setIsForm, toggleForm, type, parentId, role]);
+  }, [type, parentId, role, navigate]);
 
   return (
     <Container>
       <Header label={`${capitalizeFirstLetter(type)}s`} />
-      {isForm ? (
-        <CoursePartForm
-          type={type}
-          parentId={parentId}
-          isForm={isForm}
-          setIsForm={setIsForm}
-        />
-      ) : (
-        <CoursePartList
-          type={type}
-          items={items}
-          updatePageData={updatePageData}
-          role={role}
-        />
-      )}
+      <CoursePartList
+        type={type}
+        items={items}
+        updatePageData={updatePageData}
+        role={role}
+      />
     </Container>
   );
 }

@@ -52,7 +52,6 @@ function EditPartCoursePage() {
 
   return (
     <Container>
-      <div>itemData: {itemData.id}</div>
       <EditCoursePart item={itemData} type={type} />
       {error && <MessageBox errorMessage={error} />}
     </Container>

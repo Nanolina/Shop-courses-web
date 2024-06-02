@@ -15,11 +15,15 @@ import styles from './EditCoursePart.module.css';
 const tg = window.Telegram.WebApp;
 
 function EditCoursePart({ item, type }: IEditCoursePartProps) {
+  const navigate = useNavigate();
   const [title, setTitle] = useState<string>(item.name);
   const [description, setDescription] = useState<string>(
     item.description || ''
   );
   const [imageUrl, setImageUrl] = useState<string>(item.imageUrl || '');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+
   const updateData = useMemo(
     () => ({
       imageUrl,
@@ -27,21 +31,23 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
       id: item.id,
       name: title,
     }),
-    [imageUrl, description, item.id, title]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [imageUrl, description, item.id, title, type]
   );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const { initDataRaw } = retrieveLaunchParams();
 
-  const navigate = useNavigate();
+  const { initDataRaw } = retrieveLaunchParams();
 
   const updatePartData = useCallback(async () => {
     setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      if (type === MODULE){ await axiosWithAuth.patch<IModule>(`/module/${item.id}`, updateData);}
-      if (type === LESSON){  await axiosWithAuth.patch<ILesson>(`/lesson/${item.id}`, updateData);}
+      if (type === MODULE) {
+        await axiosWithAuth.patch<IModule>(`/module/${item.id}`, updateData);
+      }
+      if (type === LESSON) {
+        await axiosWithAuth.patch<ILesson>(`/lesson/${item.id}`, updateData);
+      }
       setIsLoading(false);
       navigate(-1);
     } catch (error: any) {
@@ -56,7 +62,7 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
     });
     tg.onEvent('mainButtonClicked', updatePartData);
     return () => tg.offEvent('mainButtonClicked', updatePartData);
-  }, [updatePartData]);
+  }, [updatePartData, type]);
 
   if (isLoading) return <Loader />;
 
