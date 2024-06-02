@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-bottom: 2px solid #e9e9e9;
+}
+
+.descriptionText {
+  text-align: left;
+  font-size: 16px;
+  color: var(--tg-theme-text-color);
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+.connectWalletButton {
+  padding-top: 20px;
+}

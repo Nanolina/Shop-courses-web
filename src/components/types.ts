@@ -77,3 +77,9 @@ export interface IVideoPlayerProps {
   lessonId: string;
   type: EntityType;
 }
+
+export interface ICourseDetailsProps {
+  name: string;
+  description?: string;
+  isUser: boolean;
+}
