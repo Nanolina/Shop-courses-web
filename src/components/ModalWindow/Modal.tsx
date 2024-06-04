@@ -20,7 +20,7 @@ function Modal({ isOpen, onClose, content, confirm }: any) {
         />
         {content}
         <div className={styles.containerBtn}>
-          <button onClick={onClose} className={styles.btn}>
+          <button onClick={onClose} className={styles.btnCancel}>
             Cancel
           </button>
           <button
@@ -28,7 +28,7 @@ function Modal({ isOpen, onClose, content, confirm }: any) {
               confirm();
               onClose();
             }}
-            className={styles.btn_del}
+            className={styles.btnContinue}
           >
             Continue
           </button>
@@ -39,25 +39,3 @@ function Modal({ isOpen, onClose, content, confirm }: any) {
 }
 
 export default Modal;
-
-//Using modal:
-//import Modal from '../../components/ModalWindow/Modal';
-//import React, { useState } from 'react'; // UseState for Modal!
-
-//const [modalOpen, setModalOpen] = useState(false);
-
-// function confirm() {
-//   console.log('Work!');
-// }
-
-/* <div>
-<button onClick={() => setModalOpen(true)}>
-  Открыть модальное окно
-</button>
-<Modal
-  isOpen={modalOpen}
-  onClose={() => setModalOpen(false)}
-  content={<><h2>Delete course?</h2><p>Вы уверены, что хотите удалить это?</p></>}
-  confirm={confirm}
-/>
-</div> */

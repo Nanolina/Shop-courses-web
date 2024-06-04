@@ -15,7 +15,7 @@ const MainPage: React.FC = () => {
   }, [navigate]);
 
   return (
-    <Container grayContainer>
+    <Container>
       <SearchBar />
       <CoursesList />
     </Container>

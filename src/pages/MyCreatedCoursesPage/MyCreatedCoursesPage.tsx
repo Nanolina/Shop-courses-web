@@ -1,11 +1,12 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
-import MyCreatedCourseItem from '../../components/MyCreatedCourseItem/MyCreatedCourseItem';
-import { SELLER } from '../../consts';
+import CourseItem from '../../components/CourseItem/CourseItem';
 import { ICourse } from '../../types';
+import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
+import SearchBar from '../../ui/SearchBar/SearchBar';
 import { createAxiosWithAuth } from '../../utils';
-import styles from './MyCreatedCoursesPage.module.css';
+import styles from './MyCreatedCoursePage.module.css';
 
 const tg = window.Telegram.WebApp;
 
@@ -39,22 +40,18 @@ function MyCreatedCoursesPage() {
   if (error) return <p>Error: {error}</p>;
 
   if (coursesData.length === 0) {
-    return (
-      <div className={styles.noCourses}>You don't have any courses created</div>
-    );
+    return <div>You don't have any courses created</div>;
   }
 
   return (
-    <div className={styles.container}>
-      {coursesData.map((course) => (
-        <MyCreatedCourseItem
-          course={course}
-          key={course.id}
-          updateItem={getAllMyCreatedCourses}
-          role={SELLER}
-        />
-      ))}
-    </div>
+    <Container>
+      <SearchBar />
+      <div className={styles.container}>
+        {coursesData.map((course) => (
+          <CourseItem key={course.id} course={course} />
+        ))}
+      </div>
+    </Container>
   );
 }
 

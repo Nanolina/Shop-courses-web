@@ -4,6 +4,10 @@
 }
 
 .textForHeader {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70vw;
   font-size: 20px;
   font-weight: 600;
 }
