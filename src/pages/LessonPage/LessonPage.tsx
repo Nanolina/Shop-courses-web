@@ -4,10 +4,10 @@ import { useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import VideoPlayer from '../../components/VideoPlayer/VideoPlayer';
 import { LESSON } from '../../consts';
+import { createAxiosWithAuth } from '../../functions';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import { createAxiosWithAuth } from '../../utils';
 import styles from './LessonPage.module.css';
 
 const tg = window.Telegram.WebApp;
@@ -61,7 +61,7 @@ function LessonPage() {
 
   return (
     <div className={styles.mainContainer}>
-      {<Header label={lessonData.name}/>}
+      <Header label={lessonData.name} />
       <div className={styles.info}>
         <p>{lessonData.description}</p>
       </div>

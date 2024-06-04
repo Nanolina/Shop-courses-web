@@ -4,13 +4,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { CUSTOMER, SELLER, USER } from '../../consts';
-import { getCSSVariableValue } from '../../functions';
+import { createAxiosWithAuth, getCSSVariableValue } from '../../functions';
 import { useTonConnect } from '../../hooks';
 import { ICourse } from '../../types';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import { createAxiosWithAuth } from '../../utils';
 import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 

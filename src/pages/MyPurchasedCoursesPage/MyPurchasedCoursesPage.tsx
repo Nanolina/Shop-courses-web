@@ -1,10 +1,13 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
-import MyCreatedCourseItem from '../../components/MyCreatedCourseItem/MyCreatedCourseItem';
-import { CUSTOMER } from '../../consts';
+import CourseItem from '../../components/CourseItem/CourseItem';
+import { createAxiosWithAuth } from '../../functions';
 import { ICourse } from '../../types';
+import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
-import { createAxiosWithAuth } from '../../utils';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import SearchBar from '../../ui/SearchBar/SearchBar';
+import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import styles from './MyPurchasedCoursesPage.module.css';
 
 const tg = window.Telegram.WebApp;
@@ -13,6 +16,7 @@ function MyPurchasedCoursesPage() {
   const [coursesData, setCoursesData] = useState<ICourse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+
   const { initDataRaw } = retrieveLaunchParams();
 
   async function getAllMyPurchasedCourses() {
@@ -36,27 +40,21 @@ function MyPurchasedCoursesPage() {
   }, []);
 
   if (isLoading) return <Loader />;
-  if (error) return <p>Error: {error}</p>;
 
   if (coursesData.length === 0) {
-    return (
-      <div className={styles.noCourses}>
-        <h1>You don't have any courses purchased</h1>
-      </div>
-    );
+    return <ItemNotFoundPage type="course" isMany />;
   }
 
   return (
-    <div className={styles.container}>
-      {coursesData.map((course) => (
-        <MyCreatedCourseItem
-          course={course}
-          key={course.id}
-          updateItem={getAllMyPurchasedCourses}
-          role={CUSTOMER}
-        />
-      ))}
-    </div>
+    <Container>
+      <SearchBar />
+      <div className={styles.container}>
+        {coursesData.map((course) => (
+          <CourseItem key={course.id} course={course} />
+        ))}
+      </div>
+      {error && <MessageBox errorMessage={error} />}
+    </Container>
   );
 }
 

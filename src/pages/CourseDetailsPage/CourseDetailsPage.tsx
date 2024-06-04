@@ -1,17 +1,17 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
-import { BiSolidPencil } from 'react-icons/bi';
-import { FaTrashAlt } from 'react-icons/fa';
+import { FiEdit } from 'react-icons/fi';
 import { IoIosArrowBack } from 'react-icons/io';
+import { MdDelete } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import CourseDetails from '../../components/CourseDetails/CourseDetails';
-import Modal from '../../components/ModalWindow/Modal';
+import Modal from '../../components/Modal/Modal';
 import { SELLER } from '../../consts';
+import { createAxiosWithAuth } from '../../functions';
 import { ICourse, RoleType } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import { createAxiosWithAuth } from '../../utils';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
@@ -82,15 +82,15 @@ function CourseDetailsPage() {
         />
         {role === SELLER && (
           <>
-            <BiSolidPencil
+            <FiEdit
               className={`${styles.icon} ${styles.editIcon}`}
               onClick={handleEdit}
               size={20}
             />
-            <FaTrashAlt
+            <MdDelete
               className={`${styles.icon} ${styles.deleteIcon}`}
               onClick={handleDelete}
-              size={20}
+              size={24}
             />
           </>
         )}
@@ -102,7 +102,15 @@ function CourseDetailsPage() {
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        content={<h4>{`Are you sure you want to delete ${course.name}?`}</h4>}
+        content={
+          <div className={styles.modalTextContainer}>
+            <div>
+              {`Are you sure you want to delete course`}
+              <b>{course.name}</b>?
+            </div>
+            <div>All modules and lessons will be irretrievably deleted</div>
+          </div>
+        }
         confirm={deleteCourse}
       />
     </>

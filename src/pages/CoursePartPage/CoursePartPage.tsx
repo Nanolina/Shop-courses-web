@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CoursePartList from '../../components/CoursePartList/CoursePartList';
 import Header from '../../components/Header/Header';
@@ -17,21 +17,21 @@ function CoursePartPage({
   updatePageData,
 }: ICoursePartPageProps) {
   const navigate = useNavigate();
+  const navigateToForm = useCallback(() => {
+    navigate(`/edit/coursePart/${type}/${parentId}`);
+  }, [navigate, parentId, type]);
 
   useEffect(() => {
-    const toggleForm = () => {
-      navigate(`/edit/coursePart/${type}/${parentId}`);
-    };
     tg.MainButton.hide();
     if (role === SELLER) {
       tg.MainButton.setParams({
         text: `Create new ${type}`,
       });
       tg.MainButton.show();
-      tg.onEvent('mainButtonClicked', toggleForm);
-      return () => tg.offEvent('mainButtonClicked', toggleForm);
+      tg.onEvent('mainButtonClicked', navigateToForm);
+      return () => tg.offEvent('mainButtonClicked', navigateToForm);
     }
-  }, [type, parentId, role, navigate]);
+  }, [type, parentId, role, navigate, navigateToForm]);
 
   return (
     <Container>

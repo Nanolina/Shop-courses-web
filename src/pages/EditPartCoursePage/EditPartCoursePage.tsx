@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import EditCoursePart from '../../components/EditCoursePart/EditCoursePart';
 import { LESSON, MODULE } from '../../consts';
+import { createAxiosWithAuth } from '../../functions';
 import { EntityType, IModule } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import { createAxiosWithAuth } from '../../utils';
 
 function EditPartCoursePage() {
   const { type, itemId } = useParams<{ type: EntityType; itemId: string }>();

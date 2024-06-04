@@ -1,10 +1,10 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { createAxiosWithAuth } from '../functions';
 import { IMyCreatedCoursesPageParams } from '../pages/types';
 import { ICourse } from '../types';
 import { IOption } from '../ui';
-import { createAxiosWithAuth } from '../utils';
 import { useTonConnect } from './useTonConnect';
 
 export const currencyOptions: IOption[] = [

@@ -39,7 +39,7 @@
 
 [data-tc-connect-button='true'] {
   background-color: var(--tg-theme-button-color);
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
   color: var(--tg-theme-button-text-color);
   padding: 10px 20px;

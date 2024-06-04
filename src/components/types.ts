@@ -29,13 +29,6 @@ export interface ICoursePartFormState {
   video?: File | null;
 }
 
-export interface ICoursePartItemProps {
-  type: EntityType;
-  item: ICoursePartItem;
-  role: string;
-  updatePageData: () => void;
-}
-
 export interface ICoursePartListProps {
   type: EntityType;
   items: ICoursePartItem[];

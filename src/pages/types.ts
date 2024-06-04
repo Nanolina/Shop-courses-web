@@ -69,4 +69,5 @@ export interface IGetLessons {
 
 export interface IItemNotFoundPageProps {
   type: 'course' | 'module' | 'lesson';
+  isMany?: boolean;
 }

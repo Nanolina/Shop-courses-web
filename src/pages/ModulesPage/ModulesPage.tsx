@@ -2,10 +2,10 @@ import { retrieveLaunchParams } from '@tma.js/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MODULE } from '../../consts';
+import { createAxiosWithAuth } from '../../functions';
 import { IModule } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import { createAxiosWithAuth } from '../../utils';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
 import { IGetModules, IModulesPageParams } from '../types';
 
@@ -41,7 +41,6 @@ const ModulesPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId, initDataRaw]);
 
-  if (!modulesData || !modulesData.length) return <div>No modules</div>;
   if (isLoading) return <Loader />;
 
   return (

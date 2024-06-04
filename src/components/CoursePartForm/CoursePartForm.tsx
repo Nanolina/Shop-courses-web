@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LESSON } from '../../consts';
-import { capitalizeFirstLetter } from '../../functions';
+import { capitalizeFirstLetter, createAxiosWithAuth } from '../../functions';
 import { EntityType, ILesson, IModule } from '../../types';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
@@ -12,7 +12,6 @@ import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import VideoPreview from '../../ui/VideoPreview/VideoPreview';
-import { createAxiosWithAuth } from '../../utils';
 import { ICoursePartFormState } from '../types';
 import styles from './CoursePartForm.module.css';
 
@@ -220,6 +219,7 @@ function CoursePartForm() {
               name="files"
               onChange={handleVideoChange}
               acceptFiles="video/*"
+              maxSize="500 MB"
             />
             {videoPreview && (
               <VideoPreview
