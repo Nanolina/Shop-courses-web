@@ -66,3 +66,7 @@ export interface IGetLessons {
   lessons: ILesson[];
   role: RoleType;
 }
+
+export interface IItemNotFoundPageProps {
+  type: 'course' | 'module' | 'lesson';
+}

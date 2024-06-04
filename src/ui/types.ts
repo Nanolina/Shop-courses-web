@@ -21,7 +21,7 @@ export interface IImagePreviewProps {
 }
 
 export interface ILabelProps {
-  text: string;
+  text: string | number;
   isRequired?: boolean;
   isForHeader?: boolean;
   isCenter?: boolean;

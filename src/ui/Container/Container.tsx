@@ -1,11 +1,8 @@
 import { IContainerProps } from '../types';
 import styles from './Container.module.css';
 
-function Container({ grayContainer = true, children }: IContainerProps) {
-  const className = `${styles.container} ${
-    grayContainer ? styles.grayContainer : ''
-  }`;
-  return <div className={className}>{children}</div>;
+function Container({ children }: IContainerProps) {
+  return <div className={styles.container}>{children}</div>;
 }
 
 export default Container;

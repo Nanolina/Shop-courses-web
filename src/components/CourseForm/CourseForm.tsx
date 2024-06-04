@@ -16,7 +16,7 @@ import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import styles from './CourseForm.module.css';
 
-function CourseForm({ item }: { item?: ICourse }) {
+function CourseForm({ course }: { course: ICourse }) {
   const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between URL and Upload
 
   const {
@@ -45,17 +45,17 @@ function CourseForm({ item }: { item?: ICourse }) {
 
   // Setting initial values from item
   useEffect(() => {
-    if (item) {
-      setName(item.name);
-      setDescription(item.description || '');
-      setImageUrl(item.imageUrl || '');
-      setCategory(item.category);
-      setSubcategory(item.subcategory || '');
-      setPrice(item.price);
-      setCurrency(item.currency);
+    if (course) {
+      setName(course.name);
+      setDescription(course.description || '');
+      setImageUrl(course.imageUrl || '');
+      setCategory(course.category);
+      setSubcategory(course.subcategory || '');
+      setPrice(course.price);
+      setCurrency(course.currency);
     }
   }, [
-    item,
+    course,
     setName,
     setDescription,
     setImageUrl,

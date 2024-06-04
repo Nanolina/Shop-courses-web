@@ -1,33 +1,31 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
+import { BiSolidPencil } from 'react-icons/bi';
+import { FaTrashAlt } from 'react-icons/fa';
+import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate, useParams } from 'react-router-dom';
 import CourseDetails from '../../components/CourseDetails/CourseDetails';
-import Header from '../../components/Header/Header';
-import { USER } from '../../consts';
-import { getCSSVariableValue } from '../../functions';
-import { useTonConnect } from '../../hooks';
-import { ICourse } from '../../types';
+import Modal from '../../components/ModalWindow/Modal';
+import { SELLER } from '../../consts';
+import { ICourse, RoleType } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { createAxiosWithAuth } from '../../utils';
+import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
-
-const tg = window.Telegram.WebApp;
 
 function CourseDetailsPage() {
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
 
   const [course, setCourse] = useState<ICourse | null>(null);
-  const [showButtonBuy, setShowButtonBuy] = useState<boolean>(false);
-  const [name, setName] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [isUser, setIsUser] = useState<boolean>(false);
+  const [role, setRole] = useState<RoleType | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const { wallet } = useTonConnect();
   const { initDataRaw } = retrieveLaunchParams();
 
   const getCourseDetails = useCallback(async () => {
@@ -39,11 +37,7 @@ function CourseDetailsPage() {
       );
       const { role, course } = response.data;
       setCourse(course);
-      if (role === USER) {
-        setShowButtonBuy(true);
-        setIsUser(true);
-      }
-      setName(course.name);
+      setRole(role);
       setIsLoading(false);
       return course;
     } catch (error: any) {
@@ -52,59 +46,66 @@ function CourseDetailsPage() {
     }
   }, [courseId, initDataRaw]);
 
-  const onPurchaseCourse = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.post<ICourse>(
-        `/course/${course?.id}/purchase`,
-        { walletAddressCustomer: wallet }
-      );
-      if (response.status === 201) {
-        navigate('/course/purchased');
-      }
-      setIsLoading(false);
-    } catch (error: any) {
-      setError(error.response?.data.message || String(error));
-      setIsLoading(false);
-    }
-  }, [course?.id, initDataRaw, navigate, wallet]);
-
   useEffect(() => {
     setIsLoading(true);
     getCourseDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId]);
 
-  useEffect(() => {
-    if (course && showButtonBuy) {
-      const buttonColor = getCSSVariableValue('--tg-theme-button-color');
-      tg.MainButton.setParams({
-        text: `Buy for ${course.price} ${course.currency}`,
-        is_active: !!wallet,
-        color: !!wallet ? buttonColor : '#e6e9e9',
-      });
-      tg.MainButton.show();
-      tg.onEvent('mainButtonClicked', onPurchaseCourse);
-      return () => tg.offEvent('mainButtonClicked', onPurchaseCourse);
+  const handleBack = () => navigate(-1);
+  const handleEdit = () => navigate(`/course/edit/${courseId}`);
+  const handleDelete = () => setModalOpen(true);
+
+  async function deleteCourse() {
+    try {
+      if (!initDataRaw || !course)
+        throw new Error('Not enough authorization data or course not found');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      await axiosWithAuth.delete<ICourse>(`/course/${course.id}`);
+    } catch (error: any) {
+      setError(error.response?.data.message || String(error));
+      setIsLoading(false);
     }
-  }, [course, onPurchaseCourse, showButtonBuy, wallet]);
+  }
 
   if (isLoading) return <Loader />;
-  if (!course) return <div>Course is not found</div>;
+  if (!course) return <ItemNotFoundPage type="course" />;
 
   return (
-    <Container>
-      <Header label="Explore course" />
-      <img src={course?.imageUrl} alt="Course" className={styles.image} />
-      <CourseDetails
-        name={name}
-        description={course?.description}
-        isUser={isUser}
+    <>
+      <div className={styles.imageContainer}>
+        <img src={course?.imageUrl} alt="Course" className={styles.image} />
+        <IoIosArrowBack
+          className={`${styles.icon} ${styles.backIcon}`}
+          onClick={handleBack}
+          size={20}
+        />
+        {role === SELLER && (
+          <>
+            <BiSolidPencil
+              className={`${styles.icon} ${styles.editIcon}`}
+              onClick={handleEdit}
+              size={20}
+            />
+            <FaTrashAlt
+              className={`${styles.icon} ${styles.deleteIcon}`}
+              onClick={handleDelete}
+              size={20}
+            />
+          </>
+        )}
+      </div>
+      <Container>
+        {role && <CourseDetails course={course} role={role} />}
+        {error && <MessageBox errorMessage={error} />}
+      </Container>
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        content={<h4>{`Are you sure you want to delete ${course.name}?`}</h4>}
+        confirm={deleteCourse}
       />
-      {error && <MessageBox errorMessage={error} />}
-    </Container>
+    </>
   );
 }
 

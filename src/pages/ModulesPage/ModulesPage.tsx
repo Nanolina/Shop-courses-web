@@ -13,13 +13,14 @@ const ModulesPage: React.FC = () => {
   const { courseId = '' } = useParams<IModulesPageParams>();
 
   const [modulesData, setModulesData] = useState<IModule[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [role, setRole] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
 
   const getAllModules = useCallback(async () => {
+    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);

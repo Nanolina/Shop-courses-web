@@ -1,4 +1,4 @@
-import { EntityType, ICourse } from '../types';
+import { EntityType, ICourse, RoleType } from '../types';
 
 export interface ICoursePartItem {
   id: string;
@@ -79,7 +79,6 @@ export interface IVideoPlayerProps {
 }
 
 export interface ICourseDetailsProps {
-  name: string;
-  description?: string;
-  isUser: boolean;
+  course: ICourse;
+  role: RoleType;
 }
