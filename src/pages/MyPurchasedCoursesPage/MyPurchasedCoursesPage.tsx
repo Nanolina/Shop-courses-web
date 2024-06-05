@@ -42,7 +42,7 @@ function MyPurchasedCoursesPage() {
   if (isLoading) return <Loader />;
 
   if (coursesData.length === 0) {
-    return <ItemNotFoundPage type="course" isMany />;
+    return <ItemNotFoundPage error={error} />;
   }
 
   return (

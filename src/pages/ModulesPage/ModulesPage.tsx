@@ -7,6 +7,7 @@ import { IModule } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
+import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetModules, IModulesPageParams } from '../types';
 
 const ModulesPage: React.FC = () => {
@@ -42,6 +43,9 @@ const ModulesPage: React.FC = () => {
   }, [courseId, initDataRaw]);
 
   if (isLoading) return <Loader />;
+  if (!modulesData.length) {
+    return <ItemNotFoundPage error={error} />;
+  }
 
   return (
     <>

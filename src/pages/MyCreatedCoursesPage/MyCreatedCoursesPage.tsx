@@ -40,8 +40,8 @@ function MyCreatedCoursesPage() {
 
   if (isLoading) return <Loader />;
 
-  if (coursesData.length === 0) {
-    return <ItemNotFoundPage type="course" isMany />;
+  if (!isLoading && !coursesData.length) {
+    return <ItemNotFoundPage error={error} />;
   }
 
   return (

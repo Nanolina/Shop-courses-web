@@ -41,7 +41,7 @@ function EditCourseFormPage() {
   }, [getOneCourse]);
 
   if (isLoading) return <Loader />;
-  if (!courseData) return <ItemNotFoundPage type="course" />;
+  if (!courseData) return <ItemNotFoundPage error={error} />;
 
   return (
     <Container>
