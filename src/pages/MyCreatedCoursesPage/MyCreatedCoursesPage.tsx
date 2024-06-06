@@ -13,8 +13,8 @@ import styles from './MyCreatedCoursePage.module.css';
 const tg = window.Telegram.WebApp;
 
 function MyCreatedCoursesPage() {
-  const [coursesData, setCoursesData] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [courses, setCourses] = useState<ICourse[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -23,24 +23,26 @@ function MyCreatedCoursesPage() {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       const response = await axiosWithAuth.get<ICourse[]>('/course/created');
-      setIsLoading(false);
-      setCoursesData(response.data);
+      setCourses(response.data);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    setIsLoading(true);
     getAllMyCreatedCourses();
-    tg.MainButton.hide();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    tg.MainButton.hide();
   }, []);
 
   if (isLoading) return <Loader />;
 
-  if (!isLoading && !coursesData.length) {
+  if (!isLoading && !courses.length) {
     return <ItemNotFoundPage error={error} />;
   }
 
@@ -48,7 +50,7 @@ function MyCreatedCoursesPage() {
     <Container>
       <SearchBar />
       <div className={styles.container}>
-        {coursesData.map((course) => (
+        {courses.map((course) => (
           <CourseItem key={course.id} course={course} />
         ))}
       </div>

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { io } from 'socket.io-client';
+import CoursePartForm from './components/CoursePartForm/CoursePartForm';
 import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage';
 import CoursesOneCategoryPage from './pages/CoursesOneCategoryPage/CoursesOneCategoryPage';
 import { default as CreateCourseFormPage } from './pages/CreateCourseFormPage/CreateCourseFormPage';
@@ -14,7 +15,6 @@ import MainPage from './pages/MainPage/MainPage';
 import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
 import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCoursesPage';
-import CoursePartForm from './components/CoursePartForm/CoursePartForm';
 
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
@@ -69,7 +69,10 @@ function App() {
             element={<EditPartCoursePage />}
           />
           <Route path="/course/created" element={<MyCreatedCoursesPage />} />
-          <Route path="/edit/coursePart/:type/:parentId" element={ <CoursePartForm />} />
+          <Route
+            path="/edit/coursePart/:type/:parentId"
+            element={<CoursePartForm />}
+          />
           {/* customer */}
           <Route
             path="/course/purchased"

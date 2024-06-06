@@ -48,10 +48,10 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
       if (type === LESSON) {
         await axiosWithAuth.patch<ILesson>(`/lesson/${item.id}`, updateData);
       }
-      setIsLoading(false);
       navigate(-1);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }, [initDataRaw, item.id, navigate, type, updateData]);

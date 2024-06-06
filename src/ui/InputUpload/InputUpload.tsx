@@ -1,10 +1,9 @@
 import React from 'react';
-import Label from '../Label/Label';
 import { IInputUploadProps } from '../types';
 import styles from './InputUpload.module.css';
 
 export const InputUpload: React.FC<IInputUploadProps> = React.memo(
-  ({ name, onChange, acceptFiles, maxSize }) => {
+  ({ name, onChange, acceptFiles }) => {
     return (
       <>
         <label className={styles.uploadContainer}>
@@ -17,7 +16,6 @@ export const InputUpload: React.FC<IInputUploadProps> = React.memo(
             className={styles.input}
           />
         </label>
-        <Label text={`Maximum size: ${maxSize}`} isRight isHint />
       </>
     );
   }

@@ -13,8 +13,8 @@ import styles from './MyPurchasedCoursesPage.module.css';
 const tg = window.Telegram.WebApp;
 
 function MyPurchasedCoursesPage() {
-  const [coursesData, setCoursesData] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [courses, setCourses] = useState<ICourse[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
@@ -24,24 +24,27 @@ function MyPurchasedCoursesPage() {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       const response = await axiosWithAuth.get<ICourse[]>('/course/purchased');
-      setIsLoading(false);
-      setCoursesData(response.data);
+      setCourses(response.data);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    setIsLoading(true);
     getAllMyPurchasedCourses();
-    tg.MainButton.hide();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    tg.MainButton.hide();
   }, []);
 
   if (isLoading) return <Loader />;
 
-  if (coursesData.length === 0) {
+  if (!isLoading && !courses.length) {
     return <ItemNotFoundPage error={error} />;
   }
 
@@ -49,7 +52,7 @@ function MyPurchasedCoursesPage() {
     <Container>
       <SearchBar />
       <div className={styles.container}>
-        {coursesData.map((course) => (
+        {courses.map((course) => (
           <CourseItem key={course.id} course={course} />
         ))}
       </div>

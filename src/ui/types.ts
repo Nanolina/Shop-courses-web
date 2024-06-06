@@ -58,7 +58,6 @@ export interface IInputUploadProps {
   name?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   acceptFiles: string;
-  maxSize: string;
 }
 
 export interface IMessageBox {

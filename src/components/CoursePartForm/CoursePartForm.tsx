@@ -44,8 +44,8 @@ function CoursePartForm() {
   const { initDataRaw } = retrieveLaunchParams();
 
   const onCreateNewCoursePart = useCallback(async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const { name, description, imageUrl, videoUrl, video } = newItem;
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const formData = new FormData();
@@ -75,9 +75,9 @@ function CoursePartForm() {
           navigate(-1);
         }
       }
-      setIsLoading(false);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }, [initDataRaw, isLesson, navigate, newItem, parentId]);
@@ -210,16 +210,11 @@ function CoursePartForm() {
                 }))
               }
             />
-            <Label
-              text={
-                "If you don't have video, you can upload it here. Supported video formats are mp4 and avi and maximum size for video - 500MB"
-              }
-            />
+            <Label text={"If you don't have video, you can upload it here"} />
             <InputUpload
               name="files"
               onChange={handleVideoChange}
               acceptFiles="video/*"
-              maxSize="500 MB"
             />
             {videoPreview && (
               <VideoPreview

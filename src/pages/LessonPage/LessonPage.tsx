@@ -22,8 +22,8 @@ function LessonPage() {
     videoUrl: '',
   };
   const { lessonId } = useParams<{ lessonId: string }>();
-  const [lessonData, setLessonData] = useState<ILesson>(initialLessonData);
-  const [videoUrl, setVideoUrl] = useState<string>(lessonData.videoUrl);
+  const [lesson, setLesson] = useState<ILesson>(initialLessonData);
+  const [videoUrl, setVideoUrl] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
@@ -33,10 +33,10 @@ function LessonPage() {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       const response = await axiosWithAuth.get<any>(`lesson/${lessonId}`);
-      setLessonData(response.data.lesson);
-      setIsLoading(false);
+      setLesson(response.data.lesson);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }
@@ -47,10 +47,10 @@ function LessonPage() {
   }, [lessonId, initDataRaw]); // Добавляем зависимости, которые могут измениться
 
   useEffect(() => {
-    if (lessonData) {
-      setVideoUrl(lessonData.videoUrl || '');
+    if (lesson) {
+      setVideoUrl(lesson.videoUrl || '');
     }
-  }, [lessonData]);
+  }, [lesson]);
 
   useEffect(() => {
     tg.MainButton.hide();
@@ -61,9 +61,9 @@ function LessonPage() {
 
   return (
     <div className={styles.mainContainer}>
-      <Header label={lessonData.name} />
+      <Header label={lesson.name} />
       <div className={styles.info}>
-        <p>{lessonData.description}</p>
+        <p>{lesson.description}</p>
       </div>
       <VideoPlayer
         url={videoUrl}

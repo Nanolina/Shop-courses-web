@@ -13,7 +13,7 @@ function EditPartCoursePage() {
   const { type, itemId } = useParams<{ type: EntityType; itemId: string }>();
 
   const [itemData, setItemData] = useState<any>({});
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -35,15 +35,14 @@ function EditPartCoursePage() {
           'Something went wrong with getting the module or lesson data'
         );
       }
-      setIsLoading(false);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    setIsLoading(true);
     getOnePartCourse();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

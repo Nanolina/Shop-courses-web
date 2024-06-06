@@ -53,9 +53,9 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       if (response.status === 201) {
         navigate('/course/purchased');
       }
-      setIsLoading(false);
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }, [course?.id, initDataRaw, navigate, wallet]);

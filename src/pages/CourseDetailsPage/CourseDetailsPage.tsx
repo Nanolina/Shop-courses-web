@@ -39,7 +39,7 @@ function CourseDetailsPage() {
       setCourse(course);
       setRole(role);
     } catch (error: any) {
-      setError(error?.message || String(error));
+      setError(error.response?.data.message || String(error));
     } finally {
       setIsLoading(false);
     }
@@ -55,12 +55,13 @@ function CourseDetailsPage() {
   const handleDelete = () => setModalOpen(true);
 
   async function deleteCourse() {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       if (!initDataRaw || !course)
         throw new Error('Not enough authorization data or course not found');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       await axiosWithAuth.delete<ICourse>(`/course/${course.id}`);
+      navigate('/course/created');
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
     } finally {

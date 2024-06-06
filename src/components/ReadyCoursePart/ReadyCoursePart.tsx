@@ -31,6 +31,7 @@ function ReadyCoursePart({
   }
 
   async function deleteItem() {
+    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
@@ -38,6 +39,7 @@ function ReadyCoursePart({
       updatePageData();
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }

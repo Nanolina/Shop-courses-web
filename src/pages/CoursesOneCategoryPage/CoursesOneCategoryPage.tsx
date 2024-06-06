@@ -14,25 +14,24 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 function CoursesOneCategoryPage() {
   const { category } = useParams<{ category: string }>();
-  const [coursesData, setCoursesData] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [courses, setCourses] = useState<ICourse[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
 
   async function getAllCoursesOneCategory() {
     try {
       const allCoursesApiUrl = `${serverUrl}/course/category/${category}`;
       const response = await axios.get(allCoursesApiUrl);
-      setCoursesData(response.data);
-      setIsLoading(false);
+      setCourses(response.data);
       return response.data;
     } catch (error: any) {
-      setError(error?.message || error);
+      setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    setIsLoading(true);
     getAllCoursesOneCategory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -43,7 +42,7 @@ function CoursesOneCategoryPage() {
     <Container>
       <Header label={capitalizeFirstLetter(category)} />
       <div className={styles.container}>
-        {coursesData.map((course: any) => (
+        {courses.map((course: any) => (
           <CourseItem key={course.id} course={course} />
         ))}
       </div>

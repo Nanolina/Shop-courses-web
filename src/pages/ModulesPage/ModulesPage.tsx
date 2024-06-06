@@ -13,7 +13,7 @@ import { IGetModules, IModulesPageParams } from '../types';
 const ModulesPage: React.FC = () => {
   const { courseId = '' } = useParams<IModulesPageParams>();
 
-  const [modulesData, setModulesData] = useState<IModule[]>([]);
+  const [modules, setModules] = useState<IModule[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [role, setRole] = useState<string>('');
@@ -28,7 +28,7 @@ const ModulesPage: React.FC = () => {
       const response = await axiosWithAuth.get<IGetModules>(
         `/module/course/${courseId}`
       );
-      setModulesData(response.data.modules);
+      setModules(response.data.modules);
       setRole(response.data.role);
       setIsLoading(false);
     } catch (error: any) {
@@ -43,7 +43,7 @@ const ModulesPage: React.FC = () => {
   }, [courseId, initDataRaw]);
 
   if (isLoading) return <Loader />;
-  if (!modulesData.length) {
+  if (!isLoading && !modules.length) {
     return <ItemNotFoundPage error={error} />;
   }
 
@@ -52,7 +52,7 @@ const ModulesPage: React.FC = () => {
       <CoursePartPage
         type={MODULE}
         parentId={courseId}
-        items={modulesData}
+        items={modules}
         updatePageData={getAllModules}
         role={role}
       />

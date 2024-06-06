@@ -12,8 +12,8 @@ import { IGetLessons, ILessonsPageParams } from '../types';
 function LessonsPage() {
   const { moduleId = '' } = useParams<ILessonsPageParams>();
 
-  const [lessonsData, setLessonsData] = useState<ILesson[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [lessons, setLessons] = useState<ILesson[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [role, setRole] = useState<string>('');
 
@@ -27,19 +27,17 @@ function LessonsPage() {
       const response = await axiosWithAuth.get<IGetLessons>(
         `/lesson/module/${moduleId}`
       );
-      setLessonsData(response.data.lessons);
+      setLessons(response.data.lessons);
       setRole(response.data.role);
-      setIsLoading(false);
     } catch (error: any) {
-      setError(error?.message || String(error));
+      setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    setIsLoading(true);
     getAllLessons();
-    setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [moduleId]);
 
@@ -50,7 +48,7 @@ function LessonsPage() {
       <CoursePartPage
         type={LESSON}
         parentId={moduleId}
-        items={lessonsData}
+        items={lessons}
         updatePageData={getAllLessons}
         role={role}
       />

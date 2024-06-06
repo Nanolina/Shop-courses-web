@@ -16,8 +16,8 @@ import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import styles from './CourseForm.module.css';
 
-function CourseForm({ course }: { course: ICourse }) {
-  const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between URL and Upload
+function CourseForm({ course }: { course?: ICourse }) {
+  const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between URL and Upload (button)
 
   const {
     name,
@@ -35,12 +35,13 @@ function CourseForm({ course }: { course: ICourse }) {
     currency,
     setCurrency,
     currencyOptions,
-    handleImageChange,
     previewUrl,
     setPreviewUrl,
-    setImage,
     isLoading,
     error,
+    handleImageChange,
+    handleRemoveImage,
+    handleUrlChange,
   } = useCourseForm() as IUseCourseFormReturnType;
 
   // Setting initial values from item
@@ -53,17 +54,12 @@ function CourseForm({ course }: { course: ICourse }) {
       setSubcategory(course.subcategory || '');
       setPrice(course.price);
       setCurrency(course.currency);
+      if (course.imageUrl) {
+        setPreviewUrl(course.imageUrl);
+      }
     }
-  }, [
-    course,
-    setName,
-    setDescription,
-    setImageUrl,
-    setCategory,
-    setSubcategory,
-    setPrice,
-    setCurrency,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [course]);
 
   if (isLoading) return <Loader />;
 
@@ -133,11 +129,15 @@ function CourseForm({ course }: { course: ICourse }) {
       </div>
       <div className={styles.formGroup}>
         <div className={styles.coverButtonContainer}>
-          {useUrlCover ? (
-            <Label text="Cover URL image for the course" isPadding isBold />
-          ) : (
-            <Label text="Upload image for course cover" isPadding isBold />
-          )}
+          <Label
+            text={
+              useUrlCover
+                ? 'Cover URL image for the course'
+                : 'Upload image for course cover'
+            }
+            isPadding
+            isBold
+          />
           <Button
             onClick={() => setUseUrlCover(!useUrlCover)}
             className={styles.switchButton}
@@ -146,35 +146,23 @@ function CourseForm({ course }: { course: ICourse }) {
           />
         </div>
         {useUrlCover ? (
-          <TextInput
-            value={imageUrl}
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              setImageUrl(event.target.value)
-            }
-          />
+          <TextInput value={imageUrl} onChange={handleUrlChange} />
         ) : (
-          <>
-            <InputUpload
-              name={name}
-              onChange={handleImageChange}
-              acceptFiles="image/*"
-              maxSize="500KB"
-            />
-            {previewUrl && (
-              <div className={styles.image}>
-                <ImagePreview
-                  imagePreview={previewUrl}
-                  removeImage={() => {
-                    setImage(null);
-                    URL.revokeObjectURL(previewUrl);
-                    setPreviewUrl(null);
-                  }}
-                />
-              </div>
-            )}
-          </>
+          <InputUpload
+            name={name}
+            onChange={handleImageChange}
+            acceptFiles="image/*"
+          />
         )}
       </div>
+      {previewUrl && (
+        <div className={styles.image}>
+          <ImagePreview
+            imagePreview={previewUrl}
+            removeImage={handleRemoveImage}
+          />
+        </div>
+      )}
       <div className={styles.walletContainer}>
         <Label
           text="TON wallet to receive funds from the sale of this course"

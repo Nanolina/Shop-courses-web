@@ -29,6 +29,8 @@ export interface IUseCourseFormReturnType {
   subcategoryOptions: Record<string, IOption[]>;
   currencyOptions: IOption[];
   handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemoveImage: () => void;
+  handleUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   image: File | null;
   setImage: React.Dispatch<React.SetStateAction<File | null>>;
   previewUrl: string | null;
