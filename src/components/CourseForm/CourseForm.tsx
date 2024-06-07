@@ -149,7 +149,7 @@ function CourseForm({ course }: { course?: ICourse }) {
           <TextInput value={imageUrl} onChange={handleUrlChange} />
         ) : (
           <InputUpload
-            name={name}
+            name="image"
             onChange={handleImageChange}
             acceptFiles="image/*"
           />

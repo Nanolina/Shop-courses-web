@@ -37,6 +37,7 @@
   align-items: flex-end;
 }
 
+/* For wallet */
 [data-tc-connect-button='true'] {
   background-color: var(--tg-theme-button-color);
   border-radius: 10px;

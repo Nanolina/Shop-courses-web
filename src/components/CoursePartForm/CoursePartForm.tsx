@@ -1,6 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
-import { RxCross2 } from 'react-icons/rx';
+import { MdCameraswitch } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { LESSON } from '../../consts';
 import {
@@ -9,13 +9,14 @@ import {
   handleAuthError,
 } from '../../functions';
 import { ILesson, IModule } from '../../types';
+import Button from '../../ui/Button/Button';
+import ImagePreview from '../../ui/ImagePreview/ImagePreview';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
-import VideoPreview from '../../ui/VideoPreview/VideoPreview';
 import { ICoursePartFormProps, ICoursePartFormState } from '../types';
 import styles from './CoursePartForm.module.css';
 
@@ -37,7 +38,9 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
     }),
   };
 
-  const [newItem, setNewItem] = useState(initialStateItem);
+  const [itemData, setItemData] = useState(initialStateItem);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between image URL and image upload (button)
   const [videoPreview, setVideoPreview] = useState(
     item && 'videoUrl' in item ? item.videoUrl || '' : ''
   );
@@ -49,7 +52,7 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
   const saveCoursePart = useCallback(async () => {
     setIsLoading(true);
     try {
-      const { name, description, imageUrl, videoUrl, video } = newItem;
+      const { name, description, imageUrl, videoUrl, video } = itemData;
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const formData = new FormData();
       formData.append('name', name);
@@ -83,7 +86,7 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
       setIsLoading(false);
     }
   }, [
-    newItem,
+    itemData,
     initDataRaw,
     isLesson,
     isEditMode,
@@ -96,14 +99,14 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
   const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setNewItem((prevState) => ({
+      setItemData((prevState) => ({
         ...prevState,
         video: file,
       }));
       const videoUrl = URL.createObjectURL(file);
       setVideoPreview(videoUrl);
     } else {
-      setNewItem((prevState) => ({
+      setItemData((prevState) => ({
         ...prevState,
         video: null,
       }));
@@ -112,8 +115,57 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
     }
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setItemData((prevState) => ({
+        ...prevState,
+        image: file,
+      }));
+      const fileUrl = URL.createObjectURL(file);
+      setPreviewImageUrl(fileUrl);
+      setItemData((prevState) => ({
+        ...prevState,
+        imageUrl: '',
+      })); // Reset imageUrl if a file is selected
+    } else {
+      setItemData((prevState) => ({
+        ...prevState,
+        image: null,
+      }));
+      if (previewImageUrl) {
+        URL.revokeObjectURL(previewImageUrl);
+        setPreviewImageUrl(null);
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    if (previewImageUrl) {
+      URL.revokeObjectURL(previewImageUrl);
+      setPreviewImageUrl(null);
+    }
+    setItemData((prevState) => ({
+      ...prevState,
+      image: null,
+    }));
+    setItemData((prevState) => ({
+      ...prevState,
+      imageUrl: '',
+    }));
+  };
+
+  const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setPreviewImageUrl(value);
+    setItemData((prevState) => ({
+      ...prevState,
+      imageUrl: value,
+    }));
+  };
+
   const removeVideo = () => {
-    setNewItem((prevState) => ({
+    setItemData((prevState) => ({
       ...prevState,
       video: null,
     }));
@@ -131,15 +183,15 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
 
   useEffect(() => {
     // Lesson
-    if (isLesson && !(newItem.video || newItem.videoUrl)) {
+    if (isLesson && !(itemData.video || itemData.videoUrl)) {
       tg.MainButton.hide();
       // Module
-    } else if (!isLesson && !newItem.name) {
+    } else if (!isLesson && !itemData.name) {
       tg.MainButton.hide();
     } else {
       tg.MainButton.show();
     }
-  }, [newItem.name, newItem.video, newItem.videoUrl, isLesson]);
+  }, [itemData.name, itemData.video, itemData.videoUrl, isLesson]);
 
   // Clearing preview video URL to free up resources
   useEffect(() => {
@@ -154,63 +206,85 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
 
   return (
     <div className={styles.container}>
-      <form className={styles.form}>
-        <div className={styles.header}>
-          <RxCross2
-            className={styles.cross}
-            size={24}
-            color="var(--tg-theme-accent-text-color)"
-            onClick={() => navigate(-1)}
-          />
-          <h3>{isEditMode ? `Edit ${type}` : `Create a new ${type}`}</h3>
-        </div>
-        <div className={styles.labelInputContainer}>
-          <Label text={`${capitalizeFirstLetter(type)} title`} />
-          <TextInput
-            value={newItem.name}
-            placeholder={`Enter the ${type} title`}
-            onChange={(event: any) =>
-              setNewItem((prevState) => ({
-                ...prevState,
-                name: event.target.value,
-              }))
+      <div className={styles.formGroup}>
+        <Label
+          text={`${capitalizeFirstLetter(type)} title`}
+          isRequired
+          isPadding
+          isBold
+        />
+        <TextInput
+          value={itemData.name}
+          placeholder={`Enter the ${type} title`}
+          onChange={(event: any) =>
+            setItemData((prevState) => ({
+              ...prevState,
+              name: event.target.value,
+            }))
+          }
+        />
+      </div>
+      <div className={styles.formGroup}>
+        <Label
+          text={`${capitalizeFirstLetter(type)} description`}
+          isPadding
+          isBold
+        />
+        <Textarea
+          value={itemData.description}
+          placeholder={`Enter the ${type} description`}
+          onChange={(event: any) =>
+            setItemData((prevState) => ({
+              ...prevState,
+              description: event.target.value,
+            }))
+          }
+        />
+      </div>
+      <div className={styles.formGroup}>
+        <div className={styles.coverButtonContainer}>
+          <Label
+            text={
+              useUrlCover
+                ? 'Cover URL image for the course'
+                : 'Upload image for course cover'
             }
+            isPadding
+            isBold
+          />
+          <Button
+            onClick={() => setUseUrlCover(!useUrlCover)}
+            className={styles.switchButton}
+            text={useUrlCover ? 'Switch to file upload' : 'Switch to URL input'}
+            icon={<MdCameraswitch size={26} />}
           />
         </div>
-        <div className={styles.labelInputContainer}>
-          <Label text={`${capitalizeFirstLetter(type)} description`} />
-          <Textarea
-            value={newItem.description}
-            placeholder={`Enter the ${type} description`}
-            onChange={(event: any) =>
-              setNewItem((prevState) => ({
-                ...prevState,
-                description: event.target.value,
-              }))
-            }
+        {useUrlCover ? (
+          <TextInput value={itemData.imageUrl} onChange={handleUrlChange} />
+        ) : (
+          <InputUpload
+            name="image"
+            onChange={handleImageChange}
+            acceptFiles="image/*"
+          />
+        )}
+      </div>
+      {previewImageUrl && (
+        <div className={styles.image}>
+          <ImagePreview
+            imagePreview={previewImageUrl}
+            removeImage={handleRemoveImage}
           />
         </div>
-        <div className={styles.labelInputContainer}>
-          <Label text={`Add a link to the image for ${type}`} />
-          <TextInput
-            value={newItem.imageUrl}
-            placeholder="URL"
-            onChange={(event: any) =>
-              setNewItem((prevState) => ({
-                ...prevState,
-                imageUrl: event.target.value,
-              }))
-            }
-          />
-        </div>
-        {isLesson && (
+      )}
+      {/* {isLesson && (
           <>
             <Label text={'Add a link to the video for lesson'} />
             <TextInput
-              value={newItem.videoUrl || ''}
+              value={itemData.videoUrl || ''}
               placeholder="URL"
               onChange={(event: any) =>
-                setNewItem((prevState) => ({
+                setItemData((prevState) => ({
                   ...prevState,
                   videoUrl: event.target.value,
                 }))
@@ -229,8 +303,7 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
               />
             )}
           </>
-        )}
-      </form>
+        )} */}
       {error && <MessageBox errorMessage={error} />}
     </div>
   );
