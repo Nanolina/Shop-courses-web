@@ -17,11 +17,12 @@ function EditCoursePartPage() {
   const { type, itemId } = useParams<IEditCoursePartParams>();
 
   const [itemData, setItemData] = useState<IModule | ILesson | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
 
   async function getOneCoursePart() {
+    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);

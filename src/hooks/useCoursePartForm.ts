@@ -44,13 +44,14 @@ export function useCoursePartForm() {
       if (description) formData.append('description', description);
       // Image
       if (imageUrl) formData.append('imageUrl', imageUrl);
-      if (image) formData.append('image', image);
+      if (image && !isLesson) formData.append('image', image);
+      if (image && isLesson) formData.append('files', image, image.name);
       if (!image && !imageUrl) formData.append('isRemoveImage', 'true');
 
       // Video
       if (isLesson) {
         if (videoUrl) formData.append('videoUrl', videoUrl);
-        if (video) formData.append('video', video);
+        if (video) formData.append('files', video, video.name);
         if (!video && !videoUrl) formData.append('isRemoveVideo', 'true');
       }
 

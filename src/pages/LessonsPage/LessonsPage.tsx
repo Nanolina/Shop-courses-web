@@ -3,25 +3,26 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { LESSON } from '../../consts';
 import { createAxiosWithAuth, handleAuthError } from '../../functions';
-import { ILesson } from '../../types';
+import { ILesson, RoleType } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
+import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetLessons, ILessonsPageParams } from '../types';
 
 function LessonsPage() {
   const { moduleId = '' } = useParams<ILessonsPageParams>();
 
   const [lessons, setLessons] = useState<ILesson[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [role, setRole] = useState<string>('');
+  const [role, setRole] = useState<RoleType | null>(null);
 
   const { initDataRaw } = retrieveLaunchParams();
 
   async function getAllLessons() {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       const response = await axiosWithAuth.get<IGetLessons>(
@@ -42,6 +43,8 @@ function LessonsPage() {
   }, [moduleId]);
 
   if (isLoading) return <Loader />;
+  if (!role)
+    return <ItemNotFoundPage error="The role for lessons has not been given" />;
 
   return (
     <>
@@ -49,7 +52,6 @@ function LessonsPage() {
         type={LESSON}
         parentId={moduleId}
         items={lessons}
-        updatePageData={getAllLessons}
         role={role}
       />
       {error && <MessageBox errorMessage={error} />}

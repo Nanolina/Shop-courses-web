@@ -16,7 +16,7 @@ import VideoPreview from '../../ui/VideoPreview/VideoPreview';
 import { ICoursePartFormProps } from '../types';
 import styles from './CoursePartForm.module.css';
 
-function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
+function CoursePartForm({ type, item }: ICoursePartFormProps) {
   const {
     name,
     setName,
@@ -121,7 +121,7 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
           <TextInput value={imageUrl} onChange={handleImageUrlChange} />
         ) : (
           <InputUpload
-            name="image"
+            name="files"
             onChange={handleImageChange}
             acceptFiles="image/*"
           />
@@ -165,7 +165,7 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
               <TextInput value={videoUrl} onChange={handleVideoUrlChange} />
             ) : (
               <InputUpload
-                name="video"
+                name="files"
                 onChange={handleVideoChange}
                 acceptFiles="video/*"
               />

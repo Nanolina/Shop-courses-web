@@ -69,10 +69,10 @@ function ReadyCoursePart({
 
   return (
     <div className={styles.container} onClick={navigateHandler}>
-      <img className={styles.cover} src={`${item.imageUrl}`} alt="cover" />
+      <img className={styles.image} src={`${item.imageUrl}`} alt="cover" />
       <div className={styles.info}>
         <div className={styles.name}>{item.name}</div>
-        <p className={styles.description}>{item.description}</p>
+        <div className={styles.description}>{item.description}</div>
       </div>
       {isSeller && (
         <div className={styles.icons}>

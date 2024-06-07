@@ -24,11 +24,12 @@ function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const [lesson, setLesson] = useState<ILesson>(initialLessonData);
   const [videoUrl, setVideoUrl] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
 
   async function getOneLesson() {
+    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
