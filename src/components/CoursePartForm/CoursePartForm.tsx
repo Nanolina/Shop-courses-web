@@ -96,27 +96,27 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
 
       {/* Image */}
       <div className={styles.formGroup}>
-        <div className={styles.coverButtonContainer}>
-          <Label
-            text={
-              useImageUrlCover
-                ? `Cover image URL for the ${type}`
-                : `Upload image for ${type} cover`
-            }
-            isPadding
-            isBold
-          />
+        <div className={styles.switchButton}>
           <Button
             onClick={toggleBetweenImageUrlAndFile}
-            className={styles.switchButton}
             text={
               useImageUrlCover
                 ? 'Switch to file image upload'
                 : 'Switch to image URL input'
             }
-            icon={<MdCameraswitch size={26} />}
+            icon={<MdCameraswitch size={36} />}
           />
         </div>
+        <Label
+          text={
+            useImageUrlCover
+              ? `Cover image URL for the ${type}`
+              : `Upload image for ${type} cover`
+          }
+          isPadding
+          isBold
+        />
+
         {useImageUrlCover ? (
           <TextInput value={imageUrl} onChange={handleImageUrlChange} />
         ) : (
@@ -140,27 +140,27 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
       {isLesson && (
         <>
           <div className={styles.formGroup}>
-            <div className={styles.coverButtonContainer}>
-              <Label
-                text={
-                  useVideoUrlCover
-                    ? `Cover video URL for the lesson`
-                    : `Upload video for the lesson`
-                }
-                isPadding
-                isBold
-              />
+            <div className={styles.switchButton}>
               <Button
                 onClick={toggleBetweenVideoUrlAndFile}
-                className={styles.switchButton}
                 text={
                   useVideoUrlCover
                     ? 'Switch to file video upload'
                     : 'Switch to video URL input'
                 }
-                icon={<MdCameraswitch size={26} />}
+                icon={<MdCameraswitch size={36} />}
               />
             </div>
+            <Label
+              text={
+                useVideoUrlCover
+                  ? `Cover video URL for the lesson`
+                  : `Upload video for the lesson`
+              }
+              isPadding
+              isBold
+            />
+
             {useVideoUrlCover ? (
               <TextInput value={videoUrl} onChange={handleVideoUrlChange} />
             ) : (

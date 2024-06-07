@@ -12,18 +12,15 @@
   width: 100%;
 }
 
-.switchButton {
-  padding: 8px 12px;
-  background-color: var(--tg-theme-button-color);
-  color: var(--tg-theme-button-text-color);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
 .coverButtonContainer {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+.switchButton {
+  margin-left: auto;
+  width: 50%;
+  padding-bottom: 5px;
 }

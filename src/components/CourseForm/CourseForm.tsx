@@ -129,27 +129,27 @@ function CourseForm({ course }: { course?: ICourse }) {
         />
       </div>
       <div className={styles.formGroup}>
-        <div className={styles.coverButtonContainer}>
-          <Label
-            text={
-              useUrlCover
-                ? 'Cover image URL for the course'
-                : 'Upload image for course cover'
-            }
-            isPadding
-            isBold
-          />
+        <div className={styles.switchButton}>
           <Button
             onClick={toggleBetweenUrlAndFile}
-            className={styles.switchButton}
             text={
               useUrlCover
                 ? 'Switch to file image upload'
                 : 'Switch to image URL input'
             }
-            icon={<MdCameraswitch size={26} />}
+            icon={<MdCameraswitch size={36} />}
           />
         </div>
+        <Label
+          text={
+            useUrlCover
+              ? 'Cover image URL for the course'
+              : 'Upload image for course cover'
+          }
+          isPadding
+          isBold
+        />
+
         {useUrlCover ? (
           <TextInput value={imageUrl} onChange={handleUrlChange} />
         ) : (

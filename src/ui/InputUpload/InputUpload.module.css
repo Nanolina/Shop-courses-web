@@ -10,6 +10,15 @@
   transition: background-color 0.2s ease;
 }
 
+.uploadTextWithIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 5px;
+  font-weight: 600;
+}
+
 .input {
   display: none;
 }
