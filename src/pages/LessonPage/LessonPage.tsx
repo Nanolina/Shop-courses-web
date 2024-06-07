@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import VideoPlayer from '../../components/VideoPlayer/VideoPlayer';
 import { LESSON } from '../../consts';
-import { createAxiosWithAuth } from '../../functions';
+import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
@@ -35,7 +35,7 @@ function LessonPage() {
       const response = await axiosWithAuth.get<any>(`lesson/${lessonId}`);
       setLesson(response.data.lesson);
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }

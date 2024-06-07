@@ -2,7 +2,7 @@ import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { LESSON } from '../../consts';
-import { createAxiosWithAuth } from '../../functions';
+import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
@@ -30,7 +30,7 @@ function LessonsPage() {
       setLessons(response.data.lessons);
       setRole(response.data.role);
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }

@@ -4,7 +4,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { CUSTOMER, SELLER, USER } from '../../consts';
-import { createAxiosWithAuth, getCSSVariableValue } from '../../functions';
+import {
+  createAxiosWithAuth,
+  getCSSVariableValue,
+  handleAuthError,
+} from '../../functions';
 import { useTonConnect } from '../../hooks';
 import { ICourse } from '../../types';
 import Label from '../../ui/Label/Label';
@@ -54,7 +58,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         navigate('/course/purchased');
       }
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }

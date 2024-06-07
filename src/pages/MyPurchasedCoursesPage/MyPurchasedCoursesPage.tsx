@@ -1,7 +1,7 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
 import CourseItem from '../../components/CourseItem/CourseItem';
-import { createAxiosWithAuth } from '../../functions';
+import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
@@ -26,7 +26,7 @@ function MyPurchasedCoursesPage() {
       const response = await axiosWithAuth.get<ICourse[]>('/course/purchased');
       setCourses(response.data);
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }

@@ -3,7 +3,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LESSON } from '../../consts';
-import { capitalizeFirstLetter, createAxiosWithAuth } from '../../functions';
+import {
+  capitalizeFirstLetter,
+  createAxiosWithAuth,
+  handleAuthError,
+} from '../../functions';
 import { EntityType, ILesson, IModule } from '../../types';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
@@ -76,7 +80,7 @@ function CoursePartForm() {
         }
       }
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }

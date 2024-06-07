@@ -4,7 +4,7 @@ import { FiEdit } from 'react-icons/fi';
 import { MdDelete } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { LESSON, MODULE, SELLER } from '../../consts';
-import { createAxiosWithAuth } from '../../functions';
+import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import Modal from '../Modal/Modal';
@@ -38,7 +38,7 @@ function ReadyCoursePart({
       await axiosWithAuth.delete(`/${type}/${item.id}`);
       updatePageData();
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }

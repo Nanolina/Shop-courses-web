@@ -2,7 +2,7 @@ import { retrieveLaunchParams } from '@tma.js/sdk';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LESSON, MODULE } from '../../consts';
-import { createAxiosWithAuth } from '../../functions';
+import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ILesson, IModule } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
@@ -50,7 +50,7 @@ function EditCoursePart({ item, type }: IEditCoursePartProps) {
       }
       navigate(-1);
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }

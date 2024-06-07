@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CourseDetails from '../../components/CourseDetails/CourseDetails';
 import Modal from '../../components/Modal/Modal';
 import { SELLER } from '../../consts';
-import { createAxiosWithAuth } from '../../functions';
+import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ICourse, RoleType } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
@@ -39,7 +39,7 @@ function CourseDetailsPage() {
       setCourse(course);
       setRole(role);
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +63,7 @@ function CourseDetailsPage() {
       await axiosWithAuth.delete<ICourse>(`/course/${course.id}`);
       navigate('/course/created');
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }

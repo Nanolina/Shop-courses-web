@@ -4,7 +4,7 @@ import { FiEdit } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
 import CourseForm from '../../components/CourseForm/CourseForm';
 import Header from '../../components/Header/Header';
-import { createAxiosWithAuth } from '../../functions';
+import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
@@ -30,7 +30,7 @@ function EditCourseFormPage() {
       );
       setCourse(response.data.course);
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }
