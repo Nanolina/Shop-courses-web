@@ -1,5 +1,5 @@
 import { TonConnectButton } from '@tonconnect/ui-react';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { MdCameraswitch } from 'react-icons/md';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { useCourseForm } from '../../hooks';
@@ -17,8 +17,6 @@ import Textarea from '../../ui/Textarea/Textarea';
 import styles from './CourseForm.module.css';
 
 function CourseForm({ course }: { course?: ICourse }) {
-  const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between URL and Upload (button)
-
   const {
     name,
     setName,
@@ -35,13 +33,16 @@ function CourseForm({ course }: { course?: ICourse }) {
     currency,
     setCurrency,
     currencyOptions,
-    previewUrl,
-    setPreviewUrl,
     isLoading,
     error,
+    // Image
+    previewUrl,
+    setPreviewUrl,
     handleImageChange,
     handleRemoveImage,
     handleUrlChange,
+    useUrlCover,
+    toggleBetweenUrlAndFile,
   } = useCourseForm() as IUseCourseFormReturnType;
 
   // Setting initial values from item
@@ -66,7 +67,7 @@ function CourseForm({ course }: { course?: ICourse }) {
   return (
     <div className={styles.container}>
       <div className={styles.formGroup}>
-        <Label text="Course Name" isRequired isPadding isBold />
+        <Label text="Course name" isRequired isPadding isBold />
         <TextInput
           value={name}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
@@ -132,16 +133,20 @@ function CourseForm({ course }: { course?: ICourse }) {
           <Label
             text={
               useUrlCover
-                ? 'Cover URL image for the course'
+                ? 'Cover image URL for the course'
                 : 'Upload image for course cover'
             }
             isPadding
             isBold
           />
           <Button
-            onClick={() => setUseUrlCover(!useUrlCover)}
+            onClick={toggleBetweenUrlAndFile}
             className={styles.switchButton}
-            text={useUrlCover ? 'Switch to file upload' : 'Switch to URL input'}
+            text={
+              useUrlCover
+                ? 'Switch to file image upload'
+                : 'Switch to image URL input'
+            }
             icon={<MdCameraswitch size={26} />}
           />
         </div>

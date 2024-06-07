@@ -25,6 +25,7 @@ export function useCourseForm() {
   const [currency, setCurrency] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between URL and upload (button)
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
@@ -86,6 +87,7 @@ export function useCourseForm() {
     [createOrUpdateCourse, courseId]
   );
 
+  const toggleBetweenUrlAndFile = () => setUseUrlCover(!useUrlCover);
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -157,14 +159,17 @@ export function useCourseForm() {
     currency,
     setCurrency,
     currencyOptions,
-    previewUrl,
-    setPreviewUrl,
-    image,
-    setImage,
     isLoading,
     error,
+    // Image
+    image,
+    setImage,
+    previewUrl,
+    setPreviewUrl,
     handleImageChange,
     handleRemoveImage,
     handleUrlChange,
+    useUrlCover,
+    toggleBetweenUrlAndFile,
   };
 }
