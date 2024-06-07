@@ -18,7 +18,7 @@ function CoursePartPage({
 }: ICoursePartPageProps) {
   const navigate = useNavigate();
   const navigateToForm = useCallback(() => {
-    navigate(`/edit/coursePart/${type}/${parentId}`);
+    navigate(`/course-part/create/${type}/${parentId}`);
   }, [navigate, parentId, type]);
 
   useEffect(() => {

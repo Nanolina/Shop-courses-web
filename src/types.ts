@@ -26,7 +26,7 @@ export interface ILesson {
   description?: string;
   moduleId: string;
   imageUrl?: string;
-  videoUrl: string;
+  videoUrl?: string;
 }
 
 export type EntityType = 'module' | 'lesson';

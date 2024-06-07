@@ -1,14 +1,14 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { LESSON } from '../../consts';
 import {
   capitalizeFirstLetter,
   createAxiosWithAuth,
   handleAuthError,
 } from '../../functions';
-import { EntityType, ILesson, IModule } from '../../types';
+import { ILesson, IModule } from '../../types';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
@@ -16,45 +16,44 @@ import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import VideoPreview from '../../ui/VideoPreview/VideoPreview';
-import { ICoursePartFormState } from '../types';
+import { ICoursePartFormProps, ICoursePartFormState } from '../types';
 import styles from './CoursePartForm.module.css';
 
 const tg = window.Telegram.WebApp;
 
-function CoursePartForm() {
-  const { type = '', parentId } = useParams<{
-    type: EntityType;
-    parentId: string;
-  }>();
+function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
   const navigate = useNavigate();
 
-  const [isLesson, setIsLesson] = useState(true);
+  const isEditMode = Boolean(item);
+  const isLesson = type === LESSON;
 
   const initialStateItem: ICoursePartFormState = {
-    name: '',
-    description: '',
-    imageUrl: '',
+    name: item ? item.name : '',
+    description: item ? item.description || '' : '',
+    imageUrl: item ? item.imageUrl || '' : '',
     ...(isLesson && {
-      videoUrl: '',
+      videoUrl: item && 'videoUrl' in item ? item.videoUrl || '' : '',
       video: null,
     }),
   };
 
   const [newItem, setNewItem] = useState(initialStateItem);
-  const [videoPreview, setVideoPreview] = useState('');
+  const [videoPreview, setVideoPreview] = useState(
+    item && 'videoUrl' in item ? item.videoUrl || '' : ''
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
 
-  const onCreateNewCoursePart = useCallback(async () => {
+  const saveCoursePart = useCallback(async () => {
     setIsLoading(true);
     try {
       const { name, description, imageUrl, videoUrl, video } = newItem;
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const formData = new FormData();
       formData.append('name', name);
-      formData.append('description', description || '');
+      if (description) formData.append('description', description);
       if (imageUrl) formData.append('imageUrl', imageUrl);
       if (videoUrl && isLesson) formData.append('videoUrl', videoUrl);
       if (video && isLesson) {
@@ -62,29 +61,37 @@ function CoursePartForm() {
       }
 
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      if (isLesson) {
-        const response = await axiosWithAuth.post<ILesson>(
-          `/lesson/module/${parentId}`,
-          formData
-        );
-        if (response.status === 201) {
-          navigate(-1);
-        }
+      if (isEditMode) {
+        await axiosWithAuth.patch<ILesson>(`/${type}/${item?.id}`, formData);
       } else {
-        const response = await axiosWithAuth.post<IModule>(
-          `/module/course/${parentId}`,
-          formData
-        );
-        if (response.status === 201) {
-          navigate(-1);
+        if (isLesson) {
+          await axiosWithAuth.post<ILesson>(
+            `/lesson/module/${parentId}`,
+            formData
+          );
+        } else {
+          await axiosWithAuth.post<IModule>(
+            `/module/course/${parentId}`,
+            formData
+          );
         }
       }
+      navigate(-1);
     } catch (error: any) {
       handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }
-  }, [initDataRaw, isLesson, navigate, newItem, parentId]);
+  }, [
+    newItem,
+    initDataRaw,
+    isLesson,
+    isEditMode,
+    navigate,
+    type,
+    item?.id,
+    parentId,
+  ]);
 
   const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -115,16 +122,12 @@ function CoursePartForm() {
   };
 
   useEffect(() => {
-    setIsLesson(type === LESSON);
-  }, [type]);
-
-  useEffect(() => {
     tg.MainButton.setParams({
       text: 'Save',
     });
-    tg.onEvent('mainButtonClicked', onCreateNewCoursePart);
-    return () => tg.offEvent('mainButtonClicked', onCreateNewCoursePart);
-  }, [onCreateNewCoursePart, navigate]);
+    tg.onEvent('mainButtonClicked', saveCoursePart);
+    return () => tg.offEvent('mainButtonClicked', saveCoursePart);
+  }, [saveCoursePart, navigate]);
 
   useEffect(() => {
     // Lesson
@@ -151,7 +154,7 @@ function CoursePartForm() {
 
   return (
     <div className={styles.container}>
-      <form className={styles.formMod}>
+      <form className={styles.form}>
         <div className={styles.header}>
           <RxCross2
             className={styles.cross}
@@ -159,11 +162,10 @@ function CoursePartForm() {
             color="var(--tg-theme-accent-text-color)"
             onClick={() => navigate(-1)}
           />
-          <h3>Create a new {type}</h3>
+          <h3>{isEditMode ? `Edit ${type}` : `Create a new ${type}`}</h3>
         </div>
         <div className={styles.labelInputContainer}>
           <Label text={`${capitalizeFirstLetter(type)} title`} />
-
           <TextInput
             value={newItem.name}
             placeholder={`Enter the ${type} title`}
@@ -233,4 +235,5 @@ function CoursePartForm() {
     </div>
   );
 }
+
 export default CoursePartForm;

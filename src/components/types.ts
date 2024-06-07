@@ -1,4 +1,4 @@
-import { EntityType, ICourse, RoleType } from '../types';
+import { EntityType, ICourse, ILesson, IModule, RoleType } from '../types';
 
 export interface ICoursePartItem {
   id: string;
@@ -12,13 +12,6 @@ export interface ICoursePartItem {
 
 export interface ICourseItemProps {
   course: ICourse;
-}
-
-export interface ICoursePartFormProps {
-  type: EntityType;
-  isForm: boolean;
-  setIsForm: (isForm: boolean) => void;
-  parentId: string;
 }
 
 export interface ICoursePartFormState {
@@ -39,11 +32,6 @@ export interface ICoursePartListProps {
 export interface ICoursesListByCategoryProps {
   category: string;
   courses: ICourse[];
-}
-
-export interface IEditCoursePartProps {
-  item: ICoursePartItem;
-  type: EntityType | undefined;
 }
 
 export interface IHeaderProps {
@@ -74,4 +62,10 @@ export interface IVideoPlayerProps {
 export interface ICourseDetailsProps {
   course: ICourse;
   role: RoleType;
+}
+
+export interface ICoursePartFormProps {
+  type: EntityType; // for create and edit
+  parentId?: string; // for create
+  item?: IModule | ILesson; // for edit
 }

@@ -1,23 +1,30 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
+import { FiEdit } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
-import EditCoursePart from '../../components/EditCoursePart/EditCoursePart';
+import CoursePartForm from '../../components/CoursePartForm/CoursePartForm';
+import Header from '../../components/Header/Header';
 import { LESSON, MODULE } from '../../consts';
 import { createAxiosWithAuth, handleAuthError } from '../../functions';
-import { EntityType, IModule } from '../../types';
+import { EntityType, ILesson, IModule } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
+import { IGetLesson } from '../types';
 
-function EditPartCoursePage() {
-  const { type, itemId } = useParams<{ type: EntityType; itemId: string }>();
+function EditCoursePartPage() {
+  const { type, itemId } = useParams<{
+    type: EntityType;
+    itemId: string;
+  }>();
 
-  const [itemData, setItemData] = useState<any>({});
+  const [itemData, setItemData] = useState<IModule | ILesson | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
 
-  async function getOnePartCourse() {
+  async function getOneCoursePart() {
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
@@ -27,13 +34,8 @@ function EditPartCoursePage() {
         setItemData(response.data);
       }
       if (type === LESSON) {
-        response = await axiosWithAuth.get<any>(`lesson/${itemId}`);
+        response = await axiosWithAuth.get<IGetLesson>(`lesson/${itemId}`);
         setItemData(response.data.lesson);
-      }
-      if (!response || !response.data) {
-        throw new Error(
-          'Something went wrong with getting the module or lesson data'
-        );
       }
     } catch (error: any) {
       handleAuthError(error, setError);
@@ -43,18 +45,20 @@ function EditPartCoursePage() {
   }
 
   useEffect(() => {
-    getOnePartCourse();
+    getOneCoursePart();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading) return <Loader />;
+  if (!itemData || !type) return <ItemNotFoundPage error={error} />;
 
   return (
     <Container>
-      <EditCoursePart item={itemData} type={type} />
+      <Header label={itemData.name} icon={<FiEdit size={24} />} />
+      <CoursePartForm item={itemData} type={type} />
       {error && <MessageBox errorMessage={error} />}
     </Container>
   );
 }
 
-export default EditPartCoursePage;
+export default EditCoursePartPage;
