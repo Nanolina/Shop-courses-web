@@ -228,6 +228,15 @@ export function useCoursePartForm() {
     };
   }, [previewImageUrl]);
 
+  // Clearing preview video URL to free up resources
+  useEffect(() => {
+    return () => {
+      if (previewVideoUrl) {
+        URL.revokeObjectURL(previewVideoUrl);
+      }
+    };
+  }, [previewVideoUrl]);
+
   return {
     name,
     setName,

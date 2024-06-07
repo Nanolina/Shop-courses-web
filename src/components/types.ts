@@ -54,9 +54,7 @@ export interface IReadyCoursePartProps {
 
 export interface IVideoPlayerProps {
   url: string;
-  setUrl: (url: string) => void;
-  lessonId: string;
-  type: EntityType;
+  removeVideo?: () => void;
 }
 
 export interface ICourseDetailsProps {
@@ -67,5 +65,5 @@ export interface ICourseDetailsProps {
 export interface ICoursePartFormProps {
   type: EntityType; // create | update
   parentId?: string; // create | update
-  item?: IModule | ILesson; // update
+  item?: IModule | ILesson | undefined; // update
 }

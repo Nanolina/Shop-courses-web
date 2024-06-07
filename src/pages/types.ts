@@ -107,11 +107,6 @@ export interface IGetLessons {
   role: RoleType;
 }
 
-export interface IGetLesson {
-  role: RoleType;
-  lesson: ILesson;
-}
-
 export interface IItemNotFoundPageProps {
   error?: string;
 }

@@ -11,7 +11,7 @@ import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
-import { IEditCoursePartParams, IGetLesson } from '../types';
+import { IEditCoursePartParams } from '../types';
 
 function EditCoursePartPage() {
   const { type, itemId } = useParams<IEditCoursePartParams>();
@@ -32,8 +32,8 @@ function EditCoursePartPage() {
         setItemData(response.data);
       }
       if (type === LESSON) {
-        response = await axiosWithAuth.get<IGetLesson>(`lesson/${itemId}`);
-        setItemData(response.data.lesson);
+        response = await axiosWithAuth.get<ILesson>(`lesson/${itemId}`);
+        setItemData(response.data);
       }
     } catch (error: any) {
       handleAuthError(error, setError);

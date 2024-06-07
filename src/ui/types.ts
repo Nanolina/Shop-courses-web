@@ -64,8 +64,3 @@ export interface IMessageBox {
   errorMessage?: string;
   successMessage?: string;
 }
-
-export interface IVideoPreviewProps {
-  videoPreview: string;
-  removeVideo: () => void;
-}
