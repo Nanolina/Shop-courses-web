@@ -1,9 +1,10 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createAxiosWithAuth } from '../functions';
+import { PATCH, POST } from '../consts';
+import { createAxiosWithAuth, handleAuthError } from '../functions';
 import { IMyCreatedCoursesPageParams } from '../pages/types';
-import { ICourse } from '../types';
+import { ICourse, RequestMethodType } from '../types';
 import { IOption } from '../ui';
 import { useTonConnect } from './useTonConnect';
 
@@ -32,7 +33,7 @@ export function useCourseForm() {
   const navigate = useNavigate();
 
   const createOrUpdateCourse = useCallback(
-    async (url: string, method: 'post' | 'patch') => {
+    async (url: string, method: RequestMethodType) => {
       setIsLoading(true);
       try {
         if (!initDataRaw) throw new Error('Not enough authorization data');
@@ -50,11 +51,13 @@ export function useCourseForm() {
 
         const axiosWithAuth = createAxiosWithAuth(initDataRaw);
         const response = await axiosWithAuth[method]<ICourse>(url, formData);
-        if (response.status === 201 && method === 'post') {
+        if (response.status === 201 && method === POST) {
           navigate(`/course/${response.data.id}`);
+        } else if (response.status === 200 && method === PATCH) {
+          navigate('/course/created');
         }
       } catch (error: any) {
-        setError(error.response?.data.message || String(error));
+        handleAuthError(error, setError);
       } finally {
         setIsLoading(false);
       }

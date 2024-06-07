@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import ReactPlayer from 'react-player';
-import { UPDATE } from '../../consts';
 import Button from '../../ui/Button/Button';
 import TextInput from '../../ui/TextInput/TextInput';
 import { IVideoPlayerProps } from '../types';
@@ -17,7 +16,7 @@ function VideoPlayer({ url, setUrl, lessonId, type }: IVideoPlayerProps) {
       JSON.stringify({
         type,
         id: lessonId,
-        method: UPDATE,
+        method: 'update',
         videoUrl: url,
       })
     );

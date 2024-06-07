@@ -6,7 +6,7 @@ export interface ICoursePartPageProps {
   type: EntityType;
   parentId: string;
   items: ICoursePartItem[];
-  role: string;
+  role: RoleType;
   updatePageData: () => void;
 }
 
