@@ -69,7 +69,7 @@ function App() {
             element={<CreateCoursePartPage />}
           />
           <Route
-            path="/course-part/edit/:type/:itemId"
+            path="/course-part/edit/:parentId/:type/:itemId"
             element={<EditCoursePartPage />}
           />
           <Route path="/course/created" element={<MyCreatedCoursesPage />} />

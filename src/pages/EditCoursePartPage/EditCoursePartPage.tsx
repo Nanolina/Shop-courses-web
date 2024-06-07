@@ -6,18 +6,15 @@ import CoursePartForm from '../../components/CoursePartForm/CoursePartForm';
 import Header from '../../components/Header/Header';
 import { LESSON, MODULE } from '../../consts';
 import { createAxiosWithAuth, handleAuthError } from '../../functions';
-import { EntityType, ILesson, IModule } from '../../types';
+import { ILesson, IModule } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
-import { IGetLesson } from '../types';
+import { IEditCoursePartParams, IGetLesson } from '../types';
 
 function EditCoursePartPage() {
-  const { type, itemId } = useParams<{
-    type: EntityType;
-    itemId: string;
-  }>();
+  const { type, itemId } = useParams<IEditCoursePartParams>();
 
   const [itemData, setItemData] = useState<IModule | ILesson | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);

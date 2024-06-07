@@ -14,8 +14,8 @@ import styles from './ReadyCoursePart.module.css';
 function ReadyCoursePart({
   item,
   type,
+  parentId,
   role,
-  updatePageData,
 }: IReadyCoursePartProps) {
   const navigate = useNavigate();
   const [isSeller, setIsSeller] = useState<boolean>(false);
@@ -36,7 +36,6 @@ function ReadyCoursePart({
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       await axiosWithAuth.delete(`/${type}/${item.id}`);
-      updatePageData();
     } catch (error: any) {
       handleAuthError(error, setError);
     } finally {
@@ -47,9 +46,9 @@ function ReadyCoursePart({
   const handleEdit = useCallback(
     (event: React.MouseEvent<SVGElement>) => {
       event.stopPropagation();
-      navigate(`/course-part/edit/${type}/${item.id}`);
+      navigate(`/course-part/edit/${parentId}/${type}/${item.id}`);
     },
-    [item.id, navigate, type]
+    [item.id, navigate, parentId, type]
   );
 
   const navigateHandler = useCallback(() => {

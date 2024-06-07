@@ -4,12 +4,7 @@ import ReadyCoursePart from '../ReadyCoursePart/ReadyCoursePart';
 import { ICoursePartListProps } from '../types';
 import styles from './CoursePartList.module.css';
 
-function CoursePartList({
-  type,
-  items,
-  role,
-  updatePageData,
-}: ICoursePartListProps) {
+function CoursePartList({ type, parentId, items, role }: ICoursePartListProps) {
   return (
     <>
       {!items.length ? (
@@ -25,8 +20,8 @@ function CoursePartList({
           <ReadyCoursePart
             item={item}
             type={type}
+            parentId={parentId}
             role={role}
-            updatePageData={updatePageData}
           />
         ))
       )}

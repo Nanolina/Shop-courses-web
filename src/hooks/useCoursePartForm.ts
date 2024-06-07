@@ -9,7 +9,7 @@ const tg = window.Telegram.WebApp;
 
 export function useCoursePartForm() {
   // type - create | update
-  // parentId - create
+  // parentId - create | update
   // itemId - update
   const { type, parentId, itemId } = useParams();
 

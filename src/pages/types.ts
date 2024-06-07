@@ -7,7 +7,6 @@ export interface ICoursePartPageProps {
   parentId: string;
   items: ICoursePartItem[];
   role: RoleType;
-  updatePageData: () => void;
 }
 
 export interface IUseCourseFormReturnType {
@@ -115,4 +114,10 @@ export interface IGetLesson {
 
 export interface IItemNotFoundPageProps {
   error?: string;
+}
+
+export interface IEditCoursePartParams
+  extends Record<string, string | EntityType> {
+  type: EntityType;
+  itemId: string;
 }
