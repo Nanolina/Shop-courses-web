@@ -14,13 +14,14 @@ const ModulesPage: React.FC = () => {
   const { courseId = '' } = useParams<IModulesPageParams>();
 
   const [modules, setModules] = useState<IModule[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [role, setRole] = useState<RoleType | null>(null);
 
   const { initDataRaw } = retrieveLaunchParams();
 
   const getAllModules = useCallback(async () => {
+    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
@@ -42,7 +43,8 @@ const ModulesPage: React.FC = () => {
   }, [courseId]);
 
   if (isLoading) return <Loader />;
-  if (!role) return <ItemNotFoundPage error={error} />;
+  if (!role)
+    return <ItemNotFoundPage error="The role for modules has not been given" />;
 
   return (
     <>
@@ -50,7 +52,6 @@ const ModulesPage: React.FC = () => {
         type={MODULE}
         parentId={courseId}
         items={modules}
-        updatePageData={getAllModules}
         role={role}
       />
       {error && <MessageBox errorMessage={error} />}

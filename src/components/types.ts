@@ -24,9 +24,9 @@ export interface ICoursePartFormState {
 
 export interface ICoursePartListProps {
   type: EntityType;
+  parentId: string;
   items: ICoursePartItem[];
   role: RoleType;
-  updatePageData: () => void;
 }
 
 export interface ICoursesListByCategoryProps {
@@ -48,15 +48,13 @@ export interface IMyCreatedCourseItemProps {
 export interface IReadyCoursePartProps {
   item: ICoursePartItem;
   type: EntityType;
+  parentId: string;
   role: RoleType;
-  updatePageData: () => void;
 }
 
 export interface IVideoPlayerProps {
   url: string;
-  setUrl: (url: string) => void;
-  lessonId: string;
-  type: EntityType;
+  removeVideo?: () => void;
 }
 
 export interface ICourseDetailsProps {
@@ -65,7 +63,7 @@ export interface ICourseDetailsProps {
 }
 
 export interface ICoursePartFormProps {
-  type: EntityType; // for create and edit
-  parentId?: string; // for create
-  item?: IModule | ILesson; // for edit
+  type: EntityType; // create | update
+  parentId?: string; // create | update
+  item?: IModule | ILesson | undefined; // update
 }

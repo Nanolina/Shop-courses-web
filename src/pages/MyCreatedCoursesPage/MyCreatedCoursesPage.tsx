@@ -14,11 +14,12 @@ const tg = window.Telegram.WebApp;
 
 function MyCreatedCoursesPage() {
   const [courses, setCourses] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
 
   async function getAllMyCreatedCourses() {
+    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);

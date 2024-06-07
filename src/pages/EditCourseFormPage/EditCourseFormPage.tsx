@@ -16,12 +16,13 @@ function EditCourseFormPage() {
   const { courseId } = useParams<{ courseId: string }>();
 
   const [course, setCourse] = useState<ICourse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
 
   const getOneCourse = useCallback(async () => {
+    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);

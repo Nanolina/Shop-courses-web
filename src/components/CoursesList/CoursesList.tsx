@@ -11,13 +11,14 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const CoursesList = () => {
   const [courses, setCourses] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   // Grouping data by categories
   const groupedData = useMemo(() => groupCoursesByCategory(courses), [courses]);
 
   async function getAllCourses() {
+    setIsLoading(true);
     try {
       const allCoursesApiUrl = `${serverUrl}/course`;
       const response = await axios.get<ICourse[]>(allCoursesApiUrl);

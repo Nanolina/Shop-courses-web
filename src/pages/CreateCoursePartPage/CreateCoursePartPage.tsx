@@ -7,17 +7,14 @@ import Container from '../../ui/Container/Container';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 
 function CreateCoursePartPage() {
-  const { type, parentId } = useParams<{
-    type: EntityType;
-    parentId: string;
-  }>();
+  const { type } = useParams<{ type: EntityType }>();
 
   if (!type) return <ItemNotFoundPage error="Type is not provided" />;
 
   return (
     <Container>
       <Header label={`Create ${type}`} icon={<LuBookPlus size={24} />} />
-      <CoursePartForm type={type} parentId={parentId} />
+      <CoursePartForm type={type} />
     </Container>
   );
 }

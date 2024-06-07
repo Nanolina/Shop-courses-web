@@ -9,7 +9,7 @@ const tg = window.Telegram.WebApp;
 
 export function useCoursePartForm() {
   // type - create | update
-  // parentId - create
+  // parentId - create | update
   // itemId - update
   const { type, parentId, itemId } = useParams();
 
@@ -44,13 +44,14 @@ export function useCoursePartForm() {
       if (description) formData.append('description', description);
       // Image
       if (imageUrl) formData.append('imageUrl', imageUrl);
-      if (image) formData.append('image', image);
+      if (image && !isLesson) formData.append('image', image);
+      if (image && isLesson) formData.append('files', image, image.name);
       if (!image && !imageUrl) formData.append('isRemoveImage', 'true');
 
       // Video
       if (isLesson) {
         if (videoUrl) formData.append('videoUrl', videoUrl);
-        if (video) formData.append('video', video);
+        if (video) formData.append('files', video, video.name);
         if (!video && !videoUrl) formData.append('isRemoveVideo', 'true');
       }
 
@@ -226,6 +227,15 @@ export function useCoursePartForm() {
       }
     };
   }, [previewImageUrl]);
+
+  // Clearing preview video URL to free up resources
+  useEffect(() => {
+    return () => {
+      if (previewVideoUrl) {
+        URL.revokeObjectURL(previewVideoUrl);
+      }
+    };
+  }, [previewVideoUrl]);
 
   return {
     name,

@@ -14,12 +14,13 @@ const tg = window.Telegram.WebApp;
 
 function MyPurchasedCoursesPage() {
   const [courses, setCourses] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
 
   async function getAllMyPurchasedCourses() {
+    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
@@ -34,7 +35,6 @@ function MyPurchasedCoursesPage() {
 
   useEffect(() => {
     getAllMyPurchasedCourses();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

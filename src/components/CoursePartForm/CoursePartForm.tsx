@@ -12,11 +12,11 @@ import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
-import VideoPreview from '../../ui/VideoPreview/VideoPreview';
+import VideoPlayer from '../VideoPlayer/VideoPlayer';
 import { ICoursePartFormProps } from '../types';
 import styles from './CoursePartForm.module.css';
 
-function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
+function CoursePartForm({ type, item }: ICoursePartFormProps) {
   const {
     name,
     setName,
@@ -57,14 +57,14 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
         setImageUrl(item.imageUrl);
         setPreviewImageUrl(item.imageUrl);
       }
-      if (isLesson && 'videoUrl' in item) {
-        const lessonItem = item as ILesson; // Type assertion
-        setVideoUrl(lessonItem.videoUrl || '');
-        setPreviewVideoUrl(lessonItem.videoUrl || '');
+      if (isLesson && (item as ILesson).videoUrl) {
+        const lesson = item as ILesson; // Type assertion to ILesson
+        setVideoUrl(lesson.videoUrl ?? '');
+        setPreviewVideoUrl(lesson.videoUrl ?? '');
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [item]);
+  }, [item, isLesson]);
 
   if (isLoading) return <Loader />;
 
@@ -121,7 +121,7 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
           <TextInput value={imageUrl} onChange={handleImageUrlChange} />
         ) : (
           <InputUpload
-            name="image"
+            name="files"
             onChange={handleImageChange}
             acceptFiles="image/*"
           />
@@ -165,7 +165,7 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
               <TextInput value={videoUrl} onChange={handleVideoUrlChange} />
             ) : (
               <InputUpload
-                name="video"
+                name="files"
                 onChange={handleVideoChange}
                 acceptFiles="video/*"
               />
@@ -173,8 +173,8 @@ function CoursePartForm({ type, parentId, item }: ICoursePartFormProps) {
           </div>
           {previewVideoUrl && (
             <div className={styles.image}>
-              <VideoPreview
-                videoPreview={previewVideoUrl}
+              <VideoPlayer
+                url={previewVideoUrl}
                 removeVideo={handleRemoveVideo}
               />
             </div>

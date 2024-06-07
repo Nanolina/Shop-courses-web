@@ -15,10 +15,11 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 function CoursesOneCategoryPage() {
   const { category } = useParams<{ category: string }>();
   const [courses, setCourses] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   async function getAllCoursesOneCategory() {
+    setIsLoading(true);
     try {
       const allCoursesApiUrl = `${serverUrl}/course/category/${category}`;
       const response = await axios.get(allCoursesApiUrl);

@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 20px;
   border-radius: 10px;
   padding: 10px;
@@ -10,9 +10,9 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.cover {
-  height: 80px;
-  width: 80px;
+.image {
+  height: 150px;
+  width: 150px;
   border-radius: 10px;
   box-shadow: 2px 2px 6px rgb(141, 141, 141);
 }
@@ -22,14 +22,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  height: inherit;
-  height: 80px;
   width: 70%;
 }
 
 .name {
-  font-size: 1.3em;
-  font-weight: 700;
+  font-size: 1em;
+  font-weight: 600;
 }
 
 .description {
