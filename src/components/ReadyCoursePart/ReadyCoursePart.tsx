@@ -1,12 +1,13 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
-import { MdDeleteForever } from 'react-icons/md';
+import { MdDelete } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { LESSON, MODULE, SELLER } from '../../consts';
+import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { Loader } from '../../ui/Loader/Loader';
-import { createAxiosWithAuth } from '../../utils';
-import Modal from '../ModalWindow/Modal';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import Modal from '../Modal/Modal';
 import { IReadyCoursePartProps } from '../types';
 import styles from './ReadyCoursePart.module.css';
 
@@ -22,7 +23,6 @@ function ReadyCoursePart({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const text = `Delete ${type} ${item.name} ?`;
   const { initDataRaw } = retrieveLaunchParams();
 
   async function handleDelete(event: any) {
@@ -31,13 +31,15 @@ function ReadyCoursePart({
   }
 
   async function deleteItem() {
+    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       await axiosWithAuth.delete(`/${type}/${item.id}`);
       updatePageData();
     } catch (error: any) {
-      setError(error.response?.data.message || String(error));
+      handleAuthError(error, setError);
+    } finally {
       setIsLoading(false);
     }
   }
@@ -45,7 +47,7 @@ function ReadyCoursePart({
   const handleEdit = useCallback(
     (event: React.MouseEvent<SVGElement>) => {
       event.stopPropagation();
-      navigate(`/course-part/${type}/${item.id}`);
+      navigate(`/course-part/edit/${type}/${item.id}`);
     },
     [item.id, navigate, type]
   );
@@ -65,7 +67,6 @@ function ReadyCoursePart({
   }, [role]);
 
   if (isLoading) return <Loader />;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className={styles.container} onClick={navigateHandler}>
@@ -76,8 +77,7 @@ function ReadyCoursePart({
       </div>
       {isSeller && (
         <div className={styles.icons}>
-          <MdDeleteForever
-            className={styles.cross}
+          <MdDelete
             color="var(--tg-theme-accent-text-color)"
             size={24}
             onClick={handleDelete}
@@ -93,13 +93,17 @@ function ReadyCoursePart({
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         content={
-          <>
-            <h2>{text}</h2>
-            <p>Are you sure you want to delete it?</p>
-          </>
+          <div className={styles.modalTextContainer}>
+            <div>
+              {`Are you sure you want to delete ${type} `}
+              <b>{item.name}</b>?
+            </div>
+            <div>{`${type === MODULE ? 'This module and all lessons' : 'This lesson'} will be irretrievably deleted`}</div>
+          </div>
         }
         confirm={deleteItem}
       />
+      {error && <MessageBox errorMessage={error} />}
     </div>
   );
 }

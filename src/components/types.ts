@@ -1,4 +1,4 @@
-import { EntityType, ICourse, RoleType } from '../types';
+import { EntityType, ICourse, ILesson, IModule, RoleType } from '../types';
 
 export interface ICoursePartItem {
   id: string;
@@ -14,13 +14,6 @@ export interface ICourseItemProps {
   course: ICourse;
 }
 
-export interface ICoursePartFormProps {
-  type: EntityType;
-  isForm: boolean;
-  setIsForm: (isForm: boolean) => void;
-  parentId: string;
-}
-
 export interface ICoursePartFormState {
   name: string;
   description: string;
@@ -29,28 +22,16 @@ export interface ICoursePartFormState {
   video?: File | null;
 }
 
-export interface ICoursePartItemProps {
-  type: EntityType;
-  item: ICoursePartItem;
-  role: string;
-  updatePageData: () => void;
-}
-
 export interface ICoursePartListProps {
   type: EntityType;
   items: ICoursePartItem[];
-  role: string;
+  role: RoleType;
   updatePageData: () => void;
 }
 
 export interface ICoursesListByCategoryProps {
   category: string;
   courses: ICourse[];
-}
-
-export interface IEditCoursePartProps {
-  item: ICoursePartItem;
-  type: EntityType | undefined;
 }
 
 export interface IHeaderProps {
@@ -67,7 +48,7 @@ export interface IMyCreatedCourseItemProps {
 export interface IReadyCoursePartProps {
   item: ICoursePartItem;
   type: EntityType;
-  role: string;
+  role: RoleType;
   updatePageData: () => void;
 }
 
@@ -81,4 +62,10 @@ export interface IVideoPlayerProps {
 export interface ICourseDetailsProps {
   course: ICourse;
   role: RoleType;
+}
+
+export interface ICoursePartFormProps {
+  type: EntityType; // for create and edit
+  parentId?: string; // for create
+  item?: IModule | ILesson; // for edit
 }

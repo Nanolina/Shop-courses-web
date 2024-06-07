@@ -1,14 +1,17 @@
 import React from 'react';
-import Label from '../Label/Label';
+import { MdOutlineCloudUpload } from 'react-icons/md';
 import { IInputUploadProps } from '../types';
 import styles from './InputUpload.module.css';
 
 export const InputUpload: React.FC<IInputUploadProps> = React.memo(
-  ({ name, onChange, acceptFiles, maxSize }) => {
+  ({ name, onChange, acceptFiles }) => {
     return (
       <>
         <label className={styles.uploadContainer}>
-          + Upload
+          <div className={styles.uploadTextWithIcon}>
+            <MdOutlineCloudUpload size={26} />
+            Upload
+          </div>
           <input
             name={name}
             type="file"
@@ -17,7 +20,6 @@ export const InputUpload: React.FC<IInputUploadProps> = React.memo(
             className={styles.input}
           />
         </label>
-        <Label text={`Maximum size: ${maxSize}`} isRight isHint />
       </>
     );
   }

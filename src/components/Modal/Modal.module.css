@@ -14,19 +14,20 @@
 
 .modalContent {
   width: 80%;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--tg-theme-bg-color);
   padding: 20px;
   text-align: center;
   color: black;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   animation: scaleUp 0.3s;
+  font-size: 18px;
 }
 
 .image {
   width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .containerBtn {
@@ -42,7 +43,7 @@
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 10px 20px;
   width: 40%;
 }
@@ -54,7 +55,7 @@
   font-weight: 500;
   font-size: 16px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 10px 20px;
   width: 40%;
 }

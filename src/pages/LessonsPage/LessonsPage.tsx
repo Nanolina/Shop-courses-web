@@ -2,20 +2,20 @@ import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { LESSON } from '../../consts';
+import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import { createAxiosWithAuth } from '../../utils';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
 import { IGetLessons, ILessonsPageParams } from '../types';
 
 function LessonsPage() {
   const { moduleId = '' } = useParams<ILessonsPageParams>();
 
-  const [lessonsData, setLessonsData] = useState<ILesson[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [lessons, setLessons] = useState<ILesson[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [role, setRole] = useState<string>('')
+  const [role, setRole] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -24,20 +24,20 @@ function LessonsPage() {
       setIsLoading(true);
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get<IGetLessons>(`/lesson/module/${moduleId}`);
-      setLessonsData(response.data.lessons);
-      setRole(response.data.role)
-      setIsLoading(false);
+      const response = await axiosWithAuth.get<IGetLessons>(
+        `/lesson/module/${moduleId}`
+      );
+      setLessons(response.data.lessons);
+      setRole(response.data.role);
     } catch (error: any) {
-      setError(error?.message || String(error));
+      handleAuthError(error, setError);
+    } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    setIsLoading(true);
     getAllLessons();
-    setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [moduleId]);
 
@@ -48,7 +48,7 @@ function LessonsPage() {
       <CoursePartPage
         type={LESSON}
         parentId={moduleId}
-        items={lessonsData}
+        items={lessons}
         updatePageData={getAllLessons}
         role={role}
       />

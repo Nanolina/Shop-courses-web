@@ -1,1 +1,0 @@
-export { createAxiosWithAuth } from './axiosWithAuth';

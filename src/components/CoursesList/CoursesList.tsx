@@ -10,31 +10,27 @@ import styles from './CoursesList.module.css';
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const CoursesList = () => {
-  const [coursesData, setCoursesData] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [courses, setCourses] = useState<ICourse[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
   // Grouping data by categories
-  const groupedData = useMemo(
-    () => groupCoursesByCategory(coursesData),
-    [coursesData]
-  );
+  const groupedData = useMemo(() => groupCoursesByCategory(courses), [courses]);
 
   async function getAllCourses() {
     try {
       const allCoursesApiUrl = `${serverUrl}/course`;
       const response = await axios.get<ICourse[]>(allCoursesApiUrl);
-      setCoursesData(response.data);
-      setIsLoading(false);
+      setCourses(response.data);
       return response.data;
     } catch (error: any) {
       setError(error.response?.data.message || String(error));
+    } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    setIsLoading(true);
     getAllCourses();
   }, []);
 

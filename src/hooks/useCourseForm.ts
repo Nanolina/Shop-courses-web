@@ -1,10 +1,11 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { PATCH, POST } from '../consts';
+import { createAxiosWithAuth, handleAuthError } from '../functions';
 import { IMyCreatedCoursesPageParams } from '../pages/types';
-import { ICourse } from '../types';
+import { ICourse, RequestMethodType } from '../types';
 import { IOption } from '../ui';
-import { createAxiosWithAuth } from '../utils';
 import { useTonConnect } from './useTonConnect';
 
 export const currencyOptions: IOption[] = [
@@ -24,6 +25,7 @@ export function useCourseForm() {
   const [currency, setCurrency] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between URL and upload (button)
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
@@ -31,53 +33,68 @@ export function useCourseForm() {
   const { initDataRaw } = retrieveLaunchParams();
   const navigate = useNavigate();
 
-  const onCreateCourse = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('description', description || '');
-      if (imageUrl) formData.append('imageUrl', imageUrl);
-      formData.append('category', category);
-      formData.append('subcategory', subcategory || '');
-      formData.append('price', price.toString());
-      formData.append('currency', currency);
-      formData.append('walletAddressSeller', wallet || '');
-      if (image) {
-        formData.append('image', image);
-      }
+  const createOrUpdateCourse = useCallback(
+    async (url: string, method: RequestMethodType) => {
+      setIsLoading(true);
+      try {
+        if (!initDataRaw) throw new Error('Not enough authorization data');
+        const formData = new FormData();
+        formData.append('name', name);
+        if (description) formData.append('description', description);
+        if (imageUrl) formData.append('imageUrl', imageUrl);
+        formData.append('category', category);
+        if (subcategory) formData.append('subcategory', subcategory);
+        formData.append('price', price.toString());
+        formData.append('currency', currency);
+        if (wallet) formData.append('walletAddressSeller', wallet);
+        if (image) formData.append('image', image);
+        if (!image && !imageUrl) formData.append('isRemoveImage', 'true');
 
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.post<ICourse>('/course', formData);
-      if (response.status === 201) {
-        navigate(`/course/${response.data.id}`);
+        const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+        const response = await axiosWithAuth[method]<ICourse>(url, formData);
+        if (response.status === 201 && method === POST) {
+          navigate(`/course/${response.data.id}`);
+        } else if (response.status === 200 && method === PATCH) {
+          navigate('/course/created');
+        }
+      } catch (error: any) {
+        handleAuthError(error, setError);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    } catch (error: any) {
-      setError(error.response?.data.message || String(error));
-      setIsLoading(false);
-    }
-  }, [
-    initDataRaw,
-    name,
-    description,
-    imageUrl,
-    category,
-    subcategory,
-    price,
-    currency,
-    wallet,
-    image,
-    navigate,
-  ]);
+    },
+    [
+      initDataRaw,
+      name,
+      description,
+      imageUrl,
+      category,
+      subcategory,
+      price,
+      currency,
+      wallet,
+      image,
+      navigate,
+    ]
+  );
 
+  const onCreateCourse = useCallback(
+    () => createOrUpdateCourse('/course', 'post'),
+    [createOrUpdateCourse]
+  );
+  const updateCourse = useCallback(
+    () => createOrUpdateCourse(`/course/${courseId}`, 'patch'),
+    [createOrUpdateCourse, courseId]
+  );
+
+  const toggleBetweenUrlAndFile = () => setUseUrlCover(!useUrlCover);
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setImage(file);
       const fileUrl = URL.createObjectURL(file);
       setPreviewUrl(fileUrl);
+      setImageUrl(''); // Reset imageUrl if a file is selected
     } else {
       setImage(null);
       if (previewUrl) {
@@ -87,60 +104,26 @@ export function useCourseForm() {
     }
   };
 
-  const updateCourse = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('description', description || '');
-      if (imageUrl) formData.append('imageUrl', imageUrl);
-      formData.append('category', category);
-      formData.append('subcategory', subcategory || '');
-      formData.append('price', price.toString());
-      formData.append('currency', currency);
-      formData.append('walletAddressSeller', wallet || '');
-      if (image) {
-        formData.append('image', image);
-      }
-
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      await axiosWithAuth.patch<ICourse>(`/course/${courseId}`, formData);
-      setIsLoading(false);
-    } catch (error: any) {
-      setError(error.response?.data.message || String(error));
-      setIsLoading(false);
+  const handleRemoveImage = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
     }
-  }, [
-    initDataRaw,
-    name,
-    description,
-    imageUrl,
-    category,
-    subcategory,
-    price,
-    currency,
-    wallet,
-    image,
-    courseId,
-  ]);
+    setImage(null);
+    setImageUrl('');
+  };
+
+  const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setPreviewUrl(value);
+    setImageUrl(value);
+  };
 
   useEffect(() => {
-    if (!courseId) {
-      tg.MainButton.setParams({
-        text: 'Create',
-      });
-      tg.onEvent('mainButtonClicked', onCreateCourse);
-      return () => tg.offEvent('mainButtonClicked', onCreateCourse);
-    }
-    if (courseId) {
-      tg.MainButton.setParams({
-        text: `Save`,
-      });
-      tg.onEvent('mainButtonClicked', updateCourse);
-      return () => tg.offEvent('mainButtonClicked', updateCourse);
-    }
+    const mainButtonAction = courseId ? updateCourse : onCreateCourse;
+    tg.MainButton.setParams({ text: courseId ? 'Save' : 'Create' });
+    tg.onEvent('mainButtonClicked', mainButtonAction);
+    return () => tg.offEvent('mainButtonClicked', mainButtonAction);
   }, [onCreateCourse, updateCourse, courseId]);
 
   useEffect(() => {
@@ -176,12 +159,17 @@ export function useCourseForm() {
     currency,
     setCurrency,
     currencyOptions,
+    isLoading,
+    error,
+    // Image
+    image,
+    setImage,
     previewUrl,
     setPreviewUrl,
     handleImageChange,
-    image,
-    setImage,
-    isLoading,
-    error,
+    handleRemoveImage,
+    handleUrlChange,
+    useUrlCover,
+    toggleBetweenUrlAndFile,
   };
 }

@@ -26,8 +26,9 @@ export interface ILesson {
   description?: string;
   moduleId: string;
   imageUrl?: string;
-  videoUrl: string;
+  videoUrl?: string;
 }
 
 export type EntityType = 'module' | 'lesson';
 export type RoleType = 'user' | 'customer' | 'seller';
+export type RequestMethodType = 'post' | 'patch';

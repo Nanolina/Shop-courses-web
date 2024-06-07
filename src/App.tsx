@@ -6,15 +6,15 @@ import { io } from 'socket.io-client';
 import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage';
 import CoursesOneCategoryPage from './pages/CoursesOneCategoryPage/CoursesOneCategoryPage';
 import { default as CreateCourseFormPage } from './pages/CreateCourseFormPage/CreateCourseFormPage';
+import CreateCoursePartPage from './pages/CreateCoursePartPage/CreateCoursePartPage';
 import EditCourseFormPage from './pages/EditCourseFormPage/EditCourseFormPage';
-import EditPartCoursePage from './pages/EditPartCoursePage/EditPartCoursePage';
+import EditCoursePartPage from './pages/EditCoursePartPage/EditCoursePartPage';
 import LessonPage from './pages/LessonPage/LessonPage';
 import LessonsPage from './pages/LessonsPage/LessonsPage';
 import MainPage from './pages/MainPage/MainPage';
 import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
 import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCoursesPage';
-import CoursePartForm from './components/CoursePartForm/CoursePartForm';
 
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
@@ -65,11 +65,14 @@ function App() {
             element={<EditCourseFormPage />}
           />
           <Route
-            path="/course-part/:type/:itemId"
-            element={<EditPartCoursePage />}
+            path="/course-part/create/:type/:parentId"
+            element={<CreateCoursePartPage />}
+          />
+          <Route
+            path="/course-part/edit/:type/:itemId"
+            element={<EditCoursePartPage />}
           />
           <Route path="/course/created" element={<MyCreatedCoursesPage />} />
-          <Route path="/edit/coursePart/:type/:parentId" element={ <CoursePartForm />} />
           {/* customer */}
           <Route
             path="/course/purchased"

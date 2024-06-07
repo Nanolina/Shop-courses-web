@@ -2,36 +2,36 @@ import { retrieveLaunchParams } from '@tma.js/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MODULE } from '../../consts';
-import { IModule } from '../../types';
+import { createAxiosWithAuth } from '../../functions';
+import { IModule, RoleType } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import { createAxiosWithAuth } from '../../utils';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
+import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetModules, IModulesPageParams } from '../types';
 
 const ModulesPage: React.FC = () => {
   const { courseId = '' } = useParams<IModulesPageParams>();
 
-  const [modulesData, setModulesData] = useState<IModule[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [modules, setModules] = useState<IModule[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [role, setRole] = useState<string>('');
+  const [role, setRole] = useState<RoleType | null>(null);
 
   const { initDataRaw } = retrieveLaunchParams();
 
   const getAllModules = useCallback(async () => {
-    setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       const response = await axiosWithAuth.get<IGetModules>(
         `/module/course/${courseId}`
       );
-      setModulesData(response.data.modules);
+      setModules(response.data.modules);
       setRole(response.data.role);
-      setIsLoading(false);
     } catch (error: any) {
       setError(error.response?.data.message || 'Failed to fetch modules');
+    } finally {
       setIsLoading(false);
     }
   }, [courseId, initDataRaw]);
@@ -39,17 +39,17 @@ const ModulesPage: React.FC = () => {
   useEffect(() => {
     getAllModules();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseId, initDataRaw]);
+  }, [courseId]);
 
-  if (!modulesData || !modulesData.length) return <div>No modules</div>;
   if (isLoading) return <Loader />;
+  if (!role) return <ItemNotFoundPage error={error} />;
 
   return (
     <>
       <CoursePartPage
         type={MODULE}
         parentId={courseId}
-        items={modulesData}
+        items={modules}
         updatePageData={getAllModules}
         role={role}
       />

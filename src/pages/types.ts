@@ -6,7 +6,7 @@ export interface ICoursePartPageProps {
   type: EntityType;
   parentId: string;
   items: ICoursePartItem[];
-  role: string;
+  role: RoleType;
   updatePageData: () => void;
 }
 
@@ -15,8 +15,6 @@ export interface IUseCourseFormReturnType {
   setName: (name: string) => void;
   description: string;
   setDescription: (description: string) => void;
-  imageUrl: string;
-  setImageUrl: (url: string) => void;
   category: string;
   setCategory: (category: string) => void;
   subcategory: string;
@@ -28,13 +26,56 @@ export interface IUseCourseFormReturnType {
   categoryOptions: IOption[];
   subcategoryOptions: Record<string, IOption[]>;
   currencyOptions: IOption[];
-  handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  image: File | null;
-  setImage: React.Dispatch<React.SetStateAction<File | null>>;
-  previewUrl: string | null;
-  setPreviewUrl: React.Dispatch<React.SetStateAction<string | null>>;
   isLoading: boolean;
   error: string;
+  // Image
+  image: File | null;
+  setImage: React.Dispatch<React.SetStateAction<File | null>>;
+  imageUrl: string;
+  setImageUrl: (url: string) => void;
+  previewUrl: string | null;
+  setPreviewUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemoveImage: () => void;
+  handleUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  useUrlCover: boolean;
+  toggleBetweenUrlAndFile: () => void;
+}
+
+export interface IUseCoursePartFormReturnType {
+  name: string;
+  setName: (name: string) => void;
+  description: string;
+  setDescription: (description: string) => void;
+  isLesson: boolean;
+  isLoading: boolean;
+  error: string;
+
+  // Image
+  image: File | null;
+  setImage: React.Dispatch<React.SetStateAction<File | null>>;
+  imageUrl: string;
+  setImageUrl: (url: string) => void;
+  previewImageUrl: string | null;
+  setPreviewImageUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemoveImage: () => void;
+  handleImageUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  useImageUrlCover: boolean;
+  toggleBetweenImageUrlAndFile: () => void;
+
+  // Video
+  video: File | null;
+  setVideo: React.Dispatch<React.SetStateAction<File | null>>;
+  videoUrl: string;
+  setVideoUrl: (url: string) => void;
+  previewVideoUrl: string | null;
+  setPreviewVideoUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  handleVideoChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemoveVideo: () => void;
+  handleVideoUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  useVideoUrlCover: boolean;
+  toggleBetweenVideoUrlAndFile: () => void;
 }
 
 export interface ILessonsPageParams {
@@ -67,6 +108,11 @@ export interface IGetLessons {
   role: RoleType;
 }
 
+export interface IGetLesson {
+  role: RoleType;
+  lesson: ILesson;
+}
+
 export interface IItemNotFoundPageProps {
-  type: 'course' | 'module' | 'lesson';
+  error?: string;
 }

@@ -12,6 +12,20 @@
   width: 100%;
 }
 
+.coverButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.switchButton {
+  margin-left: auto;
+  width: 50%;
+  padding-bottom: 5px;
+}
+
+/* For wallet */
 .walletContainer {
   display: flex;
   flex-direction: column;
@@ -21,25 +35,9 @@
   width: 100%;
 }
 
-.switchButton {
-  padding: 8px 12px;
-  background-color: var(--tg-theme-button-color);
-  color: var(--tg-theme-button-text-color);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.coverButtonContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
 [data-tc-connect-button='true'] {
   background-color: var(--tg-theme-button-color);
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
   color: var(--tg-theme-button-text-color);
   padding: 10px 20px;
