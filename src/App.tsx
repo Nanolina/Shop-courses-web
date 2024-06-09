@@ -1,8 +1,10 @@
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { Bounce, ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
+import { useNotification } from './context';
+import NotificationProvider from './context/NotificationContext';
 import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage';
 import CoursesOneCategoryPage from './pages/CoursesOneCategoryPage/CoursesOneCategoryPage';
 import { default as CreateCourseFormPage } from './pages/CreateCourseFormPage/CreateCourseFormPage';
@@ -21,6 +23,8 @@ const serverUrl = process.env.REACT_APP_SERVER_URL || '';
 const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
 
 function App() {
+  const { showNotification } = useNotification();
+
   useEffect(() => {
     tg.ready();
     tg.setHeaderColor('secondary_bg_color');
@@ -32,20 +36,14 @@ function App() {
 
     socket.on('notification', (data) => {
       const { message, status } = data;
-      if (status === 'success') {
-        toast.success(message);
-      } else if (status === 'error') {
-        toast.error(message);
-      } else {
-        toast(message);
-      }
+      showNotification(message, status);
     });
 
     return () => {
       socket.off('notification');
       socket.close();
     };
-  }, []);
+  }, [showNotification]);
 
   return (
     <TonConnectUIProvider manifestUrl={manifestUrl}>
@@ -101,4 +99,9 @@ function App() {
   );
 }
 
-export default App;
+// eslint-disable-next-line import/no-anonymous-default-export
+export default () => (
+  <NotificationProvider>
+    <App />
+  </NotificationProvider>
+);

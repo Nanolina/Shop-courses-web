@@ -4,15 +4,15 @@
   gap: 20px;
   border-radius: 10px;
   padding: 10px;
-  height: 150px;
+  height: 100px;
   width: 95%;
   background-color: var(--tg-theme-bg-color);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .image {
-  height: 150px;
-  width: 150px;
+  height: 100%;
+  width: 100px;
   border-radius: 10px;
   box-shadow: 2px 2px 6px rgb(141, 141, 141);
 }
@@ -22,7 +22,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  width: 70%;
+  width: calc(100% - 160px);
+  height: 100%;
 }
 
 .name {

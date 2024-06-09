@@ -4,7 +4,13 @@ import ReadyCoursePart from '../ReadyCoursePart/ReadyCoursePart';
 import { ICoursePartListProps } from '../types';
 import styles from './CoursePartList.module.css';
 
-function CoursePartList({ type, parentId, items, role }: ICoursePartListProps) {
+function CoursePartList({
+  type,
+  parentId,
+  items,
+  role,
+  updateItems,
+}: ICoursePartListProps) {
   return (
     <>
       {!items.length ? (
@@ -22,6 +28,7 @@ function CoursePartList({ type, parentId, items, role }: ICoursePartListProps) {
             type={type}
             parentId={parentId}
             role={role}
+            updateItems={updateItems}
           />
         ))
       )}

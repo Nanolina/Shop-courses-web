@@ -5,7 +5,8 @@ export function handleAuthError(
   if (error.response && error.response.status === 401) {
     const message = error.response.data.message;
     if (message === 'Init data expired, please re-authenticate') {
-      window.Telegram.WebApp.close();
+      // window.location.reload();
+      // window.Telegram.WebApp.close();
     } else {
       setError(`Authentication error: ${message}`);
     }

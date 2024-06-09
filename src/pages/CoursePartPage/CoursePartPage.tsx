@@ -9,7 +9,13 @@ import { ICoursePartPageProps } from '../types';
 
 const tg = window.Telegram.WebApp;
 
-function CoursePartPage({ type, parentId, items, role }: ICoursePartPageProps) {
+function CoursePartPage({
+  type,
+  parentId,
+  items,
+  role,
+  updateItems,
+}: ICoursePartPageProps) {
   const navigate = useNavigate();
   const navigateToForm = useCallback(() => {
     navigate(`/course-part/create/${type}/${parentId}`);
@@ -35,6 +41,7 @@ function CoursePartPage({ type, parentId, items, role }: ICoursePartPageProps) {
         parentId={parentId}
         items={items}
         role={role}
+        updateItems={updateItems}
       />
     </Container>
   );
