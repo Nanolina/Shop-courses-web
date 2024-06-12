@@ -35,7 +35,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "cd src/ton && rm -rf node_modules && rm -rf build && npm install && npm run build Seller && npm run build Customer && cd ../.. && react-app-rewired build",
+    "build": "cd src/ton && rm -rf node_modules && rm -rf build && npm install && npm run build Course && npm run build Purchase && cd ../.. && react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },

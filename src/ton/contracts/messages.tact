@@ -1,8 +1,10 @@
-message NewSeller {
+message NewCourse {
     courseId: String;
-}
-message NewCustomer {
-    courseId: String;
-    seller: Address;
     coursePrice: Int as coins;
+}
+message NewPurchase {
+    coursePrice: Int as coins;
+}
+message TransferToMarketplace {
+    courseId: String;
 }

@@ -9,7 +9,7 @@ import {
   getCSSVariableValue,
   handleAuthError,
 } from '../../functions';
-import { useTonConnect } from '../../hooks';
+import { useContract, useTonConnect } from '../../hooks';
 import { ICourse } from '../../types';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
@@ -25,7 +25,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const { wallet } = useTonConnect();
+  const { wallet, connected } = useTonConnect();
+  const { purchase } = useContract();
   const { initDataRaw } = retrieveLaunchParams();
 
   const getCategoryLabel = (value: string) => {
@@ -46,6 +47,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   );
 
   const handlePurchaseCourse = useCallback(async () => {
+    purchase();
     setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
@@ -62,11 +64,15 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [course?.id, initDataRaw, navigate, wallet]);
+  }, [course?.id, initDataRaw, navigate, wallet, purchase]);
 
   useEffect(() => {
-    tg.MainButton.show();
-  }, []);
+    if (role === USER && !connected) {
+      tg.MainButton.hide();
+    } else {
+      tg.MainButton.show();
+    }
+  }, [connected, role]);
 
   useEffect(() => {
     if (role === USER) {

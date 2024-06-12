@@ -1,5 +1,5 @@
 import { Address, OpenedContract, toNano } from '@ton/core';
-import { NewSeller, Seller } from '../ton/wrappers/Seller';
+import { NewPurchase, Purchase } from '../ton/wrappers/Purchase';
 import { useAsyncInitialize } from './useAsyncInitialize';
 import { useTonClient } from './useTonClient';
 import { useTonConnect } from './useTonConnect';
@@ -8,25 +8,28 @@ export function useContract() {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
 
-  const sellerContract = useAsyncInitialize(async () => {
+  const purchaseContract = useAsyncInitialize(async () => {
     if (!client) return;
-    const contractAddress: any = process.env.REACT_APP_SELLER_CONTRACT_ADDRESS;
+    const contractAddress: any =
+      process.env.REACT_APP_PURCHASE_CONTRACT_ADDRESS;
 
-    const contract = await Seller.fromAddress(Address.parse(contractAddress));
+    const contract = Purchase.fromAddress(Address.parse(contractAddress));
 
-    return client.open(contract) as OpenedContract<Seller>;
+    return client.open(contract) as OpenedContract<Purchase>;
   }, [client]);
 
   return {
-    createCourse: (courseId: string) => {
-      const message: NewSeller = {
-        $$type: 'NewSeller',
+    purchaseCourse: (courseId: string, coursePrice: number, seller: string) => {
+      const message: NewPurchase = {
+        $$type: 'NewPurchase',
         courseId,
+        coursePrice: toNano(coursePrice),
+        seller: Address.parse(seller),
       };
-      sellerContract?.send(
+      purchaseContract?.send(
         sender,
         {
-          value: toNano('1'),
+          value: toNano('10'),
         },
         message
       );
