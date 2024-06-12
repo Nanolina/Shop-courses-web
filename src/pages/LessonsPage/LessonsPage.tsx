@@ -53,6 +53,7 @@ function LessonsPage() {
         parentId={moduleId}
         items={lessons}
         role={role}
+        updateItems={getAllLessons}
       />
       {error && <MessageBox errorMessage={error} />}
     </>

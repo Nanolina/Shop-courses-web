@@ -1,16 +1,11 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import { TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { CUSTOMER, SELLER, USER } from '../../consts';
-import {
-  createAxiosWithAuth,
-  getCSSVariableValue,
-  handleAuthError,
-} from '../../functions';
-import { useTonConnect } from '../../hooks';
-import { ICourse } from '../../types';
+import { getCSSVariableValue } from '../../functions';
+import { useContract, useTonConnect } from '../../hooks';
+import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
@@ -25,7 +20,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const { wallet } = useTonConnect();
+  const { wallet, connected } = useTonConnect();
+  const { purchaseCourse, createCourse } = useContract(course.id, course.price);
   const { initDataRaw } = retrieveLaunchParams();
 
   const getCategoryLabel = (value: string) => {
@@ -45,28 +41,32 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     [course.id, navigate]
   );
 
-  const handlePurchaseCourse = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.post<ICourse>(
-        `/course/${course?.id}/purchase`,
-        { walletAddressCustomer: wallet }
-      );
-      if (response.status === 201) {
-        navigate('/course/purchased');
-      }
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [course?.id, initDataRaw, navigate, wallet]);
+  // const handlePurchaseCourse = useCallback(async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     if (!initDataRaw) throw new Error('Not enough authorization data');
+  //     const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+  //     const response = await axiosWithAuth.post<ICourse>(
+  //       `/course/${course?.id}/purchase`,
+  //       { walletAddressCustomer: wallet }
+  //     );
+  //     if (response.status === 201) {
+  //       navigate('/course/purchased');
+  //     }
+  //   } catch (error: any) {
+  //     handleAuthError(error, setError);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [course?.id, initDataRaw, navigate, wallet]);
 
   useEffect(() => {
-    tg.MainButton.show();
-  }, []);
+    if (role === USER && !connected) {
+      tg.MainButton.hide();
+    } else {
+      tg.MainButton.show();
+    }
+  }, [connected, role]);
 
   useEffect(() => {
     if (role === USER) {
@@ -77,8 +77,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         color: !!wallet ? buttonColor : '#e6e9e9',
       });
       tg.MainButton.show();
-      tg.onEvent('mainButtonClicked', handlePurchaseCourse);
-      return () => tg.offEvent('mainButtonClicked', handlePurchaseCourse);
+      tg.onEvent('mainButtonClicked', purchaseCourse);
+      return () => tg.offEvent('mainButtonClicked', purchaseCourse);
     } else if (role === SELLER || role === CUSTOMER) {
       tg.MainButton.setParams({
         text: 'Modules',
@@ -87,7 +87,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       tg.onEvent('mainButtonClicked', navigateToModulesPage);
       return () => tg.offEvent('mainButtonClicked', navigateToModulesPage);
     }
-  }, [course, navigateToModulesPage, handlePurchaseCourse, role, wallet]);
+  }, [course, navigateToModulesPage, purchaseCourse, role, wallet]);
 
   if (isLoading) return <Loader />;
 
@@ -130,9 +130,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
           </div>
         )}
       </div>
-      {role === USER && (
-        <TonConnectButton className={styles.connectWalletButton} />
-      )}
+
+      {role === SELLER && <Button onClick={createCourse} text="Activate" />}
       {error && <MessageBox errorMessage={error} />}
     </>
   );

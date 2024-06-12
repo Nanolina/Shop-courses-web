@@ -1,38 +1,4 @@
-.imageContainer {
-  position: relative;
+.videoContainer {
+  padding-top: 30px;
   width: 100%;
-  background-color: var(--tg-theme-secondary-bg-color);
-}
-
-.image {
-  width: 100%;
-  height: 50vh;
-  object-fit: cover;
-}
-
-.icon {
-  position: absolute;
-  color: white;
-  cursor: pointer;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  top: 20px;
-  left: 10px;
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  border-bottom: 2px solid #e9e9e9;
-  padding-bottom: 10px;
-  gap: 10px;
-  width: 100%;
-}
-
-.descriptionText {
-  text-align: left;
-  font-size: 16px;
-  color: var(--tg-theme-text-color);
-  line-height: 1.5;
 }

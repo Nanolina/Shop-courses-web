@@ -1,11 +1,11 @@
 import { NetworkProvider } from '@ton/blueprint';
 import { toNano } from '@ton/core';
-import { Seller } from '../wrappers/Seller';
+import { Course } from '../wrappers/Course';
 
 export async function run(provider: NetworkProvider) {
-    const seller = provider.open(await Seller.fromInit('a2153247-21b0-471b-b2ab-11cad1d35d0e'));
+    const course = provider.open(await Course.fromInit('02959e9b-0c30-46a1-961a-fe144ebce033', toNano('1')));
 
-    await seller.send(
+    await course.send(
         provider.sender(),
         {
             value: toNano('0.05'),
@@ -16,7 +16,7 @@ export async function run(provider: NetworkProvider) {
         },
     );
 
-    await provider.waitForDeploy(seller.address);
+    await provider.waitForDeploy(course.address);
 
-    // run methods on `seller`
+    // run methods on `course`
 }

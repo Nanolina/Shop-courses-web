@@ -8,12 +8,14 @@
   cursor: pointer;
   position: absolute;
   left: 10px;
+  top: 5px;
 }
 
 .iconLabelContainer {
   display: flex;
   align-items: center;
   gap: 5px;
+  top: 5px;
 }
 
 .labelRight {

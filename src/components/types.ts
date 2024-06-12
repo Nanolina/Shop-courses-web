@@ -27,6 +27,7 @@ export interface ICoursePartListProps {
   parentId: string;
   items: ICoursePartItem[];
   role: RoleType;
+  updateItems: () => void;
 }
 
 export interface ICoursesListByCategoryProps {
@@ -50,6 +51,7 @@ export interface IReadyCoursePartProps {
   type: EntityType;
   parentId: string;
   role: RoleType;
+  updateItems: () => void;
 }
 
 export interface IVideoPlayerProps {

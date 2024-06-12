@@ -16,6 +16,7 @@ function ReadyCoursePart({
   type,
   parentId,
   role,
+  updateItems,
 }: IReadyCoursePartProps) {
   const navigate = useNavigate();
   const [isSeller, setIsSeller] = useState<boolean>(false);
@@ -36,6 +37,7 @@ function ReadyCoursePart({
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       await axiosWithAuth.delete(`/${type}/${item.id}`);
+      updateItems();
     } catch (error: any) {
       handleAuthError(error, setError);
     } finally {

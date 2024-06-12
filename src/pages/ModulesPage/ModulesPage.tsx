@@ -53,6 +53,7 @@ const ModulesPage: React.FC = () => {
         parentId={courseId}
         items={modules}
         role={role}
+        updateItems={getAllModules}
       />
       {error && <MessageBox errorMessage={error} />}
     </>

@@ -1,17 +1,17 @@
 import { NetworkProvider } from '@ton/blueprint';
 import { address, toNano } from '@ton/core';
-import { Customer } from '../wrappers/Customer';
+import { Purchase } from '../wrappers/Purchase';
 
 export async function run(provider: NetworkProvider) {
-    const customer = provider.open(
-        await Customer.fromInit(
-            'a2153247-21b0-471b-b2ab-11cad1d35d0e',
-            address('0:24ee186614c0d755460d0728d875c6ce46065c138b1d2ce5d1524b5f74715d61'),
-            23n,
+    const purchase = provider.open(
+        await Purchase.fromInit(
+            address('EQCIEEaD_8z6FnkozF6mFaaWNN1E0JiDJBOVOWQPnBgGRTv0'),
+            address('EQAVHSfvZ-PsRc8AEJ9iWSnu0lpA_bsL40hyVaKAauyMadek'),
+            '123',
         ),
     );
 
-    await customer.send(
+    await purchase.send(
         provider.sender(),
         {
             value: toNano('0.05'),
@@ -22,7 +22,7 @@ export async function run(provider: NetworkProvider) {
         },
     );
 
-    await provider.waitForDeploy(customer.address);
+    await provider.waitForDeploy(purchase.address);
 
     // run methods on `customer`
 }
