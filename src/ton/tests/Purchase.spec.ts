@@ -61,6 +61,7 @@ describe('Purchase', () => {
         expect(result.transactions).toHaveTransaction({
             from: purchase.address,
             to: address('EQCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sd_u'),
+            value: toNano('12'),
         });
     });
 });

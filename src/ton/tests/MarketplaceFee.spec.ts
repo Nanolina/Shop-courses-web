@@ -41,9 +41,7 @@ describe('MarketplaceFee', () => {
         // blockchain and sellerCotract are ready to use
     });
 
-    it('should send money to Alina', async () => {
-        const minExpectedValue = toNano('0.398');
-        const maxExpectedValue = toNano('0.399');
+    it('should send money to developers', async () => {
         const result = await marketplaceFee.send(
             deployer.getSender(),
             {
@@ -65,10 +63,11 @@ describe('MarketplaceFee', () => {
         // Check the number of transactions
         expect(filteredTransactions.length).toBe(2);
 
+        const devPayment = 400000000n;
         // Check every transaction
         filteredTransactions.forEach((transaction: any) => {
-            expect(transaction.value).toBeGreaterThanOrEqual(minExpectedValue);
-            expect(transaction.value).toBeLessThanOrEqual(maxExpectedValue);
+            expect(transaction.value).toBe(devPayment);
+            expect(transaction.value).toBe(devPayment);
         });
     });
 });

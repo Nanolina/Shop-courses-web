@@ -3,7 +3,6 @@ import "@stdlib/ownable";
 import "./messages";
 
 contract Purchase with Deployable, Ownable {
-    const deployFee: Int = ton("0.01");
     owner: Address; // parent - Course contract
     customer: Address;
     seller: Address;
@@ -18,7 +17,7 @@ contract Purchase with Deployable, Ownable {
     receive(msg: NewPurchase){
         require(sender() == self.owner, "Data available only for parent Course");
         // Send money to seller
-        send(SendParameters{to: self.seller, value: (msg.coursePrice + self.deployFee), mode: SendIgnoreErrors});
+        send(SendParameters{to: self.seller, value: msg.coursePrice, mode: SendPayGasSeparately | SendIgnoreErrors});
         self.reply(self.courseId.asComment());
     }
 

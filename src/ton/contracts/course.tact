@@ -18,17 +18,21 @@ contract Course with Deployable, Ownable {
         require(context().value >= self.deployFee, "Insufficient funds to create a course");
         let init: StateInit = initOf Course(msg.courseId, msg.coursePrice);
         let address: Address = contractAddress(init);
+        // Create new course contract with new data
         send(SendParameters{
                 to: address,
                 value: 0,
                 mode: SendIgnoreErrors | SendRemainingValue,
+                body: "Create".asComment(),
+                bounce: false,
                 code: init.code,
-                data: init.data,
-                body: Deploy{queryId: 0}.toCell()
+                data: init.data
             }
         );
-        self.reply("Created".asComment());
+        self.reply("Сourse activated".asComment());
     }
+
+    receive("Create"){}
 
     receive("New purchase"){
         let totalFee: Int = (self.deployFee + self.coursePrice);
@@ -41,6 +45,7 @@ contract Course with Deployable, Ownable {
                 value: 0,
                 mode: SendIgnoreErrors | SendRemainingValue,
                 body: NewPurchase{coursePrice: self.coursePrice}.toCell(),
+                bounce: false,
                 code: init.code,
                 data: init.data
             }
