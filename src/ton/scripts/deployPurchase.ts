@@ -1,13 +1,13 @@
 import { NetworkProvider } from '@ton/blueprint';
-import { Address, toNano } from '@ton/core';
+import { address, toNano } from '@ton/core';
 import { Purchase } from '../wrappers/Purchase';
 
 export async function run(provider: NetworkProvider) {
     const purchase = provider.open(
         await Purchase.fromInit(
-            Address.parse('EQDcFi9MwpBujzUCFxx5d291KG_CkYBQSpYr01HMroaKlFLw'),
-            Address.parse('EQBdyZo6fpzRokWc3K95-TdPa1580Ylxbp4Y9AUIEzGY4svj'),
-            Address.parse('EQDcFi9MwpBujzUCFxx5d291KG_CkYBQSpYr01HMroaKlFLw'),
+            address('EQCIEEaD_8z6FnkozF6mFaaWNN1E0JiDJBOVOWQPnBgGRTv0'),
+            address('EQAVHSfvZ-PsRc8AEJ9iWSnu0lpA_bsL40hyVaKAauyMadek'),
+            '123',
         ),
     );
 
