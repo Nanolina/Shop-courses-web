@@ -17,8 +17,13 @@ contract Purchase with Deployable, Ownable {
     receive(msg: NewPurchase){
         require(sender() == self.owner, "Data available only for parent Course");
         // Send money to seller
-        send(SendParameters{to: self.seller, value: msg.coursePrice, mode: SendPayGasSeparately | SendIgnoreErrors});
-        self.reply(self.courseId.asComment());
+        send(SendParameters{
+                to: self.seller,
+                value: msg.coursePrice,
+                mode: SendPayGasSeparately | SendIgnoreErrors,
+                bounce: false
+            }
+        );
     }
 
     get fun balance(): Int {
