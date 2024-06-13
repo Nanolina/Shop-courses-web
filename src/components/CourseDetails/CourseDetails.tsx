@@ -1,4 +1,5 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
+import { TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
@@ -130,6 +131,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
           </div>
         )}
       </div>
+      <TonConnectButton className={styles.connectWalletButton} />
 
       {role === SELLER && <Button onClick={createCourse} text="Activate" />}
       {error && <MessageBox errorMessage={error} />}

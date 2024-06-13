@@ -1,17 +1,16 @@
 import "@stdlib/deploy";
-import "@stdlib/ownable";
 import "./messages";
 import "./purchase";
 
-contract Course with Deployable, Ownable {
+contract Course with Deployable {
     const deployFee: Int = ton("0.05");
-    owner: Address; // Seller
     courseId: String;
     coursePrice: Int as coins;
+    seller: Address;
     init(courseId: String, coursePrice: Int){
-        self.owner = sender();
         self.courseId = courseId;
         self.coursePrice = coursePrice;
+        self.seller = newAddress(0, 0);
     }
 
     receive(msg: NewCourse){
@@ -23,7 +22,7 @@ contract Course with Deployable, Ownable {
                 to: address,
                 value: 0,
                 mode: SendIgnoreErrors | SendRemainingValue,
-                body: "Create".asComment(),
+                body: CreateCourse{seller: sender()}.toCell(),
                 bounce: false,
                 code: init.code,
                 data: init.data
@@ -32,12 +31,14 @@ contract Course with Deployable, Ownable {
         self.reply("Сourse activated".asComment());
     }
 
-    receive("Create"){}
+    receive(msg: CreateCourse){
+        self.seller = msg.seller;
+    }
 
     receive("New purchase"){
         let totalFee: Int = (self.deployFee + self.coursePrice);
         require(context().value >= totalFee, "Insufficient funds to buy a course");
-        let init: StateInit = initOf Purchase(sender(), self.owner, self.courseId);
+        let init: StateInit = initOf Purchase(sender(), self.seller, self.courseId);
         let purchaseAddress: Address = contractAddress(init);
         // Create Purchase contract
         send(SendParameters{
@@ -50,7 +51,6 @@ contract Course with Deployable, Ownable {
                 data: init.data
             }
         );
-        self.reply("purchased".asComment());
     }
 
     get fun address(courseId: String, coursePrice: Int): Address {

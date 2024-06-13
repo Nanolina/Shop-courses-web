@@ -21,10 +21,12 @@ export function useContract(courseId: string, coursePrice: number) {
   }, [client]);
 
   // for this courseId and coursePrice
-  const specialCourseContract = useAsyncInitialize(async () => {
+  const сourseContractWithNewData = useAsyncInitialize(async () => {
     if (!client) return;
 
-    const contract = await Course.fromInit(courseId, coursePriceInNano);
+    const contractByData = await Course.fromInit(courseId, coursePriceInNano);
+    const contractAddress = address(contractByData.address.toString());
+    const contract = await Course.fromAddress(contractAddress);
     return client.open(contract) as OpenedContract<Course>;
   }, [client]);
 
@@ -38,17 +40,17 @@ export function useContract(courseId: string, coursePrice: number) {
       courseDefaultContract?.send(
         sender,
         {
-          value: toNano('0.2'),
+          value: toNano('0.1'),
         },
         message
       );
     },
 
     purchaseCourse: () => {
-      specialCourseContract?.send(
+      сourseContractWithNewData?.send(
         sender,
         {
-          value: coursePriceInNano + toNano('1'),
+          value: coursePriceInNano + toNano('0.1'),
         },
         'New purchase'
       );
