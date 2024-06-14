@@ -21,11 +21,11 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [courseActionType, setCourseActionType] =
+    useState<CourseActionType>('purchase');
 
   const { wallet, connected } = useTonConnect();
 
-  const courseActionType: CourseActionType =
-    role === SELLER ? 'creation' : 'purchase';
   const { purchaseCourse, createCourse } = useContract(
     course.id,
     course.price,
@@ -68,6 +68,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   //     setIsLoading(false);
   //   }
   // }, [course?.id, initDataRaw, navigate, wallet]);
+
+  useEffect(() => {
+    if (role === SELLER) {
+      setCourseActionType('creation');
+    }
+  }, [role]);
 
   useEffect(() => {
     if (role === USER && !connected) {

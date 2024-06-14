@@ -50,6 +50,7 @@ describe('MarketplaceFee', () => {
             {
                 $$type: 'TransferToMarketplace',
                 courseId: '123',
+                courseActionType: 'creation',
             },
         );
 
@@ -63,10 +64,9 @@ describe('MarketplaceFee', () => {
         // Check the number of transactions
         expect(filteredTransactions.length).toBe(2);
 
-        const devPayment = 400000000n;
+        const devPayment = 250000000n;
         // Check every transaction
         filteredTransactions.forEach((transaction: any) => {
-            expect(transaction.value).toBe(devPayment);
             expect(transaction.value).toBe(devPayment);
         });
     });

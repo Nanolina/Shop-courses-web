@@ -112,16 +112,33 @@ describe('Course', () => {
     });
 
     it('should create new purchase contract', async () => {
-        const newPurchaseAddress = await course.getAddressPurchase(customer.address, seller.address, '123');
-        const result = await course.send(
+        const newCourse = blockchain.openContract(await Course.fromInit('345', toNano('3')));
+        const message: NewCourse = {
+            $$type: 'NewCourse',
+            courseId: '345',
+            coursePrice: toNano('3'),
+        };
+        // Send new transaction to create course to save seller
+        await newCourse.send(
+            seller.getSender(),
+            {
+                value: toNano('1'),
+            },
+            message,
+        );
+
+        const newPurchaseAddress = await course.getAddressPurchase(customer.address, seller.address, '345');
+
+        const result = await newCourse.send(
             customer.getSender(),
             {
-                value: toNano('13'),
+                value: toNano('4'),
             },
             'New purchase',
         );
+
         expect(result.transactions).toHaveTransaction({
-            from: course.address,
+            from: newCourse.address,
             to: newPurchaseAddress,
             deploy: true,
             success: true,

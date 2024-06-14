@@ -21,6 +21,7 @@ contract Purchase with Deployable, Ownable {
                 to: self.seller,
                 value: msg.coursePrice,
                 mode: SendPayGasSeparately | SendIgnoreErrors,
+                body: self.courseId.asComment(),
                 bounce: false
             }
         );
