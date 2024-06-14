@@ -11,7 +11,7 @@ export function useContract(
   courseActionType: CourseActionType
 ) {
   const { client } = useTonClient();
-  const { sender } = useTonConnect(courseId, courseActionType);
+  const { sender } = useTonConnect();
 
   const coursePriceInNano = toNano(coursePrice.toString());
 
@@ -45,7 +45,7 @@ export function useContract(
       courseDefaultContract?.send(
         sender,
         {
-          value: toNano('0.1'),
+          value: toNano('0.05'),
         },
         message
       );
@@ -55,7 +55,7 @@ export function useContract(
       сourseContractWithNewData?.send(
         sender,
         {
-          value: coursePriceInNano + toNano('0.1'),
+          value: coursePriceInNano + toNano('0.15'),
         },
         'New purchase'
       );

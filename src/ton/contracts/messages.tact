@@ -10,5 +10,4 @@ message NewPurchase {
 }
 message TransferToMarketplace {
     courseId: String;
-    courseActionType: String;
 }

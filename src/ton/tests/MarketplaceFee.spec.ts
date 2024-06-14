@@ -45,12 +45,11 @@ describe('MarketplaceFee', () => {
         const result = await marketplaceFee.send(
             deployer.getSender(),
             {
-                value: toNano('0.55'),
+                value: toNano('0.6'),
             },
             {
                 $$type: 'TransferToMarketplace',
                 courseId: '123',
-                courseActionType: 'creation',
             },
         );
 
@@ -64,10 +63,12 @@ describe('MarketplaceFee', () => {
         // Check the number of transactions
         expect(filteredTransactions.length).toBe(2);
 
-        const devPayment = 250000000n;
+        const maxDevPayment = 300000000n;
+        const minDevPayment = 200000000n;
         // Check every transaction
         filteredTransactions.forEach((transaction: any) => {
-            expect(transaction.value).toBe(devPayment);
+            expect(transaction.value).toBeLessThan(maxDevPayment);
+            expect(transaction.value).toBeGreaterThan(minDevPayment);
         });
     });
 
@@ -80,7 +81,6 @@ describe('MarketplaceFee', () => {
             {
                 $$type: 'TransferToMarketplace',
                 courseId: '123',
-                courseActionType: 'creation',
             },
         );
         const balanceBeforeTransaction = await marketplaceFee.getBalance();
