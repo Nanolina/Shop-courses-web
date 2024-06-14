@@ -45,7 +45,7 @@ describe('MarketplaceFee', () => {
         const result = await marketplaceFee.send(
             deployer.getSender(),
             {
-                value: toNano('1'),
+                value: toNano('0.55'),
             },
             {
                 $$type: 'TransferToMarketplace',
@@ -68,6 +68,38 @@ describe('MarketplaceFee', () => {
         // Check every transaction
         filteredTransactions.forEach((transaction: any) => {
             expect(transaction.value).toBe(devPayment);
+        });
+    });
+
+    it('should withdraw', async () => {
+        await marketplaceFee.send(
+            deployer.getSender(),
+            {
+                value: toNano('10'),
+            },
+            {
+                $$type: 'TransferToMarketplace',
+                courseId: '123',
+                courseActionType: 'creation',
+            },
+        );
+        const balanceBeforeTransaction = await marketplaceFee.getBalance();
+
+        const result = await marketplaceFee.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.1'),
+            },
+            'Withdraw',
+        );
+        const balanceAfterTransaction = await marketplaceFee.getBalance();
+
+        expect(balanceAfterTransaction).toBeLessThan(balanceBeforeTransaction);
+        expect(balanceAfterTransaction).toBe(10000000n);
+        expect(result.transactions).toHaveTransaction({
+            from: marketplaceFee.address,
+            to: deployer.address,
+            success: true,
         });
     });
 });

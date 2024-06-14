@@ -28,7 +28,6 @@ contract Course with Deployable {
                 data: init.data
             }
         );
-        self.reply("Сourse activated".asComment());
     }
 
     receive(msg: CreateCourse){
@@ -61,9 +60,5 @@ contract Course with Deployable {
     get fun addressPurchase(customer: Address, seller: Address, courseId: String): Address {
         let init: StateInit = initOf Purchase(customer, seller, courseId);
         return contractAddress(init);
-    }
-
-    get fun balance(): Int {
-        return myBalance();
     }
 }

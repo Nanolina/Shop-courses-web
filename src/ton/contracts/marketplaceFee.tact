@@ -1,12 +1,16 @@
 import "@stdlib/deploy";
+import "@stdlib/ownable";
 import "./messages";
 
-contract MarketplaceFee with Deployable {
+contract MarketplaceFee with Deployable, Ownable {
+    const minTonForStorage: Int = ton("0.01"); // 1KB for 2.5 years
     const marketplaceFee: Int = ton("0.5");
-    const gas: Int = ton("0.05");
+    const gas: Int = ton("0.03");
+    owner: Address;
     walletAlina: Address;
     walletSnezhanna: Address;
     init(walletAlina: Address, walletSnezhanna: Address){
+        self.owner = sender();
         self.walletAlina = walletAlina;
         self.walletSnezhanna = walletSnezhanna;
     }
@@ -39,7 +43,19 @@ contract MarketplaceFee with Deployable {
                 bounce: false
             }
         );
-        // Send money back
-        self.reply("sent".asComment());
+    }
+
+    receive("Withdraw"){
+        require(sender() == self.owner, "Only owner is allowed to withdraw");
+        send(SendParameters{
+                to: sender(),
+                value: ((myBalance() - context().value) - self.minTonForStorage),
+                mode: (SendIgnoreErrors + SendRemainingValue)
+            }
+        );
+    }
+
+    get fun balance(): Int {
+        return myBalance();
     }
 }

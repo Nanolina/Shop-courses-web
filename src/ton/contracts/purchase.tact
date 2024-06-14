@@ -26,8 +26,4 @@ contract Purchase with Deployable, Ownable {
             }
         );
     }
-
-    get fun balance(): Int {
-        return myBalance();
-    }
 }
