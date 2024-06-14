@@ -6,6 +6,7 @@ import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { CUSTOMER, SELLER, USER } from '../../consts';
 import { getCSSVariableValue } from '../../functions';
 import { useContract, useTonConnect } from '../../hooks';
+import { CourseActionType } from '../../types';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
@@ -22,7 +23,14 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const [error, setError] = useState<string>('');
 
   const { wallet, connected } = useTonConnect();
-  const { purchaseCourse, createCourse } = useContract(course.id, course.price);
+
+  const courseActionType: CourseActionType =
+    role === SELLER ? 'creation' : 'purchase';
+  const { purchaseCourse, createCourse } = useContract(
+    course.id,
+    course.price,
+    courseActionType
+  );
   const { initDataRaw } = retrieveLaunchParams();
 
   const getCategoryLabel = (value: string) => {
