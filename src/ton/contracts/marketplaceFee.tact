@@ -4,31 +4,30 @@ import "./messages";
 
 contract MarketplaceFee with Deployable, Ownable {
     const minTonForStorage: Int = ton("0.01"); // 1KB for 2.5 years
+    const deployFee: Int = ton("0.05");
     owner: Address;
-    walletAlina: Address;
-    walletSnezhanna: Address;
-    init(walletAlina: Address, walletSnezhanna: Address){
-        self.owner = sender();
-        self.walletAlina = walletAlina;
-        self.walletSnezhanna = walletSnezhanna;
+    walletDev2: Address;
+    init(owner: Address, walletDev2: Address){
+        self.owner = owner;
+        self.walletDev2 = walletDev2;
     }
 
     receive(msg: TransferToMarketplace){
-        let halfAmount: Int = (context().value / 2 - self.minTonForStorage); // 0.6 / 2 - 0.01 = 0.29
-        // Send money to Alina
+        let halfAmount: Int = (context().value - self.deployFee) / 2;
+        // Send money to Developer 1
         send(SendParameters{
-                to: self.walletAlina,
-                value: (halfAmount - self.minTonForStorage), // 0.2
-                mode: SendPayGasSeparately | SendIgnoreErrors,
+                to: self.owner,
+                value: halfAmount,
+                mode: SendIgnoreErrors,
                 body: msg.courseId.asComment(),
                 bounce: false
             }
         );
-        // Send money to Snezhanna
+        // Send money to Developer 2
         send(SendParameters{
-                to: self.walletSnezhanna,
-                value: (halfAmount - self.minTonForStorage), // 0.2
-                mode: SendPayGasSeparately | SendIgnoreErrors,
+                to: self.walletDev2,
+                value: halfAmount,
+                mode: SendIgnoreErrors,
                 body: msg.courseId.asComment(),
                 bounce: false
             }

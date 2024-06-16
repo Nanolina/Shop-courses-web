@@ -35,10 +35,7 @@ contract Course with Deployable {
     }
 
     receive("New purchase"){
-        // coursePrice = 5
-        // deployFee = 0.05 * 3 = 0.15
-        // пришло 5.15
-        let totalFee: Int = (self.deployFee * 3 + self.coursePrice); // deployFee for purchase + to send seller + marketplaceFee transactions
+        let totalFee: Int = (self.deployFee * 3 + self.coursePrice);
         require(context().value >= totalFee, "Insufficient funds to buy a course");
         let init: StateInit = initOf Purchase(sender(), self.seller, self.courseId);
         let purchaseAddress: Address = contractAddress(init);

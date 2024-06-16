@@ -45,7 +45,7 @@ export function useContract(
       courseDefaultContract?.send(
         sender,
         {
-          value: toNano('0.05'),
+          value: toNano('0.07'),
         },
         message
       );
@@ -55,7 +55,7 @@ export function useContract(
       сourseContractWithNewData?.send(
         sender,
         {
-          value: coursePriceInNano + toNano('0.15'),
+          value: coursePriceInNano + toNano('0.21'),
         },
         'New purchase'
       );

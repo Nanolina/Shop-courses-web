@@ -1,11 +1,11 @@
 import { NetworkProvider } from '@ton/blueprint';
-import { Address, toNano } from '@ton/core';
+import { address, toNano } from '@ton/core';
 import { MarketplaceFee } from '../wrappers/MarketplaceFee';
 
 export async function run(provider: NetworkProvider) {
-    const walletAlina = Address.parse('EQBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYc7F'); // Test
-    const walletSnezhanna = Address.parse('EQCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sd_u'); // Online courses test
-    const marketplaceFee = provider.open(await MarketplaceFee.fromInit(walletAlina, walletSnezhanna));
+    const walletDev1 = address('0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh'); // Online courses test
+    const walletDev2 = address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'); // Test
+    const marketplaceFee = provider.open(await MarketplaceFee.fromInit(walletDev1, walletDev2));
 
     await marketplaceFee.send(
         provider.sender(),

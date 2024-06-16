@@ -4,6 +4,9 @@ import '@ton/test-utils';
 import { MarketplaceFee } from '../wrappers/MarketplaceFee';
 import { NewPurchase, Purchase } from '../wrappers/Purchase';
 
+const walletDev1 = address('0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh'); // Online courses test
+const walletDev2 = address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'); // Test
+
 describe('Purchase', () => {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
@@ -15,17 +18,12 @@ describe('Purchase', () => {
 
         purchase = blockchain.openContract(
             await Purchase.fromInit(
-                address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'),
-                address('EQCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sd_u'),
+                address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'), // customer
+                address('EQCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sd_u'), // seller
                 '123',
             ),
         );
-        marketplaceFee = blockchain.openContract(
-            await MarketplaceFee.fromInit(
-                address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'),
-                address('EQCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sd_u'),
-            ),
-        );
+        marketplaceFee = blockchain.openContract(await MarketplaceFee.fromInit(walletDev1, walletDev2));
 
         deployer = await blockchain.treasury('deployer');
 
@@ -77,7 +75,7 @@ describe('Purchase', () => {
         const result = await purchase.send(
             deployer.getSender(),
             {
-                value: toNano('14'),
+                value: toNano('13'),
             },
             message,
         );
@@ -93,6 +91,7 @@ describe('Purchase', () => {
             (transaction: any) =>
                 // eslint-disable-next-line eqeqeq
                 transaction.from == purchase.address.toString() &&
+                // eslint-disable-next-line eqeqeq
                 transaction.to == 'EQCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sd_u',
         );
 

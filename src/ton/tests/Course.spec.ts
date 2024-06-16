@@ -2,7 +2,11 @@ import { address, toNano } from '@ton/core';
 import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
 import '@ton/test-utils';
 import { Course, NewCourse } from '../wrappers/Course';
+import { MarketplaceFee } from '../wrappers/MarketplaceFee';
 import { Purchase } from '../wrappers/Purchase';
+
+const walletDev1 = address('0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh'); // Test
+const walletDev2 = address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'); // Online courses test
 
 describe('Course', () => {
     let blockchain: Blockchain;
@@ -10,6 +14,7 @@ describe('Course', () => {
     let customer: SandboxContract<TreasuryContract>;
     let course: SandboxContract<Course>;
     let purchase: SandboxContract<Purchase>;
+    let marketplaceFee: SandboxContract<MarketplaceFee>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -22,6 +27,7 @@ describe('Course', () => {
                 '123',
             ),
         );
+        marketplaceFee = blockchain.openContract(await MarketplaceFee.fromInit(walletDev1, walletDev2));
 
         seller = await blockchain.treasury('seller');
         customer = await blockchain.treasury('customer');
@@ -46,6 +52,16 @@ describe('Course', () => {
                 queryId: 0n,
             },
         );
+        const deployMarketplaceFeeResult = await marketplaceFee.send(
+            seller.getSender(),
+            {
+                value: toNano('0.05'),
+            },
+            {
+                $$type: 'Deploy',
+                queryId: 0n,
+            },
+        );
 
         expect(deployCourseResult.transactions).toHaveTransaction({
             from: seller.address,
@@ -56,6 +72,12 @@ describe('Course', () => {
         expect(deployPurchaseResult.transactions).toHaveTransaction({
             from: customer.address,
             to: purchase.address,
+            deploy: true,
+            success: true,
+        });
+        expect(deployMarketplaceFeeResult.transactions).toHaveTransaction({
+            from: seller.address,
+            to: marketplaceFee.address,
             deploy: true,
             success: true,
         });
@@ -76,7 +98,7 @@ describe('Course', () => {
         const result = await course.send(
             seller.getSender(),
             {
-                value: toNano('1'),
+                value: toNano('0.07'),
             },
             message,
         );
@@ -122,7 +144,7 @@ describe('Course', () => {
         await newCourse.send(
             seller.getSender(),
             {
-                value: toNano('1'),
+                value: toNano('0.07'),
             },
             message,
         );
@@ -132,7 +154,7 @@ describe('Course', () => {
         const result = await newCourse.send(
             customer.getSender(),
             {
-                value: toNano('4'),
+                value: toNano('3.21'),
             },
             'New purchase',
         );
