@@ -1,4 +1,3 @@
-import { retrieveLaunchParams } from '@tma.js/sdk';
 import { TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -6,10 +5,9 @@ import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { CUSTOMER, SELLER, USER } from '../../consts';
 import { getCSSVariableValue } from '../../functions';
 import { useContract, useTonConnect } from '../../hooks';
+import { CourseActionType } from '../../types';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
-import { Loader } from '../../ui/Loader/Loader';
-import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 
@@ -18,12 +16,19 @@ const tg = window.Telegram.WebApp;
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<string>('');
+  const [courseActionType, setCourseActionType] =
+    useState<CourseActionType>('purchase');
 
   const { wallet, connected } = useTonConnect();
-  const { purchaseCourse, createCourse } = useContract(course.id, course.price);
-  const { initDataRaw } = retrieveLaunchParams();
+
+  const { purchaseCourse, createCourse } = useContract(
+    course.id,
+    course.price,
+    courseActionType
+  );
+  // const { initDataRaw } = retrieveLaunchParams();
 
   const getCategoryLabel = (value: string) => {
     const category = categoryOptions.find((option) => option.value === value);
@@ -62,6 +67,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   // }, [course?.id, initDataRaw, navigate, wallet]);
 
   useEffect(() => {
+    if (role === SELLER) {
+      setCourseActionType('creation');
+    }
+  }, [role]);
+
+  useEffect(() => {
     if (role === USER && !connected) {
       tg.MainButton.hide();
     } else {
@@ -90,7 +101,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     }
   }, [course, navigateToModulesPage, purchaseCourse, role, wallet]);
 
-  if (isLoading) return <Loader />;
+  // if (isLoading) return <Loader />;
 
   return (
     <>
@@ -134,7 +145,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       <TonConnectButton className={styles.connectWalletButton} />
 
       {role === SELLER && <Button onClick={createCourse} text="Activate" />}
-      {error && <MessageBox errorMessage={error} />}
+      {/* {error && <MessageBox errorMessage={error} />} */}
     </>
   );
 }

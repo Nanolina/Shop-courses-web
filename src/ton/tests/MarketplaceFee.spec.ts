@@ -7,13 +7,13 @@ describe('MarketplaceFee', () => {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
     let marketplaceFee: SandboxContract<MarketplaceFee>;
-    const walletAlina = address('EQBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYc7F'); // Test
-    const walletSnezhanna = address('EQCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sd_u'); // Online courses
+    const walletDev1 = address('0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh'); // Online courses test
+    const walletDev2 = address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'); // Test
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
 
-        marketplaceFee = blockchain.openContract(await MarketplaceFee.fromInit(walletAlina, walletSnezhanna));
+        marketplaceFee = blockchain.openContract(await MarketplaceFee.fromInit(walletDev1, walletDev2));
 
         deployer = await blockchain.treasury('deployer');
 
@@ -45,7 +45,7 @@ describe('MarketplaceFee', () => {
         const result = await marketplaceFee.send(
             deployer.getSender(),
             {
-                value: toNano('1'),
+                value: toNano('0.6'),
             },
             {
                 $$type: 'TransferToMarketplace',
@@ -57,17 +57,18 @@ describe('MarketplaceFee', () => {
         const filteredTransactions = result.events.filter(
             (transaction: any) =>
                 // eslint-disable-next-line eqeqeq
-                transaction.to == walletAlina.toString() || transaction.to == walletSnezhanna.toString(),
+                transaction.to == walletDev1.toString() || transaction.to == walletDev2.toString(),
         );
 
         // Check the number of transactions
         expect(filteredTransactions.length).toBe(2);
 
-        const devPayment = 400000000n;
+        const maxDevPayment = 300000000n;
+        const minDevPayment = 200000000n;
         // Check every transaction
         filteredTransactions.forEach((transaction: any) => {
-            expect(transaction.value).toBe(devPayment);
-            expect(transaction.value).toBe(devPayment);
+            expect(transaction.value).toBeLessThanOrEqual(maxDevPayment);
+            expect(transaction.value).toBeGreaterThanOrEqual(minDevPayment);
         });
     });
 });

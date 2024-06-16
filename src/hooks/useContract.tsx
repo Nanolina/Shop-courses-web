@@ -1,12 +1,18 @@
 import { OpenedContract, address, toNano } from '@ton/core';
 import { Course, NewCourse } from '../ton/wrappers/Course';
+import { CourseActionType } from '../types';
 import { useAsyncInitialize } from './useAsyncInitialize';
 import { useTonClient } from './useTonClient';
 import { useTonConnect } from './useTonConnect';
 
-export function useContract(courseId: string, coursePrice: number) {
+export function useContract(
+  courseId: string,
+  coursePrice: number,
+  courseActionType: CourseActionType
+) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
+
   const coursePriceInNano = toNano(coursePrice.toString());
 
   const courseDefaultContract = useAsyncInitialize(async () => {
@@ -16,7 +22,6 @@ export function useContract(courseId: string, coursePrice: number) {
     );
 
     const contract = await Course.fromAddress(contractAddress);
-
     return client.open(contract) as OpenedContract<Course>;
   }, [client]);
 
@@ -40,7 +45,7 @@ export function useContract(courseId: string, coursePrice: number) {
       courseDefaultContract?.send(
         sender,
         {
-          value: toNano('0.1'),
+          value: toNano('0.07'),
         },
         message
       );
@@ -50,7 +55,7 @@ export function useContract(courseId: string, coursePrice: number) {
       сourseContractWithNewData?.send(
         sender,
         {
-          value: coursePriceInNano + toNano('0.1'),
+          value: coursePriceInNano + toNano('0.21'),
         },
         'New purchase'
       );

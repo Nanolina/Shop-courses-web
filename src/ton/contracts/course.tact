@@ -28,7 +28,6 @@ contract Course with Deployable {
                 data: init.data
             }
         );
-        self.reply("Сourse activated".asComment());
     }
 
     receive(msg: CreateCourse){
@@ -36,7 +35,7 @@ contract Course with Deployable {
     }
 
     receive("New purchase"){
-        let totalFee: Int = (self.deployFee + self.coursePrice);
+        let totalFee: Int = (self.deployFee * 3 + self.coursePrice);
         require(context().value >= totalFee, "Insufficient funds to buy a course");
         let init: StateInit = initOf Purchase(sender(), self.seller, self.courseId);
         let purchaseAddress: Address = contractAddress(init);
@@ -61,9 +60,5 @@ contract Course with Deployable {
     get fun addressPurchase(customer: Address, seller: Address, courseId: String): Address {
         let init: StateInit = initOf Purchase(customer, seller, courseId);
         return contractAddress(init);
-    }
-
-    get fun balance(): Int {
-        return myBalance();
     }
 }

@@ -1,38 +1,50 @@
 import "@stdlib/deploy";
+import "@stdlib/ownable";
 import "./messages";
 
-contract MarketplaceFee with Deployable {
-    const marketplaceFee: Int = ton("0.8");
-    const gas: Int = ton("0.05");
-    walletAlina: Address;
-    walletSnezhanna: Address;
-    init(walletAlina: Address, walletSnezhanna: Address){
-        self.walletAlina = walletAlina;
-        self.walletSnezhanna = walletSnezhanna;
+contract MarketplaceFee with Deployable, Ownable {
+    const minTonForStorage: Int = ton("0.01"); // 1KB for 2.5 years
+    const deployFee: Int = ton("0.05");
+    owner: Address;
+    walletDev2: Address;
+    init(owner: Address, walletDev2: Address){
+        self.owner = owner;
+        self.walletDev2 = walletDev2;
     }
 
     receive(msg: TransferToMarketplace){
-        let halfAmount: Int = self.marketplaceFee / 2;
-        require(context().value >= (self.marketplaceFee + self.gas), "Insufficient funds");
-        // Send money to Alina
+        let halfAmount: Int = (context().value - self.deployFee) / 2;
+        // Send money to Developer 1
         send(SendParameters{
-                to: self.walletAlina,
+                to: self.owner,
                 value: halfAmount,
-                mode: SendPayGasSeparately | SendIgnoreErrors,
+                mode: SendIgnoreErrors,
                 body: msg.courseId.asComment(),
                 bounce: false
             }
         );
-        // Send money to Snezhanna
+        // Send money to Developer 2
         send(SendParameters{
-                to: self.walletSnezhanna,
+                to: self.walletDev2,
                 value: halfAmount,
-                mode: SendPayGasSeparately | SendIgnoreErrors,
+                mode: SendIgnoreErrors,
                 body: msg.courseId.asComment(),
                 bounce: false
             }
         );
-        // Send money back
-        self.reply("sent".asComment());
+    }
+
+    receive("Withdraw"){
+        require(sender() == self.owner, "Only owner is allowed to withdraw");
+        send(SendParameters{
+                to: sender(),
+                value: ((myBalance() - context().value) - self.minTonForStorage),
+                mode: (SendIgnoreErrors + SendRemainingValue)
+            }
+        );
+    }
+
+    get fun balance(): Int {
+        return myBalance();
     }
 }
