@@ -83,7 +83,11 @@ function CourseDetailsPage() {
       {course && role && (
         <>
           <div className={styles.imageContainer}>
-            <img src={course.imageUrl} alt="Course" className={styles.image} />
+            <img
+              src={course.imageUrl || '/course.png'}
+              alt="Course"
+              className={styles.image}
+            />
             <IoIosArrowBack
               className={`${styles.icon} ${styles.backIcon}`}
               onClick={handleBack}
