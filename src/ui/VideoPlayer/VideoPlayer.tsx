@@ -10,8 +10,7 @@ function VideoPlayer({ url, removeVideo }: IVideoPlayerProps) {
       {removeVideo && (
         <RxCross2
           className={styles.cross}
-          color="var(--tg-theme-accent-text-color)"
-          size={20}
+          size={22}
           onClick={removeVideo}
         />
       )}
