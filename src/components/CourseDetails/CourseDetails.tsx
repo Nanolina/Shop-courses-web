@@ -1,13 +1,20 @@
+import { retrieveLaunchParams } from '@tma.js/sdk';
 import { TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { CUSTOMER, SELLER, USER } from '../../consts';
-import { getCSSVariableValue } from '../../functions';
+import {
+  createAxiosWithAuth,
+  getCSSVariableValue,
+  handleAuthError,
+} from '../../functions';
 import { useContract, useTonConnect } from '../../hooks';
-import { CourseActionType } from '../../types';
+import { ICourse } from '../../types';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
+import { Loader } from '../../ui/Loader/Loader';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 
@@ -16,19 +23,13 @@ const tg = window.Telegram.WebApp;
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const navigate = useNavigate();
 
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [error, setError] = useState<string>('');
-  const [courseActionType, setCourseActionType] =
-    useState<CourseActionType>('purchase');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   const { wallet, connected } = useTonConnect();
 
-  const { purchaseCourse, createCourse } = useContract(
-    course.id,
-    course.price,
-    courseActionType
-  );
-  // const { initDataRaw } = retrieveLaunchParams();
+  const { purchaseCourse, createCourse } = useContract(course.id, course.price);
+  const { initDataRaw } = retrieveLaunchParams();
 
   const getCategoryLabel = (value: string) => {
     const category = categoryOptions.find((option) => option.value === value);
@@ -47,30 +48,24 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     [course.id, navigate]
   );
 
-  // const handlePurchaseCourse = useCallback(async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     if (!initDataRaw) throw new Error('Not enough authorization data');
-  //     const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-  //     const response = await axiosWithAuth.post<ICourse>(
-  //       `/course/${course?.id}/purchase`,
-  //       { walletAddressCustomer: wallet }
-  //     );
-  //     if (response.status === 201) {
-  //       navigate('/course/purchased');
-  //     }
-  //   } catch (error: any) {
-  //     handleAuthError(error, setError);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, [course?.id, initDataRaw, navigate, wallet]);
-
-  useEffect(() => {
-    if (role === SELLER) {
-      setCourseActionType('creation');
+  const handlePurchaseCourse = useCallback(async () => {
+    purchaseCourse();
+    setIsLoading(true);
+    try {
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth.post<ICourse>(
+        `/course/${course?.id}/purchase`
+      );
+      if (response.status === 201) {
+        navigate('/course/purchased');
+      }
+    } catch (error: any) {
+      handleAuthError(error, setError);
+    } finally {
+      setIsLoading(false);
     }
-  }, [role]);
+  }, [course?.id, initDataRaw, navigate, purchaseCourse]);
 
   useEffect(() => {
     if (role === USER && !connected) {
@@ -89,8 +84,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         color: !!wallet ? buttonColor : '#e6e9e9',
       });
       tg.MainButton.show();
-      tg.onEvent('mainButtonClicked', purchaseCourse);
-      return () => tg.offEvent('mainButtonClicked', purchaseCourse);
+      tg.onEvent('mainButtonClicked', handlePurchaseCourse);
+      return () => tg.offEvent('mainButtonClicked', handlePurchaseCourse);
     } else if (role === SELLER || role === CUSTOMER) {
       tg.MainButton.setParams({
         text: 'Modules',
@@ -99,9 +94,9 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       tg.onEvent('mainButtonClicked', navigateToModulesPage);
       return () => tg.offEvent('mainButtonClicked', navigateToModulesPage);
     }
-  }, [course, navigateToModulesPage, purchaseCourse, role, wallet]);
+  }, [course, navigateToModulesPage, handlePurchaseCourse, role, wallet]);
 
-  // if (isLoading) return <Loader />;
+  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -145,7 +140,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       <TonConnectButton className={styles.connectWalletButton} />
 
       {role === SELLER && <Button onClick={createCourse} text="Activate" />}
-      {/* {error && <MessageBox errorMessage={error} />} */}
+      {error && <MessageBox errorMessage={error} />}
     </>
   );
 }

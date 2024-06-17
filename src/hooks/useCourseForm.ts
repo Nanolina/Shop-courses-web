@@ -6,7 +6,6 @@ import { createAxiosWithAuth, handleAuthError } from '../functions';
 import { IMyCreatedCoursesPageParams } from '../pages/types';
 import { ICourse, RequestMethodType } from '../types';
 import { IOption } from '../ui';
-import { useTonConnect } from './useTonConnect';
 
 export const currencyOptions: IOption[] = [
   { value: 'TON', label: 'The Open Network (TON)' },
@@ -29,7 +28,6 @@ export function useCourseForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const { wallet } = useTonConnect();
   const { initDataRaw } = retrieveLaunchParams();
   const navigate = useNavigate();
 
@@ -46,7 +44,6 @@ export function useCourseForm() {
         if (subcategory) formData.append('subcategory', subcategory);
         formData.append('price', price.toString());
         formData.append('currency', currency);
-        if (wallet) formData.append('walletAddressSeller', wallet);
         if (image) formData.append('image', image);
         if (!image && !imageUrl) formData.append('isRemoveImage', 'true');
 
@@ -72,7 +69,6 @@ export function useCourseForm() {
       subcategory,
       price,
       currency,
-      wallet,
       image,
       navigate,
     ]
@@ -127,12 +123,12 @@ export function useCourseForm() {
   }, [onCreateCourse, updateCourse, courseId]);
 
   useEffect(() => {
-    if (!name || !category || !price || !currency || !wallet) {
+    if (!name || !category || !price || !currency) {
       tg.MainButton.hide();
     } else {
       tg.MainButton.show();
     }
-  }, [name, category, price, currency, wallet]);
+  }, [name, category, price, currency]);
 
   // Clearing preview image URL to free up resources
   useEffect(() => {

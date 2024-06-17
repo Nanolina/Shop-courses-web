@@ -1,15 +1,10 @@
 import { OpenedContract, address, toNano } from '@ton/core';
 import { Course, NewCourse } from '../ton/wrappers/Course';
-import { CourseActionType } from '../types';
 import { useAsyncInitialize } from './useAsyncInitialize';
 import { useTonClient } from './useTonClient';
 import { useTonConnect } from './useTonConnect';
 
-export function useContract(
-  courseId: string,
-  coursePrice: number,
-  courseActionType: CourseActionType
-) {
+export function useContract(courseId: string, coursePrice: number) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
 
