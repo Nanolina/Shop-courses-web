@@ -61,6 +61,20 @@ function ReadyCoursePart({
     }
   }, [navigate, item.id, type]);
 
+  const getImageUrl = () => {
+    if (item.imageUrl) {
+      return item.imageUrl;
+    }
+    switch (type) {
+      case MODULE:
+        return '/module.png';
+      case LESSON:
+        return '/lesson.png';
+      default:
+        return '/lesson.png';
+    }
+  };
+
   useEffect(() => {
     if (role === SELLER) {
       setIsSeller(true);
@@ -71,7 +85,7 @@ function ReadyCoursePart({
 
   return (
     <div className={styles.container} onClick={navigateHandler}>
-      <img className={styles.image} src={`${item.imageUrl}`} alt="cover" />
+      <img className={styles.image} src={getImageUrl()} alt="cover" />
       <div className={styles.info}>
         <div className={styles.name}>{item.name}</div>
         <div className={styles.description}>{item.description}</div>

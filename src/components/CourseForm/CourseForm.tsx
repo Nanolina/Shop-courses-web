@@ -1,4 +1,3 @@
-import { TonConnectButton } from '@tonconnect/ui-react';
 import { ChangeEvent, useEffect } from 'react';
 import { MdCameraswitch } from 'react-icons/md';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
@@ -168,15 +167,7 @@ function CourseForm({ course }: { course?: ICourse }) {
           />
         </div>
       )}
-      <div className={styles.walletContainer}>
-        <Label
-          text="TON wallet to receive funds from the sale of this course"
-          isRequired
-          isPadding
-          isBold
-        />
-        <TonConnectButton />
-      </div>
+
       {error && <MessageBox errorMessage={error} />}
     </div>
   );

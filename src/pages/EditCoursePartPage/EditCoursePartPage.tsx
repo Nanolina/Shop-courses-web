@@ -18,6 +18,7 @@ function EditCoursePartPage() {
 
   const [itemData, setItemData] = useState<IModule | ILesson | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -35,8 +36,10 @@ function EditCoursePartPage() {
         response = await axiosWithAuth.get<ILesson>(`lesson/${itemId}`);
         setItemData(response.data);
       }
+      setIsLoaded(true);
     } catch (error: any) {
       handleAuthError(error, setError);
+      setIsLoaded(true);
     } finally {
       setIsLoading(false);
     }
@@ -48,12 +51,18 @@ function EditCoursePartPage() {
   }, []);
 
   if (isLoading) return <Loader />;
-  if (!itemData || !type) return <ItemNotFoundPage error={error} />;
+  if ((!itemData || !type) && !isLoading && isLoaded) {
+    return <ItemNotFoundPage error={error} isLoading={isLoading} />;
+  }
 
   return (
     <Container>
-      <Header label={itemData.name} icon={<FiEdit size={24} />} />
-      <CoursePartForm item={itemData} type={type} />
+      {itemData && type && (
+        <>
+          <Header label={itemData.name} icon={<FiEdit size={24} />} />
+          <CoursePartForm item={itemData} type={type} />
+        </>
+      )}
       {error && <MessageBox errorMessage={error} />}
     </Container>
   );

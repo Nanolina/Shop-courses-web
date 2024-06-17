@@ -110,6 +110,7 @@ export interface IGetLessons {
 
 export interface IItemNotFoundPageProps {
   error?: string;
+  isLoading?: boolean;
 }
 
 export interface IEditCoursePartParams

@@ -9,10 +9,15 @@ const tg = window.Telegram.WebApp;
 
 function ItemNotFoundPage({
   error = 'Item not found',
+  isLoading = false,
 }: IItemNotFoundPageProps) {
   useEffect(() => {
     tg.MainButton.hide();
   }, []);
+
+  if (isLoading) {
+    return;
+  }
 
   return (
     <Container>

@@ -15,6 +15,7 @@ const ModulesPage: React.FC = () => {
 
   const [modules, setModules] = useState<IModule[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
   const [error, setError] = useState<string>('');
   const [role, setRole] = useState<RoleType | null>(null);
 
@@ -30,8 +31,10 @@ const ModulesPage: React.FC = () => {
       );
       setModules(response.data.modules);
       setRole(response.data.role);
+      setIsLoaded(true);
     } catch (error: any) {
       setError(error.response?.data.message || 'Failed to fetch modules');
+      setIsLoaded(true);
     } finally {
       setIsLoading(false);
     }
@@ -43,18 +46,26 @@ const ModulesPage: React.FC = () => {
   }, [courseId]);
 
   if (isLoading) return <Loader />;
-  if (!role)
-    return <ItemNotFoundPage error="The role for modules has not been given" />;
+  if (!role && !isLoading && isLoaded) {
+    return (
+      <ItemNotFoundPage
+        error="The role for modules has not been given"
+        isLoading={isLoading}
+      />
+    );
+  }
 
   return (
     <>
-      <CoursePartPage
-        type={MODULE}
-        parentId={courseId}
-        items={modules}
-        role={role}
-        updateItems={getAllModules}
-      />
+      {role && (
+        <CoursePartPage
+          type={MODULE}
+          parentId={courseId}
+          items={modules}
+          role={role}
+          updateItems={getAllModules}
+        />
+      )}
       {error && <MessageBox errorMessage={error} />}
     </>
   );

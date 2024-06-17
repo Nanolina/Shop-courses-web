@@ -12,7 +12,7 @@ import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
-import VideoPlayer from '../VideoPlayer/VideoPlayer';
+import VideoPlayer from '../../ui/VideoPlayer/VideoPlayer';
 import { ICoursePartFormProps } from '../types';
 import styles from './CoursePartForm.module.css';
 
@@ -128,12 +128,10 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
         )}
       </div>
       {previewImageUrl && (
-        <div className={styles.image}>
-          <ImagePreview
-            imagePreview={previewImageUrl}
-            removeImage={handleRemoveImage}
-          />
-        </div>
+        <ImagePreview
+          imagePreview={previewImageUrl}
+          removeImage={handleRemoveImage}
+        />
       )}
 
       {/* Video for lesson */}
@@ -172,12 +170,10 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
             )}
           </div>
           {previewVideoUrl && (
-            <div className={styles.image}>
-              <VideoPlayer
-                url={previewVideoUrl}
-                removeVideo={handleRemoveVideo}
-              />
-            </div>
+            <VideoPlayer
+              url={previewVideoUrl}
+              removeVideo={handleRemoveVideo}
+            />
           )}
         </>
       )}

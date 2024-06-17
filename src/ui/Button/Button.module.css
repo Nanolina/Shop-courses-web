@@ -7,4 +7,5 @@
   color: var(--tg-theme-button-text-color);
   font-size: 15px;
   font-weight: 600;
+  border: none;
 }

@@ -7,7 +7,6 @@ export interface ICourse {
   price: number;
   currency: string;
   imageUrl?: string;
-  walletAddressSeller: string;
   modules: IModule[];
 }
 
@@ -32,4 +31,3 @@ export interface ILesson {
 export type EntityType = 'module' | 'lesson';
 export type RoleType = 'user' | 'customer' | 'seller';
 export type RequestMethodType = 'post' | 'patch';
-export type CourseActionType = 'creation' | 'purchase';
