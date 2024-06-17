@@ -1,6 +1,7 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
+import { SiHiveBlockchain } from 'react-icons/si';
 import { useNavigate } from 'react-router-dom';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { CUSTOMER, SELLER, USER } from '../../consts';
@@ -137,9 +138,15 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
           </div>
         )}
       </div>
-      <TonConnectButton className={styles.connectWalletButton} />
+      <TonConnectButton />
 
-      {role === SELLER && <Button onClick={createCourse} text="Activate" />}
+      {role === SELLER && (
+        <Button
+          onClick={createCourse}
+          text="Activate"
+          icon={<SiHiveBlockchain size={18} />}
+        />
+      )}
       {error && <MessageBox errorMessage={error} />}
     </>
   );

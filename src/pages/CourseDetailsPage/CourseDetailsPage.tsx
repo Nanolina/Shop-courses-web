@@ -22,6 +22,7 @@ function CourseDetailsPage() {
 
   const [course, setCourse] = useState<ICourse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
   const [error, setError] = useState<string>('');
   const [role, setRole] = useState<RoleType | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -39,8 +40,10 @@ function CourseDetailsPage() {
       const { role, course } = response.data;
       setCourse(course);
       setRole(role);
+      setIsLoaded(true);
     } catch (error: any) {
       handleAuthError(error, setError);
+      setIsLoaded(true);
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +74,9 @@ function CourseDetailsPage() {
   }
 
   if (isLoading) return <Loader />;
-  if (!isLoading && !course) return <ItemNotFoundPage error={error} />;
+  if (!course && !isLoading && isLoaded) {
+    return <ItemNotFoundPage error={error} isLoading={isLoading} />;
+  }
 
   return (
     <>

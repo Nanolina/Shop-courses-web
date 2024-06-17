@@ -1,14 +1,14 @@
 .container {
   width: 100%;
   display: flex;
-  color: black;
+  color: var(--tg-theme-text-color);
 }
 
 .backButton {
   cursor: pointer;
   position: absolute;
   left: 10px;
-  top: 5px;
+  top: 20px;
 }
 
 .iconLabelContainer {

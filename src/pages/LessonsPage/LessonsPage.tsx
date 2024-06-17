@@ -15,6 +15,7 @@ function LessonsPage() {
 
   const [lessons, setLessons] = useState<ILesson[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
   const [error, setError] = useState<string>('');
   const [role, setRole] = useState<RoleType | null>(null);
 
@@ -30,8 +31,10 @@ function LessonsPage() {
       );
       setLessons(response.data.lessons);
       setRole(response.data.role);
+      setIsLoaded(true);
     } catch (error: any) {
       handleAuthError(error, setError);
+      setIsLoaded(true);
     } finally {
       setIsLoading(false);
     }
@@ -43,18 +46,26 @@ function LessonsPage() {
   }, [moduleId]);
 
   if (isLoading) return <Loader />;
-  if (!role)
-    return <ItemNotFoundPage error="The role for lessons has not been given" />;
+  if (!role && !isLoading && isLoaded) {
+    return (
+      <ItemNotFoundPage
+        error="The role for lessons has not been given"
+        isLoading={isLoading}
+      />
+    );
+  }
 
   return (
     <>
-      <CoursePartPage
-        type={LESSON}
-        parentId={moduleId}
-        items={lessons}
-        role={role}
-        updateItems={getAllLessons}
-      />
+      {role && (
+        <CoursePartPage
+          type={LESSON}
+          parentId={moduleId}
+          items={lessons}
+          role={role}
+          updateItems={getAllLessons}
+        />
+      )}
       {error && <MessageBox errorMessage={error} />}
     </>
   );

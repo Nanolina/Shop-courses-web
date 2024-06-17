@@ -15,6 +15,7 @@ const tg = window.Telegram.WebApp;
 function MyCreatedCoursesPage() {
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -25,8 +26,10 @@ function MyCreatedCoursesPage() {
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       const response = await axiosWithAuth.get<ICourse[]>('/course/created');
       setCourses(response.data);
+      setIsLoaded(true);
     } catch (error: any) {
       handleAuthError(error, setError);
+      setIsLoaded(true);
     } finally {
       setIsLoading(false);
     }
@@ -43,8 +46,8 @@ function MyCreatedCoursesPage() {
 
   if (isLoading) return <Loader />;
 
-  if (!isLoading && !courses.length) {
-    return <ItemNotFoundPage error={error} />;
+  if (!courses.length && !isLoading && isLoaded) {
+    return <ItemNotFoundPage error={error} isLoading={isLoading} />;
   }
 
   return (

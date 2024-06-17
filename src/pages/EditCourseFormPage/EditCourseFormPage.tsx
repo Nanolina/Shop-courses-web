@@ -17,6 +17,7 @@ function EditCourseFormPage() {
 
   const [course, setCourse] = useState<ICourse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
   const [error, setError] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
@@ -30,8 +31,10 @@ function EditCourseFormPage() {
         `/course/${courseId}`
       );
       setCourse(response.data.course);
+      setIsLoaded(true);
     } catch (error: any) {
       handleAuthError(error, setError);
+      setIsLoaded(true);
     } finally {
       setIsLoading(false);
     }
@@ -43,12 +46,18 @@ function EditCourseFormPage() {
   }, []);
 
   if (isLoading) return <Loader />;
-  if (!course) return <ItemNotFoundPage error={error} />;
+  if (!course && !isLoading && isLoaded) {
+    return <ItemNotFoundPage error={error} isLoading={isLoading} />;
+  }
 
   return (
     <Container>
-      <Header label={course.name} icon={<FiEdit size={24} />} />
-      <CourseForm course={course} />
+      {course && (
+        <>
+          <Header label={course.name} icon={<FiEdit size={24} />} />
+          <CourseForm course={course} />
+        </>
+      )}
       {error && <MessageBox errorMessage={error} />}
     </Container>
   );

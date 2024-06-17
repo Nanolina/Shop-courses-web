@@ -4,12 +4,12 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
 import Header from '../../components/Header/Header';
-import VideoPlayer from '../../components/VideoPlayer/VideoPlayer';
 import { useNotification } from '../../context';
 import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import VideoPlayer from '../../ui/VideoPlayer/VideoPlayer';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import styles from './LessonPage.module.css';
 
@@ -23,6 +23,7 @@ function LessonPage() {
   const [lesson, setLesson] = useState<ILesson | null>(null);
   const [videoUrl, setVideoUrl] = useState<string>(lesson?.videoUrl || '');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
   const [error, setError] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
@@ -35,8 +36,10 @@ function LessonPage() {
       const response = await axiosWithAuth.get<ILesson>(`/lesson/${lessonId}`);
       setLesson(response.data);
       setVideoUrl(response.data.videoUrl || '');
+      setIsLoaded(true);
     } catch (error: any) {
       handleAuthError(error, setError);
+      setIsLoaded(true);
     } finally {
       setIsLoading(false);
     }
@@ -76,13 +79,15 @@ function LessonPage() {
   }, []);
 
   if (isLoading) return <Loader />;
-  if (!lesson) return <ItemNotFoundPage error={error} />;
+  if (!lesson && !isLoading && isLoaded) {
+    return <ItemNotFoundPage error={error} isLoading={isLoading} />;
+  }
 
   return (
     <>
       <Header />
       <div className={styles.videoContainer}>
-        {!videoUrl ? (
+        {!videoUrl && isLoaded ? (
           <div>
             The video is probably still uploading 📤 or not saved 💾. Please
             wait ⏳
