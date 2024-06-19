@@ -84,14 +84,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         is_active: !!wallet,
         color: !!wallet ? buttonColor : '#e6e9e9',
       });
-      tg.MainButton.show();
       tg.onEvent('mainButtonClicked', handlePurchaseCourse);
       return () => tg.offEvent('mainButtonClicked', handlePurchaseCourse);
     } else if (role === SELLER || role === CUSTOMER) {
       tg.MainButton.setParams({
         text: 'Modules',
       });
-      tg.MainButton.show();
       tg.onEvent('mainButtonClicked', navigateToModulesPage);
       return () => tg.offEvent('mainButtonClicked', navigateToModulesPage);
     }

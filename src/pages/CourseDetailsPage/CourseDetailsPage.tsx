@@ -113,19 +113,29 @@ function CourseDetailsPage() {
             {error && <MessageBox errorMessage={error} />}
           </Container>
           <Modal
+            title={
+              <div>
+                {`Are you sure you want to delete course `}
+                <b>{course.name}</b>?
+              </div>
+            }
             isOpen={modalOpen}
             onClose={() => setModalOpen(false)}
             content={
               <div className={styles.modalTextContainer}>
-                <div>
-                  {`Are you sure you want to delete course `}
-                  <b>{course.name}</b>?
-                </div>
                 <div>All modules and lessons will be irretrievably deleted</div>
               </div>
             }
             confirm={deleteCourse}
+            imageUrl="/delete.png"
+            buttonRightText="Delete"
           />
+
+          {/* <ModalEarnPoints
+            isOpen={true}
+            courseName={course.name}
+            onClose={() => setModalOpen(false)}
+          /> */}
         </>
       )}
     </>
