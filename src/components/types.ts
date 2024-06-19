@@ -69,3 +69,19 @@ export interface ICoursePartFormProps {
   parentId?: string; // create | update
   item?: IModule | ILesson | undefined; // update
 }
+
+export interface ModalProps {
+  title: any;
+  isOpen: boolean;
+  onClose: () => void;
+  content: React.ReactNode;
+  imageUrl?: string;
+  confirm?: () => void;
+  buttonRightText?: string;
+}
+
+export interface ModalEarnPointsProps {
+  isOpen: boolean;
+  onClose: () => void;
+  courseName: string;
+}

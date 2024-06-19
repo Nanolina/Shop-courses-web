@@ -9,3 +9,7 @@
   font-weight: 600;
   border: none;
 }
+
+.disabled {
+  background-color: rgba(204, 204, 204, 0.425);
+}

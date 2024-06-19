@@ -1,0 +1,15 @@
+.hooray {
+  color: var(--tg-theme-accent-text-color);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.points {
+  color: var(--tg-theme-accent-text-color);
+  font-weight: 600;
+  font-size: larger;
+}

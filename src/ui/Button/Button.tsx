@@ -3,7 +3,11 @@ import styles from './Button.module.css';
 
 function Button({ text, icon, ...props }: IButtonProps) {
   return (
-    <button {...props} className={styles.button} onClick={props.onClick}>
+    <button
+      {...props}
+      className={`${styles.button} ${props.disabled ? styles.disabled : ''}`}
+      onClick={props.onClick}
+    >
       {icon}
       {text}
     </button>

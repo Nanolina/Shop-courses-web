@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react';
+import { RxCross2 } from 'react-icons/rx';
+import { ModalProps } from '../types';
 import styles from './Modal.module.css';
 
-function Modal({ isOpen, onClose, content, confirm }: any) {
+function Modal({
+  title,
+  isOpen,
+  onClose,
+  content,
+  imageUrl,
+  confirm,
+  buttonRightText,
+}: ModalProps) {
   const [show, setShow] = useState(isOpen);
 
   useEffect(() => {
@@ -13,26 +23,35 @@ function Modal({ isOpen, onClose, content, confirm }: any) {
   return (
     <div className={styles.modalBackdrop} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <img
-          className={styles.image}
-          src="https://regmedia.co.uk/2022/08/04/shutterstock_delete_trash_button.jpg"
-          alt="delete"
-        />
+        {title}
+        {imageUrl && (
+          <img className={styles.image} src={imageUrl} alt="modal" />
+        )}
+        {!confirm && (
+          <RxCross2
+            className={styles.cross}
+            color="var(--tg-theme-accent-text-color)"
+            size={20}
+            onClick={onClose}
+          />
+        )}
         {content}
-        <div className={styles.containerBtn}>
-          <button onClick={onClose} className={styles.btnCancel}>
-            Cancel
-          </button>
-          <button
-            onClick={() => {
-              confirm();
-              onClose();
-            }}
-            className={styles.btnContinue}
-          >
-            Continue
-          </button>
-        </div>
+        {confirm && (
+          <div className={styles.containerBtn}>
+            <button onClick={onClose} className={styles.btnCancel}>
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                confirm();
+                onClose();
+              }}
+              className={styles.btnContinue}
+            >
+              {buttonRightText}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
