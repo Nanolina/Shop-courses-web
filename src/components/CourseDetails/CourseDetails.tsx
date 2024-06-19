@@ -108,8 +108,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         )}
         {role !== CUSTOMER && (
           <div className={styles.price}>
-            <Label text="Price: " isBold isBig />
-            <Label text={course.price} isBig />
+            <Label text="Price: " isBold />
+            <Label text={course.price} />
             {course.currency === 'TON' ? (
               <img
                 src="/toncoin-logo.png"
@@ -122,18 +122,17 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
           </div>
         )}
         <div className={styles.category}>
-          <Label text="Category: " isBold isBig />
-          <Label text={getCategoryLabel(course.category)} isBig />
+          <Label text="Category: " isBold />
+          <Label text={getCategoryLabel(course.category)} />
         </div>
         {course.subcategory && (
           <div className={styles.category}>
-            <Label text="Subcategory: " isBold isBig />
+            <Label text="Subcategory: " isBold />
             <Label
               text={getSubcategoryLabel(
                 course.category,
                 course.subcategory || ''
               )}
-              isBig
             />
           </div>
         )}

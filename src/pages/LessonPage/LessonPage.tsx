@@ -1,9 +1,9 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { IoIosArrowBack } from 'react-icons/io';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
-import Header from '../../components/Header/Header';
 import { useNotification } from '../../context';
 import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ILesson } from '../../types';
@@ -19,6 +19,7 @@ const serverUrl = process.env.REACT_APP_SERVER_URL || '';
 function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const { setDisableNotification } = useNotification();
+  const navigate = useNavigate();
 
   const [lesson, setLesson] = useState<ILesson | null>(null);
   const [videoUrl, setVideoUrl] = useState<string>(lesson?.videoUrl || '');
@@ -84,20 +85,22 @@ function LessonPage() {
   }
 
   return (
-    <>
-      <Header />
-      <div className={styles.videoContainer}>
-        {!videoUrl && isLoaded ? (
-          <div>
-            The video is probably still uploading 📤 or not saved 💾. Please
-            wait ⏳
-          </div>
-        ) : (
-          <VideoPlayer url={videoUrl} />
-        )}
-        {error && <MessageBox errorMessage={error} />}
-      </div>
-    </>
+    <div className={styles.videoContainer}>
+      <IoIosArrowBack
+        className={styles.backIcon}
+        onClick={() => navigate(-1)}
+        size={24}
+      />
+      {!videoUrl && isLoaded ? (
+        <div>
+          The video is probably still uploading 📤 or not saved 💾. Please wait
+          ⏳
+        </div>
+      ) : (
+        <VideoPlayer url={videoUrl} />
+      )}
+      {error && <MessageBox errorMessage={error} />}
+    </div>
   );
 }
 
