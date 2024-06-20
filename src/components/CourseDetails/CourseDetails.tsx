@@ -1,11 +1,13 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SiHiveBlockchain } from 'react-icons/si';
 import { useNavigate } from 'react-router-dom';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { CUSTOMER, SELLER, USER } from '../../consts';
 import {
+  capitalizeFirstLetter,
   createAxiosWithAuth,
   getCSSVariableValue,
   handleAuthError,
@@ -23,6 +25,7 @@ const tg = window.Telegram.WebApp;
 
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -106,7 +109,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         )}
         {role !== CUSTOMER && (
           <div className={styles.price}>
-            <Label text="Price: " isBold />
+            <Label text={`${capitalizeFirstLetter(t('price'))}: `} isBold />
             <Label text={course.price} />
             {course.currency === 'TON' ? (
               <img
