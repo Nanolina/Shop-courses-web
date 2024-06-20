@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { categoryOptions } from '../../category-data';
@@ -14,6 +15,7 @@ function CoursesListByCategory({
   courses,
 }: ICoursesListByCategoryProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const getCategoryLabel = useMemo(
     () => (value: string) => {
@@ -35,7 +37,7 @@ function CoursesListByCategory({
             navigate(`course/category/${category}`);
           }}
         >
-          All <IoIosArrowForward size={15} />
+          {t('all')} <IoIosArrowForward size={15} />
         </div>
       </div>
       <div className={styles.courseWrapper}>
