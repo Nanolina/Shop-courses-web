@@ -7,6 +7,7 @@ export interface IOption {
 
 export interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
+  hint?: string;
   icon?: any;
 }
 

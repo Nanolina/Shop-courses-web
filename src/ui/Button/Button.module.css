@@ -1,3 +1,11 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+}
+
 .button {
   display: flex;
   gap: 5px;
@@ -12,4 +20,14 @@
 
 .disabled {
   background-color: rgba(204, 204, 204, 0.425);
+}
+
+.hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  color: rgb(74, 74, 74);
+  font-size: 16px;
+  font-style: italic;
 }
