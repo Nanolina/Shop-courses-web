@@ -1,5 +1,5 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import { TonConnectButton } from '@tonconnect/ui-react';
+import { CHAIN, TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SiHiveBlockchain } from 'react-icons/si';
@@ -21,17 +21,25 @@ import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 
 const tg = window.Telegram.WebApp;
+const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  const [isActivateButtonDisabled, setIsActivateButtonDisabled] =
+    useState<boolean>(true);
+  const [activateButtonHint, setActivateButtonHint] = useState<string>('');
+  const [isDeployedInBlockchain, setIsDeployedInBlockchain] = useState<any>('');
+  const [isMainnet, setIsMainnet] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const { wallet, connected } = useTonConnect();
-
-  const { purchaseCourse, createCourse } = useContract(course.id, course.price);
+  const { wallet, connected, network } = useTonConnect();
+  const { purchaseCourse, createCourse, isContractDeployed } = useContract(
+    course.id,
+    course.price
+  );
   const { initDataRaw } = retrieveLaunchParams();
 
   const getCategoryLabel = (value: string) => {
@@ -97,6 +105,38 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     }
   }, [course, navigateToModulesPage, handlePurchaseCourse, role, wallet, t]);
 
+  // Check course contract status
+  useEffect(() => {
+    async function checkDeploymentStatus() {
+      const isDeployed = await isContractDeployed();
+      setIsDeployedInBlockchain(isDeployed);
+    }
+
+    checkDeploymentStatus();
+  }, [isContractDeployed]);
+
+  // Сheck which network the wallet is from
+  useEffect(() => {
+    setIsMainnet(network === CHAIN.MAINNET);
+  }, [network]);
+
+  // Handle activate button
+  useEffect(() => {
+    let hint = '';
+    let disabled = true;
+
+    if (!connected) {
+      hint = 'Please connect the wallet';
+    } else if (isProduction && !isMainnet) {
+      hint = 'Please connect the wallet from the main network';
+    } else {
+      disabled = false;
+    }
+
+    setActivateButtonHint(hint);
+    setIsActivateButtonDisabled(disabled);
+  }, [connected, isProduction, isMainnet]);
+
   if (isLoading) return <Loader />;
 
   return (
@@ -144,8 +184,11 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
           onClick={createCourse}
           text={t('activate')}
           icon={<SiHiveBlockchain size={18} />}
+          disabled={isActivateButtonDisabled}
+          hint={activateButtonHint}
         />
       )}
+
       {error && <MessageBox errorMessage={error} />}
     </>
   );

@@ -30,6 +30,19 @@ export function useContract(courseId: string, coursePrice: number) {
     return client.open(contract) as OpenedContract<Course>;
   }, [client]);
 
+  async function isContractDeployed() {
+    try {
+      const contractByData = await Course.fromInit(courseId, coursePriceInNano);
+      const contractAddress = address(contractByData.address.toString());
+
+      const contract = await client?.getContractState(contractAddress);
+      return contract?.state;
+    } catch (error) {
+      console.error('Error checking contract deployment:', error);
+      return false;
+    }
+  }
+
   return {
     createCourse: () => {
       const message: NewCourse = {
@@ -55,5 +68,7 @@ export function useContract(courseId: string, coursePrice: number) {
         'New purchase'
       );
     },
+
+    isContractDeployed,
   };
 }
