@@ -23,14 +23,14 @@ iframe#webpack-dev-server-client-overlay {
 }
 
 [data-tc-connect-button='true'] {
-  background-color: var(--tg-theme-button-color);
-  border-radius: 10px;
-  border: none;
-  color: var(--tg-theme-button-text-color);
-  padding: 10px 20px;
-  font-size: 16px;
+  background-color: var(--tg-theme-button-color) !important;
+  border-radius: 10px !important;
+  border: none !important;
+  color: var(--tg-theme-button-text-color) !important;
+  padding: 10px 20px !important;
+  font-size: 16px !important;
 }
 
 [data-tc-dropdown-container='true'] {
-  overflow-y: auto;
+  overflow-y: auto !important;
 }
