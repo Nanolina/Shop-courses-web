@@ -30,7 +30,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const [isActivateButtonDisabled, setIsActivateButtonDisabled] =
     useState<boolean>(true);
   const [activateButtonHint, setActivateButtonHint] = useState<string>('');
-  const [isDeployedInBlockchain, setIsDeployedInBlockchain] = useState<any>('');
+  // const [isDeployedInBlockchain, setIsDeployedInBlockchain] = useState<any>('');
   const [isMainnet, setIsMainnet] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -108,8 +108,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   // Check course contract status
   useEffect(() => {
     async function checkDeploymentStatus() {
-      const isDeployed = await isContractDeployed();
-      setIsDeployedInBlockchain(isDeployed);
+      // const isDeployed = await isContractDeployed();
+      // setIsDeployedInBlockchain(isDeployed);
     }
 
     checkDeploymentStatus();
@@ -135,7 +135,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
 
     setActivateButtonHint(hint);
     setIsActivateButtonDisabled(disabled);
-  }, [connected, isProduction, isMainnet]);
+  }, [connected, isMainnet]);
 
   if (isLoading) return <Loader />;
 

@@ -19,8 +19,10 @@ function ReadyCoursePart({
   updateItems,
 }: IReadyCoursePartProps) {
   const navigate = useNavigate();
+  // const { t } = useTranslation();
+
   const [isSeller, setIsSeller] = useState<boolean>(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
@@ -105,6 +107,13 @@ function ReadyCoursePart({
         </div>
       )}
       <Modal
+        title=""
+        // title={
+        //   <div>
+        //     {t('delete_course')}
+        //     <b>{item.name}</b>?
+        //   </div>
+        // }
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         content={
