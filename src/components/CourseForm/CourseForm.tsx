@@ -1,20 +1,20 @@
-import { ChangeEvent, useEffect } from "react";
-import { MdCameraswitch } from "react-icons/md";
-import { categoryOptions, subcategoryOptions } from "../../category-data";
-import { useCourseForm } from "../../hooks";
-import { IUseCourseFormReturnType } from "../../pages/types";
-import { ICourse } from "../../types";
-import Button from "../../ui/Button/Button";
-import ImagePreview from "../../ui/ImagePreview/ImagePreview";
-import { InputUpload } from "../../ui/InputUpload/InputUpload";
-import Label from "../../ui/Label/Label";
-import { Loader } from "../../ui/Loader/Loader";
-import { MessageBox } from "../../ui/MessageBox/MessageBox";
-import Select from "../../ui/Select/Select";
-import TextInput from "../../ui/TextInput/TextInput";
-import Textarea from "../../ui/Textarea/Textarea";
-import styles from "./CourseForm.module.css";
-import { useTranslation } from "react-i18next";
+import { ChangeEvent, useEffect } from 'react';
+import { MdCameraswitch } from 'react-icons/md';
+import { categoryOptions, subcategoryOptions } from '../../category-data';
+import { useCourseForm } from '../../hooks';
+import { IUseCourseFormReturnType } from '../../pages/types';
+import { ICourse } from '../../types';
+import Button from '../../ui/Button/Button';
+import ImagePreview from '../../ui/ImagePreview/ImagePreview';
+import { InputUpload } from '../../ui/InputUpload/InputUpload';
+import Label from '../../ui/Label/Label';
+import { Loader } from '../../ui/Loader/Loader';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import Select from '../../ui/Select/Select';
+import TextInput from '../../ui/TextInput/TextInput';
+import Textarea from '../../ui/Textarea/Textarea';
+import styles from './CourseForm.module.css';
+import { useTranslation } from 'react-i18next';
 
 function CourseForm({ course }: { course?: ICourse }) {
   const {
@@ -50,10 +50,10 @@ function CourseForm({ course }: { course?: ICourse }) {
   useEffect(() => {
     if (course) {
       setName(course.name);
-      setDescription(course.description || "");
-      setImageUrl(course.imageUrl || "");
+      setDescription(course.description || '');
+      setImageUrl(course.imageUrl || '');
       setCategory(course.category);
-      setSubcategory(course.subcategory || "");
+      setSubcategory(course.subcategory || '');
       setPrice(course.price);
       setCurrency(course.currency);
       if (course.imageUrl) {
@@ -68,7 +68,7 @@ function CourseForm({ course }: { course?: ICourse }) {
   return (
     <div className={styles.container}>
       <div className={styles.formGroup}>
-        <Label text={t("course_name")} isRequired isPadding isBold />
+        <Label text={t('course_name')} isRequired isPadding isBold />
         <TextInput
           value={name}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
@@ -77,7 +77,7 @@ function CourseForm({ course }: { course?: ICourse }) {
         />
       </div>
       <div className={styles.formGroup}>
-        <Label text={t("description")} isPadding isBold />
+        <Label text={t('description')} isPadding isBold />
         <Textarea
           value={description}
           onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
@@ -86,7 +86,7 @@ function CourseForm({ course }: { course?: ICourse }) {
         />
       </div>
       <div className={styles.formGroup}>
-        <Label text={t("сategory")} isRequired isPadding isBold />
+        <Label text={t('сategory')} isRequired isPadding isBold />
         <Select
           type="category"
           selectValue={category}
@@ -96,9 +96,9 @@ function CourseForm({ course }: { course?: ICourse }) {
           options={categoryOptions}
         />
       </div>
-      {category && category !== "other" && (
+      {category && category !== 'other' && (
         <div className={styles.formGroup}>
-          <Label text={t("subcategory")} isPadding isBold />
+          <Label text={t('subcategory')} isPadding isBold />
           <Select
             type="subcategory"
             selectValue={subcategory}
@@ -110,7 +110,7 @@ function CourseForm({ course }: { course?: ICourse }) {
         </div>
       )}
       <div className={styles.formGroup}>
-        <Label text={t("price")} isRequired isPadding isBold />
+        <Label text={t('price')} isRequired isPadding isBold />
         <TextInput
           value={price}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
@@ -119,7 +119,7 @@ function CourseForm({ course }: { course?: ICourse }) {
         />
       </div>
       <div className={styles.formGroup}>
-        <Label text={t("currency")} isRequired isPadding isBold />
+        <Label text={t('currency')} isRequired isPadding isBold />
         <Select
           type="currency"
           selectValue={currency}
@@ -134,7 +134,7 @@ function CourseForm({ course }: { course?: ICourse }) {
           <Button
             onClick={toggleBetweenUrlAndFile}
             text={
-              useUrlCover ? t("switch_to_file_image") : t("switch_to_url_image")
+              useUrlCover ? t('switch_to_file_image') : t('switch_to_url_image')
             }
             icon={<MdCameraswitch size={36} />}
           />
@@ -142,8 +142,8 @@ function CourseForm({ course }: { course?: ICourse }) {
         <Label
           text={
             useUrlCover
-              ? t("cover_label_url_course")
-              : t("cover_label_file_course")
+              ? t('cover_label_url_course')
+              : t('cover_label_file_course')
           }
           isPadding
           isBold
