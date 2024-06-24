@@ -1,5 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiEdit } from 'react-icons/fi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
@@ -12,10 +13,10 @@ import { ICourse, RoleType } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import Points from '../../ui/Points/Points';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
-import { useTranslation } from 'react-i18next';
 
 function CourseDetailsPage() {
   const navigate = useNavigate();
@@ -111,6 +112,7 @@ function CourseDetailsPage() {
             )}
           </div>
           <Container>
+            <Points />
             <CourseDetails course={course} role={role} />
             {error && <MessageBox errorMessage={error} />}
           </Container>
