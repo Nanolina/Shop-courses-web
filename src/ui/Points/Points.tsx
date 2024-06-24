@@ -20,10 +20,11 @@ function Points() {
       const response = await axiosWithAuth.get<number>(`/points`);
       setPoints(response.data);
     } catch (error: any) {}
-  }, []);
+  }, [initDataRaw]);
 
   useEffect(() => {
     handleGetPoints();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
