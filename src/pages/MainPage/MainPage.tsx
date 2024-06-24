@@ -1,4 +1,3 @@
-import { TonConnectButton } from '@tonconnect/ui-react';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'swiper/css';
@@ -18,7 +17,6 @@ const MainPage: React.FC = () => {
   return (
     <Container>
       <SearchBar />
-      <TonConnectButton />
       <CoursesList />
     </Container>
   );
