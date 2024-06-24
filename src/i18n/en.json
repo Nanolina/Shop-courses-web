@@ -1,4 +1,37 @@
 {
+  "activate": "Activate",
   "all": "All",
-  "price": "Price"
+  "buy": "Buy for",
+  "category": "Category",
+  "course_name": "Course name",
+  "cover_label_file": "Upload image for cover",
+  "cover_label_url": "Cover image URL",
+  "cover_label_file_course": "Upload image for course cover",
+  "cover_label_url_course": "Cover image URL for the course",
+  "cover_label_file_video": "Upload video for the lesson",
+  "cover_label_url_video": "Cover video URL for the lesson",
+  "create_course": "Create course",
+  "create_new_type": "Create new {{type}}",
+  "create_type": "Create {{type}}",
+  "currency": "Currency",
+  "delete": "Delete",
+  "delete_course": "Are you sure you want to delete course",
+  "description": "Description",
+  "lessons": "Lessons",
+  "lesson_name": "Lesson name",
+  "modules": "Modules",
+  "module_name": "Module name",
+  "price": "Price",
+  "search": "Search",
+  "subcategory": "Subcategory",
+  "switch_to_file_image": "Switch to file image upload",
+  "switch_to_url_image": "Switch to image URL input",
+  "switch_to_file_video": "Switch to file video upload",
+  "switch_to_url_video": "Switch to video URL input",
+  "type": {
+    "lesson": "lesson",
+    "module": "module"
+  },
+  "upload": "Upload",
+  "warning_delete_course": "All modules and lessons will be irretrievably deleted"
 }

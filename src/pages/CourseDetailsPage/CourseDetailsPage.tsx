@@ -15,6 +15,7 @@ import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
+import { useTranslation } from 'react-i18next';
 
 function CourseDetailsPage() {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ function CourseDetailsPage() {
   const [error, setError] = useState<string>('');
   const [role, setRole] = useState<RoleType | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const { t } = useTranslation();
 
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -115,7 +117,7 @@ function CourseDetailsPage() {
           <Modal
             title={
               <div>
-                {`Are you sure you want to delete course `}
+                {t('delete_course')}
                 <b>{course.name}</b>?
               </div>
             }
@@ -123,7 +125,7 @@ function CourseDetailsPage() {
             onClose={() => setModalOpen(false)}
             content={
               <div className={styles.modalTextContainer}>
-                <div>All modules and lessons will be irretrievably deleted</div>
+                <div>{t('warning_delete_course')}</div>
               </div>
             }
             confirm={deleteCourse}

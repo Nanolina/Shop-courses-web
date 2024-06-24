@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { CUSTOMER, SELLER, USER } from '../../consts';
 import {
-  capitalizeFirstLetter,
   createAxiosWithAuth,
   getCSSVariableValue,
   handleAuthError,
@@ -83,7 +82,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     if (role === USER) {
       const buttonColor = getCSSVariableValue('--tg-theme-button-color');
       tg.MainButton.setParams({
-        text: `Buy for ${course.price} ${course.currency}`,
+        text: `${t('buy')} ${course.price} ${course.currency}`,
         is_active: !!wallet,
         color: !!wallet ? buttonColor : '#e6e9e9',
       });
@@ -91,12 +90,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       return () => tg.offEvent('mainButtonClicked', handlePurchaseCourse);
     } else if (role === SELLER || role === CUSTOMER) {
       tg.MainButton.setParams({
-        text: 'Modules',
+        text: t('modules'),
       });
       tg.onEvent('mainButtonClicked', navigateToModulesPage);
       return () => tg.offEvent('mainButtonClicked', navigateToModulesPage);
     }
-  }, [course, navigateToModulesPage, handlePurchaseCourse, role, wallet]);
+  }, [course, navigateToModulesPage, handlePurchaseCourse, role, wallet, t]);
 
   if (isLoading) return <Loader />;
 
@@ -109,7 +108,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         )}
         {role !== CUSTOMER && (
           <div className={styles.price}>
-            <Label text={`${capitalizeFirstLetter(t('price'))}: `} isBold />
+            <Label text={`${t('price')}: `} isBold />
             <Label text={course.price} />
             {course.currency === 'TON' ? (
               <img
@@ -123,12 +122,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
           </div>
         )}
         <div className={styles.category}>
-          <Label text="Category: " isBold />
+          <Label text={`${t('category')}: `} isBold />
           <Label text={getCategoryLabel(course.category)} />
         </div>
         {course.subcategory && (
           <div className={styles.category}>
-            <Label text="Subcategory: " isBold />
+            <Label text={`${t('subcategory')}: `} isBold />
             <Label
               text={getSubcategoryLabel(
                 course.category,
@@ -143,7 +142,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       {role === SELLER && (
         <Button
           onClick={createCourse}
-          text="Activate"
+          text={t('activate')}
           icon={<SiHiveBlockchain size={18} />}
         />
       )}

@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect } from 'react';
 import { MdCameraswitch } from 'react-icons/md';
-import { capitalizeFirstLetter } from '../../functions';
 import { useCoursePartForm } from '../../hooks';
 import { IUseCoursePartFormReturnType } from '../../pages';
 import { ILesson } from '../../types';
@@ -15,6 +14,8 @@ import Textarea from '../../ui/Textarea/Textarea';
 import VideoPlayer from '../../ui/VideoPlayer/VideoPlayer';
 import { ICoursePartFormProps } from '../types';
 import styles from './CoursePartForm.module.css';
+import { useTranslation } from 'react-i18next';
+import { MODULE } from '../../consts';
 
 function CoursePartForm({ type, item }: ICoursePartFormProps) {
   const {
@@ -47,6 +48,10 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
     useVideoUrlCover,
     toggleBetweenVideoUrlAndFile,
   } = useCoursePartForm() as IUseCoursePartFormReturnType;
+  const { t } = useTranslation();
+
+  const translatedTypeName =
+    type === MODULE ? t('module_name') : t('lesson_name');
 
   // Setting initial values from item
   useEffect(() => {
@@ -71,12 +76,7 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
   return (
     <div className={styles.container}>
       <div className={styles.formGroup}>
-        <Label
-          text={`${capitalizeFirstLetter(type)} name`}
-          isRequired
-          isPadding
-          isBold
-        />
+        <Label text={t(translatedTypeName)} isRequired isPadding isBold />
         <TextInput
           value={name}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
@@ -85,7 +85,7 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
         />
       </div>
       <div className={styles.formGroup}>
-        <Label text="Description" isPadding isBold />
+        <Label text={t('description')} isPadding isBold />
         <Textarea
           value={description}
           onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
@@ -101,18 +101,14 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
             onClick={toggleBetweenImageUrlAndFile}
             text={
               useImageUrlCover
-                ? 'Switch to file image upload'
-                : 'Switch to image URL input'
+                ? t('switch_to_file_image')
+                : t('switch_to_url_image')
             }
             icon={<MdCameraswitch size={36} />}
           />
         </div>
         <Label
-          text={
-            useImageUrlCover
-              ? `Cover image URL for the ${type}`
-              : `Upload image for ${type} cover`
-          }
+          text={useImageUrlCover ? t('cover_label_url') : t('cover_label_file')}
           isPadding
           isBold
         />
@@ -143,8 +139,8 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
                 onClick={toggleBetweenVideoUrlAndFile}
                 text={
                   useVideoUrlCover
-                    ? 'Switch to file video upload'
-                    : 'Switch to video URL input'
+                    ? t('switch_to_file_video')
+                    : t('switch_to_url_video')
                 }
                 icon={<MdCameraswitch size={36} />}
               />
@@ -152,8 +148,8 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
             <Label
               text={
                 useVideoUrlCover
-                  ? `Cover video URL for the lesson`
-                  : `Upload video for the lesson`
+                  ? t('cover_label_url_video')
+                  : t('cover_label_file_video')
               }
               isPadding
               isBold

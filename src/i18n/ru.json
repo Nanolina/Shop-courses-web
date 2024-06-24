@@ -1,4 +1,37 @@
 {
+  "activate": "Активировать",
   "all": "Все",
-  "price": "Цена"
+  "buy": "Купить за",
+  "category": "Категория",
+  "course_name": "Название курса",
+  "cover_label_file": "Загрузите изображение для обложки",
+  "cover_label_url": "URL-адрес изображения для обложки",
+  "cover_label_file_course": "Загрузите изображение для обложки курса",
+  "cover_label_url_course": "URL-адрес изображения обложки для курса",
+  "cover_label_file_video": "Загрузите видео для урока",
+  "cover_label_url_video": "URL-адрес видеозаписи для урока",
+  "create_course": "Создать курс",
+  "create_new_type": "Создать новый {{type}}",
+  "create_type": "Создать {{type}}",
+  "currency": "Валюта",
+  "delete": "Удалить",
+  "delete_course": "Вы уверены, что хотите удалить курс",
+  "description": "Описание",
+  "lessons": "Уроки",
+  "lesson_name": "Название урока",
+  "modules": "Модули",
+  "module_name": "Название модуля",
+  "price": "Цена",
+  "search": "Поиск",
+  "subcategory": "Подкатегория",
+  "switch_to_file_image": "Переход к загрузке изображения файлом",
+  "switch_to_url_image": "Переход к вводу URL-адреса изображения",
+  "switch_to_file_video": "Переход к загрузке видео файлом",
+  "switch_to_url_video": "Переход к вводу URL-адреса видео",
+  "type": {
+    "lesson": "урок",
+    "module": "модуль"
+  },
+  "upload": "Загрузить",
+  "warning_delete_course": "Все модули и уроки будут безвозвратно удалены"
 }
