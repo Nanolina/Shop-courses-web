@@ -27,7 +27,7 @@ const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
 
 function App() {
   const { showNotification } = useNotification();
-  const { initData } = retrieveLaunchParams();
+  // const { initData } = retrieveLaunchParams();
 
   useEffect(() => {
     tg.ready();
@@ -50,9 +50,9 @@ function App() {
   }, [showNotification]);
 
   // Language
-  useEffect(() => {
-    i18n.changeLanguage(initData?.user?.languageCode || 'en');
-  }, [initData?.user?.languageCode]);
+  // useEffect(() => {
+  //   i18n.changeLanguage(initData?.user?.languageCode || 'en');
+  // }, [initData?.user?.languageCode]);
 
   return (
     <TonConnectUIProvider manifestUrl={manifestUrl}>
