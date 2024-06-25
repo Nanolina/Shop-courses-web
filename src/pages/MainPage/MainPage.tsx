@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'swiper/css';
 import CoursesList from '../../components/CoursesList/CoursesList';
+import Points from '../../components/Points/Points';
 import Container from '../../ui/Container/Container';
-import Points from '../../ui/Points/Points';
 import SearchBar from '../../ui/SearchBar/SearchBar';
 
 const tg = window.Telegram.WebApp;

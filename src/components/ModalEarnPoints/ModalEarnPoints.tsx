@@ -1,12 +1,12 @@
 import Modal from '../Modal/Modal';
-import { ModalEarnPointsProps } from '../types';
+import { IModalEarnPointsProps } from '../types';
 import styles from './ModalEarnPoints.module.css';
 
 function ModalEarnPoints({
   isOpen,
   onClose,
   courseName,
-}: ModalEarnPointsProps) {
+}: IModalEarnPointsProps) {
   return (
     <Modal
       isOpen={isOpen}

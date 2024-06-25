@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import CourseItem from '../../components/CourseItem/CourseItem';
 import Header from '../../components/Header/Header';
+import Points from '../../components/Points/Points';
 import { capitalizeFirstLetter } from '../../functions';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import Points from '../../ui/Points/Points';
 import SearchBar from '../../ui/SearchBar/SearchBar';
 import styles from './CoursesOneCategoryPage.module.css';
 

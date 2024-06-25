@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
-import { ModalProps } from '../types';
+import { IModalProps } from '../types';
 import styles from './Modal.module.css';
 
 function Modal({
-  title,
   isOpen,
   onClose,
-  content,
-  imageUrl,
   confirm,
   buttonRightText,
-}: ModalProps) {
-  const [show, setShow] = useState(isOpen);
+  children,
+}: IModalProps) {
+  const [show, setShow] = useState<boolean>(isOpen);
 
   useEffect(() => {
     setShow(isOpen);
@@ -21,21 +19,15 @@ function Modal({
   if (!show) return null;
 
   return (
-    <div className={styles.modalBackdrop} onClick={onClose}>
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        {title}
-        {imageUrl && (
-          <img className={styles.image} src={imageUrl} alt="modal" />
-        )}
-        {!confirm && (
-          <RxCross2
-            className={styles.cross}
-            color="var(--tg-theme-accent-text-color)"
-            size={20}
-            onClick={onClose}
-          />
-        )}
-        {content}
+    <div className={styles.backdrop} onClick={onClose}>
+      <div className={styles.content} onClick={(e) => e.stopPropagation()}>
+        <RxCross2
+          className={styles.cross}
+          color="var(--tg-theme-accent-text-color)"
+          size={20}
+          onClick={onClose}
+        />
+        {children}
         {confirm && (
           <div className={styles.containerBtn}>
             <button onClick={onClose} className={styles.btnCancel}>

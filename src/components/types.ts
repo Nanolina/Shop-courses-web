@@ -70,18 +70,20 @@ export interface ICoursePartFormProps {
   item?: IModule | ILesson | undefined; // update
 }
 
-export interface ModalProps {
-  title: any;
+export interface IModalProps {
   isOpen: boolean;
   onClose: () => void;
-  content: React.ReactNode;
-  imageUrl?: string;
   confirm?: () => void;
   buttonRightText?: string;
+  children?: any;
 }
 
-export interface ModalEarnPointsProps {
+export interface IModalEarnPointsProps {
   isOpen: boolean;
   onClose: () => void;
   courseName: string;
+}
+
+export interface IPointsModalContentProps {
+  page: number;
 }

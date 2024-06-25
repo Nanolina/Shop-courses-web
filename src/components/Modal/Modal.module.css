@@ -1,4 +1,4 @@
-.modalBackdrop {
+.backdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -7,32 +7,28 @@
   background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
-  align-items: start;
+  align-items: center;
   z-index: 100;
-  padding-top: 20px;
 }
 
-.modalContent {
+.content {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   gap: 10px;
   position: relative;
   width: 80%;
+  height: 80vh;
   background-color: var(--tg-theme-bg-color);
   padding: 20px;
-  text-align: center;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  font-size: 18px;
+  overflow-y: auto;
 }
 
-.image {
-  width: 50%;
-  height: 40%;
-  height: auto;
-  border-radius: 10px;
+.cross {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 
 .containerBtn {
@@ -63,10 +59,4 @@
   border-radius: 10px;
   padding: 10px 20px;
   width: 40%;
-}
-
-.cross {
-  position: absolute;
-  top: 5px;
-  right: 5px;
 }

@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--tg-theme-accent-text-color);
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--tg-theme-accent-text-color);
+  text-align: center;
+}
+
+.text {
+  color: var(--tg-theme-subtitle-text-color);
+  padding-bottom: 20px;
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+}
+
+.list {
+  list-style-type: none;
+  padding: 0;
+  text-align: left;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  color: var(--tg-theme-text-color);
+}
+
+.list li {
+  position: relative;
+  padding-left: 25px;
+}
+
+.list li::before {
+  content: '⭐';
+  position: absolute;
+  left: 0;
+}

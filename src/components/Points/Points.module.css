@@ -1,0 +1,28 @@
+.points {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  width: 100%;
+  color: var(--tg-theme-accent-text-color);
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.arrow {
+  position: absolute;
+  color: var(--tg-theme-accent-text-color);
+}
+
+.left {
+  left: 10px;
+}
+
+.right {
+  right: 10px;
+}
