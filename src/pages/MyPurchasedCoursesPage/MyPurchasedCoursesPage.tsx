@@ -6,6 +6,7 @@ import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import Points from '../../ui/Points/Points';
 import SearchBar from '../../ui/SearchBar/SearchBar';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import styles from './MyPurchasedCoursesPage.module.css';
@@ -48,11 +49,20 @@ function MyPurchasedCoursesPage() {
   if (isLoading) return <Loader />;
 
   if (!courses.length && !isLoading && isLoaded) {
-    return <ItemNotFoundPage error={error} isLoading={isLoading} />;
+    return (
+      <ItemNotFoundPage
+        error={
+          error ||
+          '😊 You have not purchased any courses yet. Explore our offers and find something interesting for you! 📚✨'
+        }
+        isLoading={isLoading}
+      />
+    );
   }
 
   return (
     <Container>
+      <Points />
       <SearchBar />
       <div className={styles.container}>
         {courses.map((course) => (

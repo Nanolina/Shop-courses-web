@@ -6,6 +6,7 @@ import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import Points from '../../ui/Points/Points';
 import SearchBar from '../../ui/SearchBar/SearchBar';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import styles from './MyCreatedCoursePage.module.css';
@@ -52,6 +53,7 @@ function MyCreatedCoursesPage() {
 
   return (
     <Container>
+      <Points />
       <SearchBar />
       <div className={styles.container}>
         {courses.map((course) => (
