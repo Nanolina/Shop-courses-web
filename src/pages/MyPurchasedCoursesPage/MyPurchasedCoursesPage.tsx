@@ -1,5 +1,5 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import CourseItem from '../../components/CourseItem/CourseItem';
 import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ICourse } from '../../types';
@@ -17,6 +17,11 @@ function MyPurchasedCoursesPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
   const [error, setError] = useState<string>('');
+  const [value, setValue] = useState('');
+
+  const filteredCourses = courses.filter((course) => {
+    return course.name.toLowerCase().includes(value.toLowerCase());
+  });
 
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -53,9 +58,13 @@ function MyPurchasedCoursesPage() {
 
   return (
     <Container>
-      <SearchBar />
+      <SearchBar
+        funOnChange={(event: { target: { value: SetStateAction<string> } }) =>
+          setValue(event.target.value)
+        }
+      />
       <div className={styles.container}>
-        {courses.map((course) => (
+        {filteredCourses.map((course) => (
           <CourseItem key={course.id} course={course} />
         ))}
       </div>
