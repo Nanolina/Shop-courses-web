@@ -30,13 +30,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const [isActivateButtonDisabled, setIsActivateButtonDisabled] =
     useState<boolean>(true);
   const [activateButtonHint, setActivateButtonHint] = useState<string>('');
-  // const [isDeployedInBlockchain, setIsDeployedInBlockchain] = useState<any>('');
   const [isMainnet, setIsMainnet] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   const { wallet, connected, network } = useTonConnect();
-  const { purchaseCourse, createCourse, isContractDeployed } = useContract(
+  const { purchaseCourse, createCourse, balance } = useContract(
     course.id,
     course.price
   );
@@ -105,16 +104,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     }
   }, [course, navigateToModulesPage, handlePurchaseCourse, role, wallet, t]);
 
-  // Check course contract status
-  useEffect(() => {
-    async function checkDeploymentStatus() {
-      // const isDeployed = await isContractDeployed();
-      // setIsDeployedInBlockchain(isDeployed);
-    }
-
-    checkDeploymentStatus();
-  }, [isContractDeployed]);
-
   // Сheck which network the wallet is from
   useEffect(() => {
     setIsMainnet(network === CHAIN.MAINNET);
@@ -142,6 +131,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   return (
     <>
       <div className={styles.info}>
+        <p>Contract balance: {balance}</p>
         <Label text={course.name} isBig isBold />
         {course.description && (
           <div className={styles.descriptionText}>{course.description}</div>

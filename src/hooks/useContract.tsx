@@ -1,12 +1,25 @@
-import { OpenedContract, address, toNano } from '@ton/core';
+import { OpenedContract, address, fromNano, toNano } from '@ton/core';
+import { useCallback, useEffect, useState } from 'react';
+import TonWeb from 'tonweb';
 import { Course, NewCourse } from '../ton/wrappers/Course';
 import { useAsyncInitialize } from './useAsyncInitialize';
 import { useTonClient } from './useTonClient';
 import { useTonConnect } from './useTonConnect';
 
+const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
+const tonweb = new TonWeb(
+  new TonWeb.HttpProvider(
+    isProduction
+      ? 'https://toncenter.com/api/v2/jsonRPC'
+      : 'https://testnet.toncenter.com/api/v2/jsonRPC'
+  )
+);
+
 export function useContract(courseId: string, coursePrice: number) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
+
+  const [balance, setBalance] = useState<string | null>(null);
 
   const coursePriceInNano = toNano(coursePrice.toString());
 
@@ -30,20 +43,33 @@ export function useContract(courseId: string, coursePrice: number) {
     return client.open(contract) as OpenedContract<Course>;
   }, [client]);
 
-  async function isContractDeployed() {
+  const getContractBalance = useCallback(async () => {
     try {
-      const contractByData = await Course.fromInit(courseId, coursePriceInNano);
-      const contractAddress = address(contractByData.address.toString());
-
-      const contract = await client?.getContractState(contractAddress);
-      return contract?.state;
+      const сourseContractByData = await Course.fromInit(
+        courseId,
+        coursePriceInNano
+      );
+      const courseContractAddress = сourseContractByData.address.toString();
+      const balanceInfo = await tonweb.provider.getBalance(
+        courseContractAddress
+      );
+      return balanceInfo;
     } catch (error) {
-      console.error('Error checking contract deployment:', error);
-      return false;
+      return null;
     }
-  }
+  }, [courseId, coursePriceInNano]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const contractBalance = await getContractBalance();
+      setBalance(fromNano(contractBalance));
+    };
+
+    fetchData();
+  }, [getContractBalance]);
 
   return {
+    balance,
     createCourse: () => {
       const message: NewCourse = {
         $$type: 'NewCourse',
@@ -68,7 +94,5 @@ export function useContract(courseId: string, coursePrice: number) {
         'New purchase'
       );
     },
-
-    isContractDeployed,
   };
 }

@@ -22,16 +22,11 @@ iframe#webpack-dev-server-client-overlay {
   display: none;
 }
 
-[data-tc-button='true'] {
+[data-tc-connect-button='true'] {
   background-color: var(--tg-theme-button-color) !important;
   border-radius: 10px !important;
   border: none !important;
   padding: 10px 20px !important;
-}
-
-[data-tc-button='true'] div {
-  color: white !important;
-  font-size: 16px !important;
 }
 
 [data-tc-dropdown='true'] {
@@ -40,7 +35,6 @@ iframe#webpack-dev-server-client-overlay {
 }
 
 /* Ton connect selectors (node_modules/@tonconnect/ui/dist/tonconnect-ui.min.js)
-[data-tc-connect-button='true'], 
 [data-tc-dropdown-container='true'], 
 [data-tc-confirm-modal='true'], 
 [data-tc-transaction-canceled-modal='true'],
