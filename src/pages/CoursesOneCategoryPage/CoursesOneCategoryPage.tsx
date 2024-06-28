@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import CourseItem from '../../components/CourseItem/CourseItem';
 import Header from '../../components/Header/Header';
@@ -10,6 +10,7 @@ import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import styles from './CoursesOneCategoryPage.module.css';
 import SearchBar from '../../ui/SearchBar/SearchBar';
+import { filterCourses } from '../../functions/filterCourses';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
@@ -18,11 +19,9 @@ function CoursesOneCategoryPage() {
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState<string>('');
 
-  const filteredCourses = courses.filter((course) => {
-    return course.name.toLowerCase().includes(value.toLowerCase());
-  });
+  const filteredCourses = filterCourses(courses, value);
 
   async function getAllCoursesOneCategory() {
     setIsLoading(true);
@@ -49,7 +48,7 @@ function CoursesOneCategoryPage() {
     <Container>
       <Header label={capitalizeFirstLetter(category)} />
       <SearchBar
-        funOnChange={(event: { target: { value: SetStateAction<string> } }) =>
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
           setValue(event.target.value)
         }
       />

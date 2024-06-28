@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SetStateAction, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { groupCoursesByCategory } from '../../functions';
 import { ICourse } from '../../types.ts';
 import { Loader } from '../../ui/Loader/Loader.tsx';
@@ -7,6 +7,7 @@ import { MessageBox } from '../../ui/MessageBox/MessageBox.tsx';
 import CoursesListByCategory from '../CoursesListByCategory/CoursesListByCategory.tsx';
 import styles from './CoursesList.module.css';
 import SearchBar from '../../ui/SearchBar/SearchBar.tsx';
+import { filterCourses } from '../../functions/filterCourses.ts';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
@@ -14,11 +15,9 @@ const CoursesList = () => {
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState<string>('');
 
-  const filteredCourses = courses.filter((course) => {
-    return course.name.toLowerCase().includes(value.toLowerCase());
-  });
+  const filteredCourses = filterCourses(courses, value);
 
   // Grouping data by categories
   const groupedData = useMemo(
@@ -49,7 +48,7 @@ const CoursesList = () => {
   return (
     <>
       <SearchBar
-        funOnChange={(event: { target: { value: SetStateAction<string> } }) =>
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
           setValue(event.target.value)
         }
       />

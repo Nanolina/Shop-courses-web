@@ -5,6 +5,10 @@ export interface IOption {
   label: string;
 }
 
+export interface ISearch {
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
 export interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   hint?: string;

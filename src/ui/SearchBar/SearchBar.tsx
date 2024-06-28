@@ -1,8 +1,9 @@
 import { IoSearchSharp } from 'react-icons/io5';
 import styles from './SearchBar.module.css';
 import { useTranslation } from 'react-i18next';
+import { ISearch } from '../types';
 
-function SearchBar({ funOnChange }: any) {
+function SearchBar({ onChange }: ISearch) {
   const { t } = useTranslation();
 
   return (
@@ -10,7 +11,7 @@ function SearchBar({ funOnChange }: any) {
       <input
         className={styles.input}
         placeholder={t('search')}
-        onChange={funOnChange}
+        onChange={onChange}
       />
       <IoSearchSharp className={styles.icon} color="#8c8c8c" size={20} />
     </div>
