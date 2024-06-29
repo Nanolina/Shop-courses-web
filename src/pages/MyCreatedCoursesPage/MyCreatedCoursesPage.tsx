@@ -9,6 +9,7 @@ import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import SearchBar from '../../ui/SearchBar/SearchBar';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import styles from './MyCreatedCoursePage.module.css';
+import { filterCourses } from '../../functions/filterCourses';
 
 const tg = window.Telegram.WebApp;
 
@@ -18,6 +19,9 @@ function MyCreatedCoursesPage() {
   const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
   const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
+  const [value, setValue] = useState<string>('');
+
+  const filteredCourses = filterCourses(courses, value);
 
   async function getAllMyCreatedCourses() {
     setIsLoading(true);
@@ -52,9 +56,13 @@ function MyCreatedCoursesPage() {
 
   return (
     <Container>
-      <SearchBar />
+      <SearchBar
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          setValue(event.target.value)
+        }
+      />
       <div className={styles.container}>
-        {courses.map((course) => (
+        {filteredCourses.map((course) => (
           <CourseItem key={course.id} course={course} />
         ))}
       </div>
