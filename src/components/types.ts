@@ -1,4 +1,11 @@
-import { EntityType, ICourse, ILesson, IModule, RoleType } from '../types';
+import {
+  DeployType,
+  EntityType,
+  ICourse,
+  ILesson,
+  IModule,
+  RoleType,
+} from '../types';
 
 export interface ICoursePartItem {
   id: string;
@@ -82,8 +89,9 @@ export interface IModalEarnPointsProps {
   isOpen: boolean;
   onClose: () => void;
   courseName: string;
+  deployType: DeployType | null;
 }
 
-export interface IPointsModalContentProps {
+export interface IPointsInfoModalContentProps {
   page: number;
 }

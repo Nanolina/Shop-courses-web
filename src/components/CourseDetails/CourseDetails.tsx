@@ -17,6 +17,7 @@ import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import ModalEarnPoints from '../ModalEarnPoints/ModalEarnPoints';
 import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 
@@ -35,10 +36,15 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const [error, setError] = useState<string>('');
 
   const { wallet, connected, network } = useTonConnect();
-  const { purchaseCourse, createCourse, errorContract, balance } = useContract(
-    course.id,
-    course.price
-  );
+  const {
+    purchaseCourse,
+    createCourse,
+    errorContract,
+    balance,
+    deployType,
+    modalOpen,
+    setModalOpen,
+  } = useContract(course.id, course.price);
   const { initDataRaw } = retrieveLaunchParams();
 
   const getCategoryLabel = (value: string) => {
@@ -186,6 +192,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
 
       {error && <MessageBox errorMessage={error} />}
       {errorContract && <MessageBox errorMessage={errorContract} />}
+      <ModalEarnPoints
+        isOpen={modalOpen}
+        courseName={course.name}
+        onClose={() => setModalOpen(false)}
+        deployType={deployType}
+      />
     </>
   );
 }

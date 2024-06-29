@@ -5,7 +5,7 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { usePoints } from '../../context';
 import Modal from '../Modal/Modal';
 import styles from './Points.module.css';
-import PointsModalContent from './PointsModalContent';
+import PointsInfoModalContent from './PointsInfoModalContent';
 
 function Points() {
   const { t } = useTranslation();
@@ -29,7 +29,7 @@ function Points() {
         {t('my_points')}: <b>{points}</b>
       </div>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <PointsModalContent page={page} />
+        <PointsInfoModalContent page={page} />
         <div className={styles.navigation}>
           {page > 1 && (
             <FaArrowLeft

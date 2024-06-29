@@ -134,12 +134,6 @@ function CourseDetailsPage() {
             imageUrl="/delete.png"
             buttonRightText="Delete"
           />
-
-          {/* <ModalEarnPoints
-            isOpen={true}
-            courseName={course.name}
-            onClose={() => setModalOpen(false)}
-          /> */}
         </>
       )}
     </>

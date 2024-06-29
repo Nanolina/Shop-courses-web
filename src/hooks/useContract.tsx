@@ -2,6 +2,7 @@ import { OpenedContract, address, fromNano, toNano } from '@ton/core';
 import { useCallback, useEffect, useState } from 'react';
 import TonWeb from 'tonweb';
 import { Course, NewCourse } from '../ton/wrappers/Course';
+import { DeployType } from '../types';
 import { useAsyncInitialize } from './useAsyncInitialize';
 import { useTonClient } from './useTonClient';
 import { useTonConnect } from './useTonConnect';
@@ -20,6 +21,8 @@ export function useContract(courseId: string, coursePrice: number) {
   const { sender } = useTonConnect();
 
   const [balance, setBalance] = useState<string>('0');
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [deployType, setDeployType] = useState<DeployType | null>(null);
   const [errorContract, setErrorContract] = useState<string>('');
 
   const coursePriceInNano = toNano(coursePrice.toString());
@@ -65,21 +68,26 @@ export function useContract(courseId: string, coursePrice: number) {
     setBalance(fromNano(contractBalance));
   }, [getContractBalance]);
 
-  const checkAndUpdateBalance = useCallback(async () => {
-    const initialBalance = await getContractBalance();
-    setBalance(fromNano(initialBalance));
+  const checkAndUpdateBalance = useCallback(
+    async (type: DeployType) => {
+      const initialBalance = await getContractBalance();
+      setBalance(fromNano(initialBalance));
 
-    const intervalId = setInterval(async () => {
-      const currentBalance = await getContractBalance();
-      if (currentBalance !== initialBalance) {
-        setBalance(fromNano(currentBalance));
-        clearInterval(intervalId);
-      }
-    }, 5000); // 5 sec
+      const intervalId = setInterval(async () => {
+        const currentBalance = await getContractBalance();
+        if (currentBalance !== initialBalance) {
+          setBalance(fromNano(currentBalance));
+          setModalOpen(true);
+          setDeployType(type);
+          clearInterval(intervalId);
+        }
+      }, 5000); // 5 sec
 
-    // Clear the interval when unmounting a component or changing dependencies
-    return () => clearInterval(intervalId);
-  }, [getContractBalance]);
+      // Clear the interval when unmounting a component or changing dependencies
+      return () => clearInterval(intervalId);
+    },
+    [getContractBalance]
+  );
 
   useEffect(() => {
     updateBalance();
@@ -88,6 +96,9 @@ export function useContract(courseId: string, coursePrice: number) {
   return {
     balance,
     errorContract,
+    deployType,
+    modalOpen,
+    setModalOpen,
     createCourse: async () => {
       const message: NewCourse = {
         $$type: 'NewCourse',
@@ -102,7 +113,7 @@ export function useContract(courseId: string, coursePrice: number) {
           },
           message
         );
-        await checkAndUpdateBalance();
+        await checkAndUpdateBalance('create');
       } catch (error: any) {
         setErrorContract(
           `Transaction failed or was rejected. ${error?.message}`
@@ -119,7 +130,7 @@ export function useContract(courseId: string, coursePrice: number) {
           },
           'New purchase'
         );
-        await checkAndUpdateBalance();
+        await checkAndUpdateBalance('purchase');
       } catch (error: any) {
         setErrorContract(
           `Transaction failed or was rejected. ${error?.message}`

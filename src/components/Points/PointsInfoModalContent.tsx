@@ -1,8 +1,10 @@
 import React from 'react';
-import { IPointsModalContentProps } from '../types';
-import styles from './PointsModalContent.module.css';
+import { IPointsInfoModalContentProps } from '../types';
+import styles from './PointsInfoModalContent.module.css';
 
-const PointsModalContent: React.FC<IPointsModalContentProps> = ({ page }) => {
+const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
+  page,
+}) => {
   switch (page) {
     case 1:
       return (
@@ -76,4 +78,4 @@ const PointsModalContent: React.FC<IPointsModalContentProps> = ({ page }) => {
   }
 };
 
-export default PointsModalContent;
+export default PointsInfoModalContent;
