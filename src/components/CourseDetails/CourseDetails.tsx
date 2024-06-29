@@ -35,7 +35,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const [error, setError] = useState<string>('');
 
   const { wallet, connected, network } = useTonConnect();
-  const { purchaseCourse, createCourse, balance } = useContract(
+  const { purchaseCourse, createCourse, errorContract, balance } = useContract(
     course.id,
     course.price
   );
@@ -59,9 +59,9 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   );
 
   const handlePurchaseCourse = useCallback(async () => {
-    purchaseCourse();
     setIsLoading(true);
     try {
+      purchaseCourse();
       if (!initDataRaw) throw new Error('Not enough authorization data');
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       const response = await axiosWithAuth.post<ICourse>(
@@ -131,7 +131,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   return (
     <>
       <div className={styles.info}>
-        <p>Contract balance: {balance}</p>
         <Label text={course.name} isBig isBold />
         {course.description && (
           <div className={styles.descriptionText}>{course.description}</div>
@@ -166,6 +165,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             />
           </div>
         )}
+        {role === SELLER && (
+          <div className={styles.category}>
+            <Label text={`${t('smart_contract_balance')}: `} isBold />
+            <Label text={`${balance} TON`} />
+          </div>
+        )}
       </div>
       <TonConnectButton />
 
@@ -180,6 +185,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       )}
 
       {error && <MessageBox errorMessage={error} />}
+      {errorContract && <MessageBox errorMessage={errorContract} />}
     </>
   );
 }

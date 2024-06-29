@@ -32,7 +32,7 @@ export const PointsProvider: React.FC<PointsProviderProps> = ({ children }) => {
       const response = await axiosWithAuth.get<number>(`/points`);
       setPoints(response.data);
     } catch (error) {
-      console.error('Failed to fetch points', error);
+      return 0;
     }
   }, [initDataRaw]);
 

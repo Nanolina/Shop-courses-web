@@ -34,5 +34,6 @@
     "module": "module"
   },
   "upload": "Upload",
-  "warning_delete_course": "All modules and lessons will be irretrievably deleted"
+  "warning_delete_course": "All modules and lessons will be irretrievably deleted",
+  "smart_contract_balance": "Smart contract balance"
 }

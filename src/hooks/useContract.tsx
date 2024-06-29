@@ -19,7 +19,8 @@ export function useContract(courseId: string, coursePrice: number) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
 
-  const [balance, setBalance] = useState<string | null>(null);
+  const [balance, setBalance] = useState<string>('0');
+  const [errorContract, setErrorContract] = useState<string>('');
 
   const coursePriceInNano = toNano(coursePrice.toString());
 
@@ -33,7 +34,7 @@ export function useContract(courseId: string, coursePrice: number) {
     return client.open(contract) as OpenedContract<Course>;
   }, [client]);
 
-  // for this courseId and coursePrice
+  // For this courseId and coursePrice
   const сourseContractWithNewData = useAsyncInitialize(async () => {
     if (!client) return;
 
@@ -55,44 +56,75 @@ export function useContract(courseId: string, coursePrice: number) {
       );
       return balanceInfo;
     } catch (error) {
-      return null;
+      return '0';
     }
   }, [courseId, coursePriceInNano]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const contractBalance = await getContractBalance();
-      setBalance(fromNano(contractBalance));
-    };
-
-    fetchData();
+  const updateBalance = useCallback(async () => {
+    const contractBalance = await getContractBalance();
+    setBalance(fromNano(contractBalance));
   }, [getContractBalance]);
+
+  const checkAndUpdateBalance = useCallback(async () => {
+    const initialBalance = await getContractBalance();
+    setBalance(fromNano(initialBalance));
+
+    const intervalId = setInterval(async () => {
+      const currentBalance = await getContractBalance();
+      if (currentBalance !== initialBalance) {
+        setBalance(fromNano(currentBalance));
+        clearInterval(intervalId);
+      }
+    }, 5000); // 5 sec
+
+    // Clear the interval when unmounting a component or changing dependencies
+    return () => clearInterval(intervalId);
+  }, [getContractBalance]);
+
+  useEffect(() => {
+    updateBalance();
+  }, [updateBalance]);
 
   return {
     balance,
-    createCourse: () => {
+    errorContract,
+    createCourse: async () => {
       const message: NewCourse = {
         $$type: 'NewCourse',
         courseId,
         coursePrice: coursePriceInNano,
       };
-      courseDefaultContract?.send(
-        sender,
-        {
-          value: toNano('0.07'),
-        },
-        message
-      );
+      try {
+        await courseDefaultContract?.send(
+          sender,
+          {
+            value: toNano('0.07'),
+          },
+          message
+        );
+        await checkAndUpdateBalance();
+      } catch (error: any) {
+        setErrorContract(
+          `Transaction failed or was rejected. ${error?.message}`
+        );
+      }
     },
 
-    purchaseCourse: () => {
-      сourseContractWithNewData?.send(
-        sender,
-        {
-          value: coursePriceInNano + toNano('0.21'),
-        },
-        'New purchase'
-      );
+    purchaseCourse: async () => {
+      try {
+        await сourseContractWithNewData?.send(
+          sender,
+          {
+            value: coursePriceInNano + toNano('0.21'),
+          },
+          'New purchase'
+        );
+        await checkAndUpdateBalance();
+      } catch (error: any) {
+        setErrorContract(
+          `Transaction failed or was rejected. ${error?.message}`
+        );
+      }
     },
   };
 }
