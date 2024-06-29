@@ -1,6 +1,7 @@
 import { OpenedContract, address, fromNano, toNano } from '@ton/core';
 import { useCallback, useEffect, useState } from 'react';
 import TonWeb from 'tonweb';
+import { useModal } from '../context';
 import { Course, NewCourse } from '../ton/wrappers/Course';
 import { ICourse, RoleType } from '../types';
 import { useAsyncInitialize } from './useAsyncInitialize';
@@ -21,6 +22,7 @@ export function useCourseContract(course: ICourse, role: RoleType) {
   const courseId = course.id;
   const { client } = useTonClient();
   const { sender } = useTonConnect();
+  const { showModal } = useModal();
 
   const [balance, setBalance] = useState<string>('0');
   const [errorContract, setErrorContract] = useState<string>('');
@@ -78,14 +80,19 @@ export function useCourseContract(course: ICourse, role: RoleType) {
       const currentBalance = await getContractBalance();
       if (currentBalance !== initialBalance) {
         setBalance(fromNano(currentBalance));
-        await handleAddPointsForCreating();
+
+        try {
+          await handleAddPointsForCreating();
+          showModal('create', course.name);
+        } catch (error: any) {}
+
         clearInterval(intervalId);
       }
     }, 5000); // 5 sec
 
     // Clear the interval when unmounting a component or changing dependencies
     return () => clearInterval(intervalId);
-  }, [getContractBalance, handleAddPointsForCreating]);
+  }, [getContractBalance, handleAddPointsForCreating, showModal, course.name]);
 
   useEffect(() => {
     updateBalance();

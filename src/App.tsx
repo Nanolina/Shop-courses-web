@@ -5,7 +5,8 @@ import { I18nextProvider } from 'react-i18next';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Bounce, ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
-import { PointsProvider, useNotification } from './context';
+import ModalEarnPoints from './components/ModalEarnPoints/ModalEarnPoints';
+import { ModalProvider, PointsProvider, useNotification } from './context';
 import NotificationProvider from './context/NotificationContext';
 import i18n from './i18n/i18n';
 import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage';
@@ -104,6 +105,7 @@ function App() {
             theme="colored"
             transition={Bounce}
           />
+          <ModalEarnPoints />
         </Router>
       </I18nextProvider>
     </TonConnectUIProvider>
@@ -114,7 +116,9 @@ function App() {
 export default () => (
   <NotificationProvider>
     <PointsProvider>
-      <App />
+      <ModalProvider>
+        <App />
+      </ModalProvider>
     </PointsProvider>
   </NotificationProvider>
 );

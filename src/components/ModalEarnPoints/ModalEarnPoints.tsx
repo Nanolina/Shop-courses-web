@@ -1,15 +1,12 @@
+import { useModal } from '../../context';
 import Modal from '../Modal/Modal';
-import { IModalEarnPointsProps } from '../types';
 import styles from './ModalEarnPoints.module.css';
 
-function ModalEarnPoints({
-  isOpen,
-  onClose,
-  courseName,
-  deployType,
-}: IModalEarnPointsProps) {
+function ModalEarnPoints() {
+  const { isOpen, hideModal, courseName, deployType } = useModal();
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={hideModal}>
       <div className={styles.container}>
         <h3 className={styles.hooray}>Hooray!</h3>
         <img src="/reward.png" alt="Earn points" className={styles.image} />

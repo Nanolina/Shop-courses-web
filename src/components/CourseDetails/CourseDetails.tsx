@@ -8,22 +8,14 @@ import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import ModalEarnPoints from '../ModalEarnPoints/ModalEarnPoints';
 import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const { t } = useTranslation();
 
-  const {
-    modalOpen,
-    setModalOpen,
-    deployType,
-    isLoading,
-    error,
-    isActivateButtonDisabled,
-    activateButtonHint,
-  } = useCourseActions(course, role);
+  const { isLoading, error, isActivateButtonDisabled, activateButtonHint } =
+    useCourseActions(course, role);
 
   const { createCourse, errorContract, balance } = useCourseContract(
     course,
@@ -34,8 +26,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
 
   return (
     <>
-      <div>modalOpen: {modalOpen ? 'true' : 'false'}</div>
-      <div>deployType: {deployType}</div>
       <div className={styles.info}>
         <Label text={course.name} isBig isBold />
         {course.description && (
@@ -92,13 +82,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
 
       {error && <MessageBox errorMessage={error} />}
       {errorContract && <MessageBox errorMessage={errorContract} />}
-
-      <ModalEarnPoints
-        isOpen={modalOpen}
-        courseName={course.name}
-        onClose={() => setModalOpen(false)}
-        deployType={deployType}
-      />
     </>
   );
 }

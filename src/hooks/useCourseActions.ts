@@ -10,7 +10,7 @@ import {
   getCSSVariableValue,
   handleAuthError,
 } from '../functions';
-import { DeployType, ICourse, RoleType } from '../types';
+import { ICourse, RoleType } from '../types';
 import { useTonConnect } from './useTonConnect';
 
 const tg = window.Telegram.WebApp;
@@ -26,8 +26,6 @@ export function useCourseActions(course: ICourse, role: RoleType) {
   const [isActivateButtonDisabled, setIsActivateButtonDisabled] =
     useState<boolean>(true);
   const [activateButtonHint, setActivateButtonHint] = useState<string>('');
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [deployType, setDeployType] = useState<DeployType | null>(null);
   const [isMainnet, setIsMainnet] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -36,16 +34,6 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     () => navigate(`/module/course/${course.id}`),
     [course.id, navigate]
   );
-
-  const handleUpdatePoints = useCallback(async () => {
-    try {
-      await refreshPoints();
-      setDeployType('create');
-      setModalOpen(true);
-    } catch (error: any) {
-      setError(error?.message);
-    }
-  }, [refreshPoints]);
 
   const handleAddPointsForCreating = useCallback(async () => {
     setIsLoading(true);
@@ -56,14 +44,14 @@ export function useCourseActions(course: ICourse, role: RoleType) {
         `/course/${course?.id}/points/add/creation`
       );
       if (response.status === 200) {
-        await handleUpdatePoints();
+        await refreshPoints();
       }
     } catch (error: any) {
       handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }
-  }, [course?.id, initDataRaw, handleUpdatePoints]);
+  }, [course?.id, initDataRaw, refreshPoints]);
 
   const handlePurchaseCourse = useCallback(async () => {
     setIsLoading(true);
@@ -133,9 +121,6 @@ export function useCourseActions(course: ICourse, role: RoleType) {
   }, [connected, isMainnet]);
 
   return {
-    modalOpen,
-    setModalOpen,
-    deployType,
     isLoading,
     error,
     isActivateButtonDisabled,
