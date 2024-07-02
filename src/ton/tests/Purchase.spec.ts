@@ -1,8 +1,9 @@
 import { address, toNano } from '@ton/core';
 import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
 import '@ton/test-utils';
+import { CreatePurchase } from '../wrappers/Course';
 import { MarketplaceFee } from '../wrappers/MarketplaceFee';
-import { NewPurchase, Purchase } from '../wrappers/Purchase';
+import { Purchase } from '../wrappers/Purchase';
 
 const walletDev1 = address('0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh'); // Online courses test
 const walletDev2 = address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'); // Test
@@ -18,9 +19,8 @@ describe('Purchase', () => {
 
         purchase = blockchain.openContract(
             await Purchase.fromInit(
-                address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'), // customer
-                address('EQCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sd_u'), // seller
-                '123',
+                5075565141n,
+                address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'), // Test
             ),
         );
         marketplaceFee = blockchain.openContract(await MarketplaceFee.fromInit(walletDev1, walletDev2));
@@ -68,9 +68,11 @@ describe('Purchase', () => {
     });
 
     it('should send money to seller', async () => {
-        const message: NewPurchase = {
-            $$type: 'NewPurchase',
+        const message: CreatePurchase = {
+            $$type: 'CreatePurchase',
+            courseId: '123',
             coursePrice: toNano('12'),
+            seller: address('0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh'),
         };
         const result = await purchase.send(
             deployer.getSender(),

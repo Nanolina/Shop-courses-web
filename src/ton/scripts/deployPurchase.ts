@@ -3,13 +3,8 @@ import { address, toNano } from '@ton/core';
 import { Purchase } from '../wrappers/Purchase';
 
 export async function run(provider: NetworkProvider) {
-    const purchase = provider.open(
-        await Purchase.fromInit(
-            address('EQCIEEaD_8z6FnkozF6mFaaWNN1E0JiDJBOVOWQPnBgGRTv0'),
-            address('EQAVHSfvZ-PsRc8AEJ9iWSnu0lpA_bsL40hyVaKAauyMadek'),
-            '123',
-        ),
-    );
+    const testAddress = address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'); // Test
+    const purchase = provider.open(await Purchase.fromInit(5075565141n, testAddress));
 
     await purchase.send(
         provider.sender(),

@@ -7,15 +7,17 @@ contract Course with Deployable {
     courseId: String;
     coursePrice: Int as coins;
     seller: Address;
-    init(courseId: String, coursePrice: Int){
+    sellerId: Int as uint64;
+    init(courseId: String, coursePrice: Int, sellerId: Int){
         self.courseId = courseId;
         self.coursePrice = coursePrice;
         self.seller = newAddress(0, 0);
+        self.sellerId = sellerId;
     }
 
     receive(msg: NewCourse){
         require(context().value >= self.deployFee, "Insufficient funds to create a course");
-        let init: StateInit = initOf Course(msg.courseId, msg.coursePrice);
+        let init: StateInit = initOf Course(msg.courseId, msg.coursePrice, msg.sellerId);
         let address: Address = contractAddress(init);
         // Create new course contract with new data
         send(SendParameters{
@@ -34,17 +36,17 @@ contract Course with Deployable {
         self.seller = msg.seller;
     }
 
-    receive("New purchase"){
+    receive(msg: NewPurchase){
         let totalFee: Int = (self.deployFee * 3 + self.coursePrice);
         require(context().value >= totalFee, "Insufficient funds to buy a course");
-        let init: StateInit = initOf Purchase(sender(), self.seller, self.courseId);
+        let init: StateInit = initOf Purchase(msg.customerId, myAddress());
         let purchaseAddress: Address = contractAddress(init);
         // Create Purchase contract
         send(SendParameters{
                 to: purchaseAddress,
                 value: 0,
                 mode: SendIgnoreErrors | SendRemainingValue,
-                body: NewPurchase{coursePrice: self.coursePrice}.toCell(),
+                body: CreatePurchase{seller: self.seller, coursePrice: self.coursePrice, courseId: self.courseId}.toCell(),
                 bounce: false,
                 code: init.code,
                 data: init.data
@@ -52,13 +54,13 @@ contract Course with Deployable {
         );
     }
 
-    get fun address(courseId: String, coursePrice: Int): Address {
-        let init: StateInit = initOf Course(courseId, coursePrice);
+    get fun address(courseId: String, coursePrice: Int, sellerId: Int): Address {
+        let init: StateInit = initOf Course(courseId, coursePrice, sellerId);
         return contractAddress(init);
     }
 
-    get fun addressPurchase(customer: Address, seller: Address, courseId: String): Address {
-        let init: StateInit = initOf Purchase(customer, seller, courseId);
+    get fun addressPurchase(customerId: Int, parent: Address): Address {
+        let init: StateInit = initOf Purchase(customerId, parent);
         return contractAddress(init);
     }
 }

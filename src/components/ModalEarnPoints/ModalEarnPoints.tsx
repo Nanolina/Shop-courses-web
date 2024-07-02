@@ -21,7 +21,8 @@ function ModalEarnPoints() {
             </>
           ) : (
             <>
-              Thank you for purchasing the course <b>{courseName}</b>!
+              Thank you for purchasing the course
+              <b className={styles.courseName}> {courseName}!</b>
             </>
           )}
         </div>

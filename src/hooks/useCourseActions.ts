@@ -1,15 +1,10 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { CHAIN } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { CUSTOMER, SELLER, USER } from '../consts';
+import { USER } from '../consts';
 import { usePoints } from '../context';
-import {
-  createAxiosWithAuth,
-  getCSSVariableValue,
-  handleAuthError,
-} from '../functions';
+import { createAxiosWithAuth, handleAuthError } from '../functions';
 import { ICourse, RoleType } from '../types';
 import { useTonConnect } from './useTonConnect';
 
@@ -18,8 +13,7 @@ const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 
 export function useCourseActions(course: ICourse, role: RoleType) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { wallet, connected, network } = useTonConnect();
+  const { connected, network } = useTonConnect();
   const { refreshPoints } = usePoints();
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -63,13 +57,14 @@ export function useCourseActions(course: ICourse, role: RoleType) {
       );
       if (response.status === 201) {
         navigate('/course/purchased');
+        await refreshPoints();
       }
     } catch (error: any) {
       handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }
-  }, [course?.id, initDataRaw, navigate]);
+  }, [course?.id, initDataRaw, navigate, refreshPoints]);
 
   useEffect(() => {
     if (role === USER && !connected) {
@@ -78,25 +73,6 @@ export function useCourseActions(course: ICourse, role: RoleType) {
       tg.MainButton.show();
     }
   }, [connected, role]);
-
-  useEffect(() => {
-    if (role === USER) {
-      const buttonColor = getCSSVariableValue('--tg-theme-button-color');
-      tg.MainButton.setParams({
-        text: `${t('buy')} ${course.price} ${course.currency}`,
-        is_active: !!wallet,
-        color: !!wallet ? buttonColor : '#e6e9e9',
-      });
-      tg.onEvent('mainButtonClicked', handlePurchaseCourse);
-      return () => tg.offEvent('mainButtonClicked', handlePurchaseCourse);
-    } else if (role === SELLER || role === CUSTOMER) {
-      tg.MainButton.setParams({
-        text: t('modules'),
-      });
-      tg.onEvent('mainButtonClicked', navigateToModulesPage);
-      return () => tg.offEvent('mainButtonClicked', navigateToModulesPage);
-    }
-  }, [course, navigateToModulesPage, handlePurchaseCourse, role, wallet, t]);
 
   // Сheck which network the wallet is from
   useEffect(() => {
@@ -126,5 +102,7 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     isActivateButtonDisabled,
     activateButtonHint,
     handleAddPointsForCreating,
+    handlePurchaseCourse,
+    navigateToModulesPage,
   };
 }

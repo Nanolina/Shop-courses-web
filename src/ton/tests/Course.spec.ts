@@ -19,12 +19,13 @@ describe('Course', () => {
     beforeEach(async () => {
         blockchain = await Blockchain.create();
 
-        course = blockchain.openContract(await Course.fromInit('123', toNano('12')));
+        course = blockchain.openContract(
+            await Course.fromInit('02959e9b-0c30-46a1-961a-fe144ebce033', toNano('1'), 5075565141n),
+        );
         purchase = blockchain.openContract(
             await Purchase.fromInit(
-                address('EQCIEEaD_8z6FnkozF6mFaaWNN1E0JiDJBOVOWQPnBgGRTv0'),
-                address('EQAVHSfvZ-PsRc8AEJ9iWSnu0lpA_bsL40hyVaKAauyMadek'),
-                '123',
+                5075565141n,
+                address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'), // Test
             ),
         );
         marketplaceFee = blockchain.openContract(await MarketplaceFee.fromInit(walletDev1, walletDev2));
@@ -89,11 +90,12 @@ describe('Course', () => {
     });
 
     it('should create new course contract with new data', async () => {
-        const newCourseAddress = await course.getAddress('345', toNano('3'));
+        const newCourseAddress = await course.getAddress('345', toNano('3'), 6015565141n);
         const message: NewCourse = {
             $$type: 'NewCourse',
             courseId: '345',
             coursePrice: toNano('3'),
+            sellerId: 6015565141n,
         };
         const result = await course.send(
             seller.getSender(),
@@ -116,6 +118,7 @@ describe('Course', () => {
             $$type: 'NewCourse',
             courseId: '345',
             coursePrice: toNano('5'),
+            sellerId: 6015565141n,
         };
         const result = await course.send(
             seller.getSender(),
@@ -134,11 +137,12 @@ describe('Course', () => {
     });
 
     it('should create new purchase contract', async () => {
-        const newCourse = blockchain.openContract(await Course.fromInit('345', toNano('3')));
+        const newCourse = blockchain.openContract(await Course.fromInit('345', toNano('3'), 6015565141n));
         const message: NewCourse = {
             $$type: 'NewCourse',
             courseId: '345',
             coursePrice: toNano('3'),
+            sellerId: 6015565141n,
         };
         // Send new transaction to create course to save seller
         await newCourse.send(
@@ -149,14 +153,17 @@ describe('Course', () => {
             message,
         );
 
-        const newPurchaseAddress = await course.getAddressPurchase(customer.address, seller.address, '345');
+        const newPurchaseAddress = await course.getAddressPurchase(5035565141n, newCourse.address);
 
         const result = await newCourse.send(
             customer.getSender(),
             {
                 value: toNano('3.21'),
             },
-            'New purchase',
+            {
+                $$type: 'NewPurchase',
+                customerId: 5035565141n,
+            },
         );
 
         expect(result.transactions).toHaveTransaction({
@@ -171,9 +178,12 @@ describe('Course', () => {
         const result = await course.send(
             customer.getSender(),
             {
-                value: toNano('5'),
+                value: toNano('0.4'),
             },
-            'New purchase',
+            {
+                $$type: 'NewPurchase',
+                customerId: 5035565141n,
+            },
         );
 
         expect(result.transactions).toHaveTransaction({
