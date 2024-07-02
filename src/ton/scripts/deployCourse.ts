@@ -4,7 +4,7 @@ import { Course } from '../wrappers/Course';
 
 export async function run(provider: NetworkProvider) {
     const course = provider.open(
-        await Course.fromInit('02959e9b-0c30-46a1-961a-fe144ebce033', toNano('1'), 5075565141n),
+        await Course.fromInit('02959e9b-0c30-46a1-961a-fe144ebce033', toNano('5'), 5075565141n),
     );
 
     await course.send(

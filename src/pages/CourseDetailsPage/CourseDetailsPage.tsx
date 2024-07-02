@@ -1,6 +1,5 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { FiEdit } from 'react-icons/fi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
@@ -28,7 +27,6 @@ function CourseDetailsPage() {
   const [error, setError] = useState<string>('');
   const [role, setRole] = useState<RoleType | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const { t } = useTranslation();
 
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -117,21 +115,21 @@ function CourseDetailsPage() {
             {error && <MessageBox errorMessage={error} />}
           </Container>
           <Modal
-            title={
-              <div>
-                {t('delete_course')}
-                <b>{course.name}</b>?
-              </div>
-            }
+            // title={
+            //   <div>
+            //     {t('delete_course')}
+            //     <b>{course.name}</b>?
+            //   </div>
+            // }
             isOpen={modalOpen}
             onClose={() => setModalOpen(false)}
-            content={
-              <div className={styles.modalTextContainer}>
-                <div>{t('warning_delete_course')}</div>
-              </div>
-            }
+            // content={
+            //   <div className={styles.modalTextContainer}>
+            //     <div>{t('warning_delete_course')}</div>
+            //   </div>
+            // }
             confirm={deleteCourse}
-            imageUrl="/delete.png"
+            // imageUrl="/delete.png"
             buttonRightText="Delete"
           />
         </>

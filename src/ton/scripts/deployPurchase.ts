@@ -1,10 +1,11 @@
 import { NetworkProvider } from '@ton/blueprint';
-import { address, toNano } from '@ton/core';
+import { toNano } from '@ton/core';
 import { Purchase } from '../wrappers/Purchase';
 
 export async function run(provider: NetworkProvider) {
-    const testAddress = address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'); // Test
-    const purchase = provider.open(await Purchase.fromInit(5075565141n, testAddress));
+    const purchase = provider.open(
+        await Purchase.fromInit('02959e9b-0c30-46a1-961a-fe144ebce033', toNano('5'), 5075565141n, 143153285n),
+    );
 
     await purchase.send(
         provider.sender(),

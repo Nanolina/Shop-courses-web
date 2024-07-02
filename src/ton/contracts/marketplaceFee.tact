@@ -4,7 +4,6 @@ import "./messages";
 
 contract MarketplaceFee with Deployable, Ownable {
     const minTonForStorage: Int = ton("0.01"); // 1KB for 2.5 years
-    const deployFee: Int = ton("0.05");
     owner: Address;
     walletDev2: Address;
     init(owner: Address, walletDev2: Address){
@@ -13,7 +12,7 @@ contract MarketplaceFee with Deployable, Ownable {
     }
 
     receive(msg: TransferToMarketplace){
-        let halfAmount: Int = (context().value - self.deployFee) / 2;
+        let halfAmount: Int = (context().value - self.minTonForStorage) / 2;
         // Send money to Developer 1
         send(SendParameters{
                 to: self.owner,

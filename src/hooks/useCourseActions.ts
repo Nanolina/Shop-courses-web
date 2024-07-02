@@ -55,9 +55,9 @@ export function useCourseActions(course: ICourse, role: RoleType) {
       const response = await axiosWithAuth.post<ICourse>(
         `/course/${course?.id}/purchase`
       );
-      if (response.status === 201) {
-        navigate('/course/purchased');
+      if (response.status === 200) {
         await refreshPoints();
+        navigate('/course/purchased');
       }
     } catch (error: any) {
       handleAuthError(error, setError);

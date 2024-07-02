@@ -11,6 +11,7 @@ import {
 import {
   useCourseActions,
   useCourseContract,
+  usePurchaseContract,
   useTonConnect,
 } from '../../hooks';
 import Button from '../../ui/Button/Button';
@@ -21,6 +22,7 @@ import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 
 const tg = window.Telegram.WebApp;
+const purchaseFee = 0.1;
 
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const { t } = useTranslation();
@@ -33,16 +35,16 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     navigateToModulesPage,
   } = useCourseActions(course, role);
 
+  const { balance, errorContract, contractAddress, createCourse } =
+    useCourseContract(course, role);
+
   const {
-    createCourse,
-    errorContract,
-    balance,
-    balancePurchase,
-    purchaseCourse,
-    contractCourseAddress,
-    contractPurchaseAddress,
     customerId,
-  } = useCourseContract(course, role);
+    balance: purchaseBalance,
+    errorContract: purchaseErrorContract,
+    purchaseContractAddress,
+    purchaseCourse,
+  } = usePurchaseContract(course, role);
 
   const { wallet } = useTonConnect();
 
@@ -50,7 +52,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     if (role === USER) {
       const buttonColor = getCSSVariableValue('--tg-theme-button-color');
       tg.MainButton.setParams({
-        text: `${t('buy')} ${course.price} ${course.currency}`,
+        text: `${t('buy')} ${course.price + purchaseFee} ${course.currency}`,
         is_active: !!wallet,
         color: !!wallet ? buttonColor : '#e6e9e9',
       });
@@ -71,10 +73,11 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     <>
       <div className={styles.info}>
         <div>customerId {customerId}</div>
-        <div>contractCourseAddress {contractCourseAddress}</div>
-        <div>contractPurchaseAddress {contractPurchaseAddress}</div>
-        <div>balancePurchase {balancePurchase}</div>
-        <div>errorContract {errorContract}</div>
+        <div>contractCourseAddress {contractAddress}</div>
+        <div>purchaseContractAddress {purchaseContractAddress}</div>
+        <div>purchaseBalance {purchaseBalance}</div>
+        <div>purchaseErrorContract {purchaseErrorContract}</div>
+        <div>courseErrorContract {errorContract}</div>
         <Label text={course.name} isBig isBold />
         {course.description && (
           <div className={styles.descriptionText}>{course.description}</div>

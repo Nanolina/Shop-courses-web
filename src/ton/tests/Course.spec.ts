@@ -137,12 +137,15 @@ describe('Course', () => {
     });
 
     it('should create new purchase contract', async () => {
-        const newCourse = blockchain.openContract(await Course.fromInit('345', toNano('3'), 6015565141n));
+        const newCourse = blockchain.openContract(
+            await Course.fromInit('e43f9999-436a-4417-bfa8-bf2703f73dac', toNano('2'), 1708576552n),
+        );
+        console.log('newCourse.address', newCourse.address);
         const message: NewCourse = {
             $$type: 'NewCourse',
-            courseId: '345',
-            coursePrice: toNano('3'),
-            sellerId: 6015565141n,
+            courseId: 'e43f9999-436a-4417-bfa8-bf2703f73dac',
+            coursePrice: toNano('2'),
+            sellerId: 1708576552n,
         };
         // Send new transaction to create course to save seller
         await newCourse.send(
@@ -153,7 +156,8 @@ describe('Course', () => {
             message,
         );
 
-        const newPurchaseAddress = await course.getAddressPurchase(5035565141n, newCourse.address);
+        purchase = blockchain.openContract(await Purchase.fromInit(7041217962n, newCourse.address));
+        const newPurchaseAddress = await course.getAddressPurchase(7041217962n, newCourse.address);
 
         const result = await newCourse.send(
             customer.getSender(),
@@ -162,10 +166,13 @@ describe('Course', () => {
             },
             {
                 $$type: 'NewPurchase',
-                customerId: 5035565141n,
+                customerId: 7041217962n,
             },
         );
 
+        console.log('purchase.address', purchase.address);
+        console.log('newPurchaseAddress', newPurchaseAddress);
+        console.log('result', result.events);
         expect(result.transactions).toHaveTransaction({
             from: newCourse.address,
             to: newPurchaseAddress,
