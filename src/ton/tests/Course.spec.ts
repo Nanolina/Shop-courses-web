@@ -10,6 +10,7 @@ const walletDev2 = address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'); 
 
 describe('Course', () => {
     let blockchain: Blockchain;
+    let deployer: SandboxContract<TreasuryContract>;
     let seller: SandboxContract<TreasuryContract>;
     let customer: SandboxContract<TreasuryContract>;
     let course: SandboxContract<Course>;
@@ -23,15 +24,13 @@ describe('Course', () => {
             await Course.fromInit('02959e9b-0c30-46a1-961a-fe144ebce033', toNano('1'), 5075565141n),
         );
         purchase = blockchain.openContract(
-            await Purchase.fromInit(
-                5075565141n,
-                address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'), // Test
-            ),
+            await Purchase.fromInit('02959e9b-0c30-46a1-961a-fe144ebce033', toNano('1'), 5075565141n, 2341674627n),
         );
         marketplaceFee = blockchain.openContract(await MarketplaceFee.fromInit(walletDev1, walletDev2));
 
         seller = await blockchain.treasury('seller');
         customer = await blockchain.treasury('customer');
+        deployer = await blockchain.treasury('deployer');
 
         const deployCourseResult = await course.send(
             seller.getSender(),
@@ -54,7 +53,7 @@ describe('Course', () => {
             },
         );
         const deployMarketplaceFeeResult = await marketplaceFee.send(
-            seller.getSender(),
+            deployer.getSender(),
             {
                 value: toNano('0.05'),
             },
@@ -77,7 +76,7 @@ describe('Course', () => {
             success: true,
         });
         expect(deployMarketplaceFeeResult.transactions).toHaveTransaction({
-            from: seller.address,
+            from: deployer.address,
             to: marketplaceFee.address,
             deploy: true,
             success: true,
@@ -136,11 +135,10 @@ describe('Course', () => {
         });
     });
 
-    it('should create new purchase contract', async () => {
+    it('should send money to seller and marketplaceFee when purchasing', async () => {
         const newCourse = blockchain.openContract(
             await Course.fromInit('e43f9999-436a-4417-bfa8-bf2703f73dac', toNano('2'), 1708576552n),
         );
-        console.log('newCourse.address', newCourse.address);
         const message: NewCourse = {
             $$type: 'NewCourse',
             courseId: 'e43f9999-436a-4417-bfa8-bf2703f73dac',
@@ -156,47 +154,43 @@ describe('Course', () => {
             message,
         );
 
-        purchase = blockchain.openContract(await Purchase.fromInit(7041217962n, newCourse.address));
-        const newPurchaseAddress = await course.getAddressPurchase(7041217962n, newCourse.address);
-
         const result = await newCourse.send(
             customer.getSender(),
             {
-                value: toNano('3.21'),
+                value: toNano('2.04'),
             },
-            {
-                $$type: 'NewPurchase',
-                customerId: 7041217962n,
-            },
+            'Sale',
         );
 
-        console.log('purchase.address', purchase.address);
-        console.log('newPurchaseAddress', newPurchaseAddress);
-        console.log('result', result.events);
+        expect(result.transactions).toHaveTransaction({
+            from: customer.address,
+            to: newCourse.address,
+            success: true,
+        });
         expect(result.transactions).toHaveTransaction({
             from: newCourse.address,
-            to: newPurchaseAddress,
-            deploy: true,
+            to: address('EQDF4fNhyv_juZ1rAOcphGjLd-E45JlEEKs6bQt23HXDqM3F'), // marketplaceFee
+            success: true,
+        });
+        expect(result.transactions).toHaveTransaction({
+            from: newCourse.address,
+            to: seller.address,
             success: true,
         });
     });
 
-    it('should throw an error if there is not enough money to buy a course', async () => {
+    it('should throw an error if there is not enough money to send money to seller and marketplaceFee (buy a course)', async () => {
         const result = await course.send(
             customer.getSender(),
             {
                 value: toNano('0.4'),
             },
-            {
-                $$type: 'NewPurchase',
-                customerId: 5035565141n,
-            },
+            'Sale',
         );
 
         expect(result.transactions).toHaveTransaction({
             from: customer.address,
             to: course.address,
-            deploy: false,
             success: false,
         });
     });

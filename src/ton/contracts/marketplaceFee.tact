@@ -3,7 +3,7 @@ import "@stdlib/ownable";
 import "./messages";
 
 contract MarketplaceFee with Deployable, Ownable {
-    const minTonForStorage: Int = ton("0.01"); // 1KB for 2.5 years
+    const minTonForStorage: Int = ton("0.02");
     owner: Address;
     walletDev2: Address;
     init(owner: Address, walletDev2: Address){
@@ -41,9 +41,5 @@ contract MarketplaceFee with Deployable, Ownable {
                 mode: (SendIgnoreErrors + SendRemainingValue)
             }
         );
-    }
-
-    get fun balance(): Int {
-        return myBalance();
     }
 }

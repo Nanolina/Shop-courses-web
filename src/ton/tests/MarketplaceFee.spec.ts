@@ -65,6 +65,7 @@ describe('MarketplaceFee', () => {
 
         const maxDevPayment = 300000000n;
         const minDevPayment = 200000000n;
+
         // Check every transaction
         filteredTransactions.forEach((transaction: any) => {
             expect(transaction.value).toBeLessThanOrEqual(maxDevPayment);

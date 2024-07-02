@@ -64,4 +64,9 @@ contract Course with Deployable {
             }
         );
     }
+
+    get fun address(courseId: String, coursePrice: Int, sellerId: Int): Address {
+        let init: StateInit = initOf Course(courseId, coursePrice, sellerId);
+        return contractAddress(init);
+    }
 }

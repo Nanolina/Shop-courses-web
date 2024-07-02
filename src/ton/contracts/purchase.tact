@@ -36,4 +36,9 @@ contract Purchase with Deployable {
     receive(msg: CreatePurchase){
         self.customer = msg.customer;
     }
+
+    get fun address(courseId: String, coursePrice: Int, sellerId: Int, customerId: Int): Address {
+        let init: StateInit = initOf Purchase(courseId, coursePrice, sellerId, customerId);
+        return contractAddress(init);
+    }
 }
