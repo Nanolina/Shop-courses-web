@@ -42,10 +42,11 @@ iframe#webpack-dev-server-client-overlay {
 [data-tc-actions-modal-container='true']
   */
 
-.myCoursesContainer {
+.coursesContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+  width: 100%;
 }

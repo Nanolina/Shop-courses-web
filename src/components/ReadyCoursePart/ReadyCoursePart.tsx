@@ -5,7 +5,11 @@ import { FiEdit } from 'react-icons/fi';
 import { MdDelete } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { LESSON, MODULE, SELLER } from '../../consts';
-import { createAxiosWithAuth, handleAuthError } from '../../functions';
+import {
+  createAxiosWithAuth,
+  getTranslatedType,
+  handleAuthError,
+} from '../../functions';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import Modal from '../Modal/Modal';
@@ -20,8 +24,7 @@ function ReadyCoursePart({
   updateItems,
 }: IReadyCoursePartProps) {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const currentLanguage = i18n.language;
+  const { t } = useTranslation();
 
   const [isSeller, setIsSeller] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -30,9 +33,7 @@ function ReadyCoursePart({
 
   const { initDataRaw } = retrieveLaunchParams();
 
-  // Translate type depending on the current language
-  const translatedType =
-    currentLanguage === 'ru' ? (type === 'module' ? 'модуль' : 'урок') : type; // for English leave the original
+  const { singular } = getTranslatedType(type, t);
 
   async function handleDelete(event: any) {
     event.stopPropagation();
@@ -120,7 +121,7 @@ function ReadyCoursePart({
       >
         <div className={styles.modalContainer}>
           <div className={styles.modalText}>
-            {t('delete_type', { type: translatedType })}
+            {t('delete_type', { type: singular })}
             <b> {item.name}</b>?
           </div>
           <img src="/delete.png" alt="Delete" className={styles.modalImage} />

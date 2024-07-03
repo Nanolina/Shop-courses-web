@@ -11,6 +11,7 @@ const tg = window.Telegram.WebApp;
 function ItemNotFoundPage({
   error,
   isLoading = false,
+  hasButtonBackHeader = true,
 }: IItemNotFoundPageProps) {
   const { t } = useTranslation();
 
@@ -24,7 +25,7 @@ function ItemNotFoundPage({
 
   return (
     <Container>
-      <Header />
+      <Header hasButtonBack={hasButtonBackHeader} />
       <div className={styles.container}>
         <img
           src="/page-not-found.png"

@@ -8,16 +8,15 @@
   "connect_wallet": "Please connect the wallet",
   "connect_wallet_mainnet": "Please connect the wallet from the main network",
   "course_name": "Course name",
+  "course_not_activated": "Course not activated in TON blockchain",
   "course_purchase_not_available": "The balance of the Course smart contract is 0. In this case, the course purchase will not be available to users. Please click on the \"Activate\" button",
   "cover_label_file": "Upload image for cover",
   "cover_label_file_course": "Upload image for course cover",
   "cover_label_file_video": "Upload video for the lesson",
-  "cover_label_url": "Cover image URL",
-  "cover_label_url_course": "Cover image URL for the course",
-  "cover_label_url_video": "Cover video URL for the lesson",
+  "cover_label_link": "Image link for the cover",
+  "cover_label_course_link": "Image link for the course cover",
   "create": "Create",
   "create_course": "Create course",
-  "create_new_type": "Create new {{type}}",
   "create_type": "Create {{type}}",
   "currency": "Currency",
   "delete": "Delete",
@@ -66,16 +65,25 @@
   "smart_contract_balance": "Smart contract balance",
   "something_wrong": "Ooops, something went wrong",
   "subcategory": "Subcategory",
-  "switch_to_file_image": "Image File",
-  "switch_to_file_video": "Video File",
-  "switch_to_url_image": "Image URL",
-  "switch_to_url_video": "Video URL",
+  "switch_to_image_file": "Image file",
+  "switch_to_video_file": "Video file",
+  "switch_to_image_link": "Image link",
+  "switch_to_video_link": "Video link",
   "this_lesson": "This lesson will be irretrievably deleted",
-  "type": {
-    "lesson": "lesson",
-    "module": "module"
+  "types": {
+    "module": {
+      "singular": "module",
+      "singular_genitive_case": "module",
+      "plural": "modules"
+    },
+    "lesson": {
+      "singular": "lesson",
+      "singular_genitive_case": "lesson",
+      "plural": "lessons"
+    }
   },
   "upload": "Upload",
+  "video_link": "Video link for the lesson",
   "video_uploading": "The video is probably still uploading 📤 or not saved 💾. Please wait",
   "warning_delete_course": "All modules and lessons will be irretrievably deleted",
 

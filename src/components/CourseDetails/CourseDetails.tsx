@@ -1,6 +1,7 @@
 import { TonConnectButton } from '@tonconnect/ui-react';
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BsInfoCircleFill } from 'react-icons/bs';
 import { SiHiveBlockchain } from 'react-icons/si';
 import { CUSTOMER, SELLER, USER } from '../../consts';
 import {
@@ -66,6 +67,19 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       color,
     };
   }, [isMainnet, connected, courseContractBalance]);
+
+  const getHintMessage = () => {
+    if (isProduction && !isMainnet) {
+      return t('connect_wallet_mainnet');
+    }
+    if (!connected) {
+      return t('connect_wallet');
+    }
+    if (courseContractBalance <= 0) {
+      return t('course_not_activated');
+    }
+    return '';
+  };
 
   useEffect(() => {
     if (role === USER) {
@@ -133,7 +147,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             <Label
               text={getSubcategoryLabel(
                 course.category,
-                course.subcategory || '', t
+                course.subcategory || '',
+                t
               )}
             />
           </div>
@@ -170,6 +185,10 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       {purchaseErrorContract && (
         <MessageBox errorMessage={purchaseErrorContract} />
       )}
+      <div className={styles.hint}>
+        <BsInfoCircleFill size={16} />
+        {getHintMessage()}
+      </div>
     </>
   );
 }

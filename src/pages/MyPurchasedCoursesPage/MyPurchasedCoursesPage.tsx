@@ -54,10 +54,13 @@ function MyPurchasedCoursesPage() {
   if (isLoading) return <Loader />;
 
   if (!courses.length && !isLoading && isLoaded) {
-    return (
+    return error ? (
+      <ItemNotFoundPage error={error} isLoading={isLoading} />
+    ) : (
       <ItemNotFoundPage
-        error={error || `😊 ${t('not_purchased')} 📚✨`}
+        error={`😊 ${t('not_purchased')} 📚✨`}
         isLoading={isLoading}
+        hasButtonBackHeader={false}
       />
     );
   }
@@ -70,7 +73,7 @@ function MyPurchasedCoursesPage() {
           setValue(event.target.value)
         }
       />
-      <div className="myCoursesContainer">
+      <div className="coursesContainer">
         {filteredCourses.map((course) => (
           <CourseItem key={course.id} course={course} />
         ))}

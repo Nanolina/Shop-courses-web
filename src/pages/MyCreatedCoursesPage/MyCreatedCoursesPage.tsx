@@ -53,10 +53,13 @@ function MyCreatedCoursesPage() {
   if (isLoading) return <Loader />;
 
   if (!courses.length && !isLoading && isLoaded) {
-    return (
+    return error ? (
+      <ItemNotFoundPage error={error} isLoading={isLoading} />
+    ) : (
       <ItemNotFoundPage
-        error={error || `😊 ${t('not_created')} 📚✨`}
+        error={`😊 ${t('not_created')} 📚✨`}
         isLoading={isLoading}
+        hasButtonBackHeader={false}
       />
     );
   }
@@ -69,7 +72,7 @@ function MyCreatedCoursesPage() {
           setValue(event.target.value)
         }
       />
-      <div className="myCoursesContainer">
+      <div className="coursesContainer">
         {filteredCourses.map((course) => (
           <CourseItem key={course.id} course={course} />
         ))}

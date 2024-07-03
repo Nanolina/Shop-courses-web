@@ -8,6 +8,8 @@
 
 .button {
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
   background-color: var(--tg-theme-button-color);
   border-radius: 10px;

@@ -155,7 +155,9 @@ function CourseForm({ course }: { course?: ICourse }) {
           <Button
             onClick={toggleBetweenUrlAndFile}
             text={
-              useUrlCover ? t('switch_to_file_image') : t('switch_to_url_image')
+              useUrlCover
+                ? t('switch_to_image_file')
+                : t('switch_to_image_link')
             }
             icon={<MdCameraswitch size={36} />}
           />
@@ -163,7 +165,7 @@ function CourseForm({ course }: { course?: ICourse }) {
         <Label
           text={
             useUrlCover
-              ? t('cover_label_url_course')
+              ? t('cover_label_course_link')
               : t('cover_label_file_course')
           }
           isPadding
