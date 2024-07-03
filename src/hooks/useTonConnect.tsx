@@ -1,14 +1,11 @@
-import { Address, Sender, SenderArguments, beginCell, toNano } from '@ton/core';
+import { Address, Sender, SenderArguments, toNano } from '@ton/core';
 import { CHAIN, useTonConnectUI, useTonWallet } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
+import { encodeSaleMessage } from '../functions';
 import { Course } from '../ton/wrappers/Course';
 import { ICourse } from '../types';
 
-// From "send" function (src/ton/build)
-const payloadCellSaleCourse = beginCell()
-  .storeUint(0, 32)
-  .storeStringTail('Sale')
-  .endCell();
+const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 
 export function useTonConnect(
   course?: ICourse // only for purchase
@@ -52,12 +49,12 @@ export function useTonConnect(
           },
         ];
 
-        // Adding a transaction to course contract with message "Sale"
+        // Adding a transaction to course contract with message Sale type
         if (course) {
           messages.push({
             address: courseContractAddress,
             amount: toNano(course?.price.toString()).toString(),
-            payload: payloadCellSaleCourse.toBoc().toString('base64'),
+            payload: encodeSaleMessage(isProduction),
           });
         }
 
