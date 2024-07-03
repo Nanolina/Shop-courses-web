@@ -12,6 +12,9 @@ message NewPurchase {
 message CreateCourse {
     seller: Address;
 }
+message Sale {
+    isProduction: Bool;
+}
 message CreatePurchase {
     customer: Address;
 }

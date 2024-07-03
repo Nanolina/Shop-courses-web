@@ -89,4 +89,34 @@ describe('Purchase', () => {
             success: false,
         });
     });
+
+    it('should withdraw money to customer', async () => {
+        const result = await purchase.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.1'),
+            },
+            'Withdraw',
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: purchase.address,
+            to: deployer.address,
+            success: true,
+        });
+    });
+
+    it('should throw an error if the withdrawal is not made by the customer', async () => {
+        const result: any = await purchase.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.1'),
+            },
+            'Withdraw',
+        );
+
+        expect(result.events[1].from).toEqualAddress(purchase.address);
+        expect(result.events[1].to).toEqualAddress(deployer.address);
+        expect(result.events[1].bounced).toBe(true);
+    });
 });

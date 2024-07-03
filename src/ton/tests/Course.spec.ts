@@ -5,8 +5,8 @@ import { Course, NewCourse } from '../wrappers/Course';
 import { MarketplaceFee } from '../wrappers/MarketplaceFee';
 import { Purchase } from '../wrappers/Purchase';
 
-const walletDev1 = address('0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh'); // Test
-const walletDev2 = address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'); // Online courses test
+const devWallet1 = address('0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh'); // Test
+const devWallet2 = address('0QAaB9yd5ORKCKSHStCiNCvsT3eckoW3ddF4hQ6bM4u3Jzs1'); // Online courses test
 
 describe('Course', () => {
     let blockchain: Blockchain;
@@ -26,7 +26,7 @@ describe('Course', () => {
         purchase = blockchain.openContract(
             await Purchase.fromInit('02959e9b-0c30-46a1-961a-fe144ebce033', toNano('1'), 5075565141n, 2341674627n),
         );
-        marketplaceFee = blockchain.openContract(await MarketplaceFee.fromInit(walletDev1, walletDev2));
+        marketplaceFee = blockchain.openContract(await MarketplaceFee.fromInit(devWallet1, devWallet2));
 
         seller = await blockchain.treasury('seller');
         customer = await blockchain.treasury('customer');
@@ -159,8 +159,12 @@ describe('Course', () => {
             {
                 value: toNano('2.04'),
             },
-            'Sale',
+            {
+                $$type: 'Sale',
+                isProduction: false,
+            },
         );
+        const marketplaceFeeAddress = await course.getMarketplaceFeeAddress(devWallet1, devWallet2);
 
         expect(result.transactions).toHaveTransaction({
             from: customer.address,
@@ -169,7 +173,7 @@ describe('Course', () => {
         });
         expect(result.transactions).toHaveTransaction({
             from: newCourse.address,
-            to: address('EQDF4fNhyv_juZ1rAOcphGjLd-E45JlEEKs6bQt23HXDqM3F'), // marketplaceFee
+            to: marketplaceFeeAddress,
             success: true,
         });
         expect(result.transactions).toHaveTransaction({
@@ -185,7 +189,10 @@ describe('Course', () => {
             {
                 value: toNano('0.4'),
             },
-            'Sale',
+            {
+                $$type: 'Sale',
+                isProduction: false,
+            },
         );
 
         expect(result.transactions).toHaveTransaction({
@@ -193,5 +200,71 @@ describe('Course', () => {
             to: course.address,
             success: false,
         });
+    });
+
+    it('should withdraw money to seller', async () => {
+        const newCourse = blockchain.openContract(
+            await Course.fromInit('e43f9999-436a-4417-bfa8-bf2703f73dac', toNano('2'), 1708576552n),
+        );
+        const message: NewCourse = {
+            $$type: 'NewCourse',
+            courseId: 'e43f9999-436a-4417-bfa8-bf2703f73dac',
+            coursePrice: toNano('2'),
+            sellerId: 1708576552n,
+        };
+        // Send new transaction to create course to save seller
+        await newCourse.send(
+            seller.getSender(),
+            {
+                value: toNano('0.07'),
+            },
+            message,
+        );
+
+        const result = await newCourse.send(
+            seller.getSender(),
+            {
+                value: toNano('0.1'),
+            },
+            'Withdraw',
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: newCourse.address,
+            to: seller.address,
+            success: true,
+        });
+    });
+
+    it('should throw an error if the withdrawal is not made by the seller', async () => {
+        const newCourse = blockchain.openContract(
+            await Course.fromInit('e43f9999-436a-4417-bfa8-bf2703f73dac', toNano('2'), 1708576552n),
+        );
+        const message: NewCourse = {
+            $$type: 'NewCourse',
+            courseId: 'e43f9999-436a-4417-bfa8-bf2703f73dac',
+            coursePrice: toNano('2'),
+            sellerId: 1708576552n,
+        };
+        // Send new transaction to create course to save seller
+        await newCourse.send(
+            seller.getSender(),
+            {
+                value: toNano('0.07'),
+            },
+            message,
+        );
+
+        const result: any = await newCourse.send(
+            customer.getSender(),
+            {
+                value: toNano('0.1'),
+            },
+            'Withdraw',
+        );
+
+        expect(result.events[1].from).toEqualAddress(newCourse.address);
+        expect(result.events[1].to).toEqualAddress(customer.address);
+        expect(result.events[1].bounced).toBe(true);
     });
 });

@@ -4,7 +4,6 @@ import 'swiper/css';
 import CoursesList from '../../components/CoursesList/CoursesList';
 import Points from '../../components/Points/Points';
 import Container from '../../ui/Container/Container';
-import Points from '../../ui/Points/Points';
 
 const tg = window.Telegram.WebApp;
 
