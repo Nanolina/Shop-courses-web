@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MdCameraswitch } from 'react-icons/md';
 import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { useCourseForm } from '../../hooks';
@@ -14,9 +15,10 @@ import Select from '../../ui/Select/Select';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import styles from './CourseForm.module.css';
-import { useTranslation } from 'react-i18next';
 
 function CourseForm({ course }: { course?: ICourse }) {
+  const { t } = useTranslation();
+
   const {
     name,
     setName,
@@ -44,7 +46,9 @@ function CourseForm({ course }: { course?: ICourse }) {
     useUrlCover,
     toggleBetweenUrlAndFile,
   } = useCourseForm() as IUseCourseFormReturnType;
-  const { t } = useTranslation();
+
+  const getCategoryLabel = (value: string) => t(`categories.${value}`);
+  const getSubcategoryLabel = (value: string) => t(`subcategories.${value}`);
 
   // Setting initial values from item
   useEffect(() => {
@@ -62,6 +66,23 @@ function CourseForm({ course }: { course?: ICourse }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [course]);
+
+  const sortedCategoryOptions = categoryOptions
+    .map((option) => ({
+      ...option,
+      label: getCategoryLabel(option.value),
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+
+  const sortedSubcategoryOptions =
+    category && subcategoryOptions[category]
+      ? subcategoryOptions[category]
+          .map((option) => ({
+            ...option,
+            label: getSubcategoryLabel(option.value),
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      : [];
 
   if (isLoading) return <Loader />;
 
@@ -93,7 +114,7 @@ function CourseForm({ course }: { course?: ICourse }) {
           onChange={(event: ChangeEvent<HTMLSelectElement>) =>
             setCategory(event.target.value)
           }
-          options={categoryOptions}
+          options={sortedCategoryOptions}
         />
       </div>
       {category && category !== 'other' && (
@@ -105,7 +126,7 @@ function CourseForm({ course }: { course?: ICourse }) {
             onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               setSubcategory(event.target.value)
             }
-            options={subcategoryOptions[category]}
+            options={sortedSubcategoryOptions}
           />
         </div>
       )}
@@ -134,7 +155,9 @@ function CourseForm({ course }: { course?: ICourse }) {
           <Button
             onClick={toggleBetweenUrlAndFile}
             text={
-              useUrlCover ? t('switch_to_file_image') : t('switch_to_url_image')
+              useUrlCover
+                ? t('switch_to_image_file')
+                : t('switch_to_image_link')
             }
             icon={<MdCameraswitch size={36} />}
           />
@@ -142,7 +165,7 @@ function CourseForm({ course }: { course?: ICourse }) {
         <Label
           text={
             useUrlCover
-              ? t('cover_label_url_course')
+              ? t('cover_label_course_link')
               : t('cover_label_file_course')
           }
           isPadding

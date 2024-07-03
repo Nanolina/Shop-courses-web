@@ -111,6 +111,7 @@ export interface IGetLessons {
 export interface IItemNotFoundPageProps {
   error?: string;
   isLoading?: boolean;
+  hasButtonBackHeader?: boolean;
 }
 
 export interface IEditCoursePartParams

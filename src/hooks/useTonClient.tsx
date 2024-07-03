@@ -15,6 +15,7 @@ export function useTonClient() {
         endpoint: await getHttpEndpoint({
           network: network === CHAIN.MAINNET ? 'mainnet' : 'testnet',
         }),
+        apiKey: process.env.REACT_APP_TON_API_KEY,
       });
     }, [network]),
   };

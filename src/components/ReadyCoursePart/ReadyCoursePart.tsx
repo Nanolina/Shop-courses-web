@@ -1,10 +1,15 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiEdit } from 'react-icons/fi';
 import { MdDelete } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { LESSON, MODULE, SELLER } from '../../consts';
-import { createAxiosWithAuth, handleAuthError } from '../../functions';
+import {
+  createAxiosWithAuth,
+  getTranslatedType,
+  handleAuthError,
+} from '../../functions';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import Modal from '../Modal/Modal';
@@ -19,7 +24,7 @@ function ReadyCoursePart({
   updateItems,
 }: IReadyCoursePartProps) {
   const navigate = useNavigate();
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const [isSeller, setIsSeller] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -27,6 +32,8 @@ function ReadyCoursePart({
   const [error, setError] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
+
+  const { singular } = getTranslatedType(type, t);
 
   async function handleDelete(event: any) {
     event.stopPropagation();
@@ -107,26 +114,22 @@ function ReadyCoursePart({
         </div>
       )}
       <Modal
-        title=""
-        // title={
-        //   <div>
-        //     {t('delete_course')}
-        //     <b>{item.name}</b>?
-        //   </div>
-        // }
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        content={
-          <div className={styles.modalTextContainer}>
-            <div>
-              {`Are you sure you want to delete ${type} `}
-              <b>{item.name}</b>?
-            </div>
-            <div>{`${type === MODULE ? 'This module and all lessons' : 'This lesson'} will be irretrievably deleted`}</div>
-          </div>
-        }
         confirm={deleteItem}
-      />
+        buttonRightText={t('delete')}
+      >
+        <div className={styles.modalContainer}>
+          <div className={styles.modalText}>
+            {t('delete_type', { type: singular })}
+            <b> {item.name}</b>?
+          </div>
+          <img src="/delete.png" alt="Delete" className={styles.modalImage} />
+          <div
+            className={styles.modalText}
+          >{`${type === MODULE ? t('module_all_lessons') : t('this_lesson')}`}</div>
+        </div>
+      </Modal>
       {error && <MessageBox errorMessage={error} />}
     </div>
   );

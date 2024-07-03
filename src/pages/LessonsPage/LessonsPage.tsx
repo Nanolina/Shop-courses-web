@@ -1,5 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { LESSON } from '../../consts';
 import { createAxiosWithAuth, handleAuthError } from '../../functions';
@@ -11,6 +12,7 @@ import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetLessons, ILessonsPageParams } from '../types';
 
 function LessonsPage() {
+  const { t } = useTranslation();
   const { moduleId = '' } = useParams<ILessonsPageParams>();
 
   const [lessons, setLessons] = useState<ILesson[]>([]);
@@ -48,10 +50,7 @@ function LessonsPage() {
   if (isLoading) return <Loader />;
   if (!role && !isLoading && isLoaded) {
     return (
-      <ItemNotFoundPage
-        error="The role for lessons has not been given"
-        isLoading={isLoading}
-      />
+      <ItemNotFoundPage error={t('not_have_role')} isLoading={isLoading} />
     );
   }
 

@@ -7,18 +7,19 @@ import { MdDelete } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import CourseDetails from '../../components/CourseDetails/CourseDetails';
 import Modal from '../../components/Modal/Modal';
+import Points from '../../components/Points/Points';
 import { SELLER } from '../../consts';
 import { createAxiosWithAuth, handleAuthError } from '../../functions';
 import { ICourse, RoleType } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import Points from '../../ui/Points/Points';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
 
 function CourseDetailsPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
 
@@ -28,7 +29,6 @@ function CourseDetailsPage() {
   const [error, setError] = useState<string>('');
   const [role, setRole] = useState<RoleType | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const { t } = useTranslation();
 
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -117,29 +117,26 @@ function CourseDetailsPage() {
             {error && <MessageBox errorMessage={error} />}
           </Container>
           <Modal
-            title={
-              <div>
-                {t('delete_course')}
-                <b>{course.name}</b>?
-              </div>
-            }
             isOpen={modalOpen}
             onClose={() => setModalOpen(false)}
-            content={
-              <div className={styles.modalTextContainer}>
+            confirm={deleteCourse}
+            buttonRightText={t('delete')}
+          >
+            <div className={styles.modalContainer}>
+              <div className={styles.modalText}>
+                {t('delete_course')}
+                <b> {course.name}</b>?
+              </div>
+              <img
+                src="/delete.png"
+                alt="Delete"
+                className={styles.modalImage}
+              />
+              <div className={styles.modalText}>
                 <div>{t('warning_delete_course')}</div>
               </div>
-            }
-            confirm={deleteCourse}
-            imageUrl="/delete.png"
-            buttonRightText="Delete"
-          />
-
-          {/* <ModalEarnPoints
-            isOpen={true}
-            courseName={course.name}
-            onClose={() => setModalOpen(false)}
-          /> */}
+            </div>
+          </Modal>
         </>
       )}
     </>

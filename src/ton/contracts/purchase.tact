@@ -1,45 +1,55 @@
 import "@stdlib/deploy";
 import "./messages";
-import "./marketplaceFee";
 
 contract Purchase with Deployable {
     const deployFee: Int = ton("0.05");
-    const walletDev1: Address = address("0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh"); // Online courses test
-    const walletDev2: Address = address("0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK"); // Test
-    customer: Address;
-    seller: Address;
+    const minTonForStorage: Int = ton("0.02");
     courseId: String;
-    init(customer: Address, seller: Address, courseId: String){
-        self.customer = customer;
-        self.seller = seller;
+    coursePrice: Int as coins;
+    sellerId: Int as uint64;
+    customerId: Int as uint64;
+    customer: Address;
+    init(courseId: String, coursePrice: Int, sellerId: Int, customerId: Int){
         self.courseId = courseId;
+        self.coursePrice = coursePrice;
+        self.sellerId = sellerId;
+        self.customerId = customerId;
+        self.customer = newAddress(0, 0);
     }
 
     receive(msg: NewPurchase){
-        let marketplaceFee: Int = msg.coursePrice * 15 / 100;
-        let totalFee: Int = (msg.coursePrice + self.deployFee);
-        require(context().value >= totalFee, "Insufficient funds to send money to seller");
-        let init: StateInit = initOf MarketplaceFee(self.walletDev1, self.walletDev2);
-        let marketplaceFeeAddress: Address = contractAddress(init);
-        // Send money to seller
+        require(context().value >= self.deployFee, "Insufficient funds to buy a course");
+        let init: StateInit = initOf Purchase(msg.courseId, msg.coursePrice, msg.sellerId, msg.customerId);
+        let address: Address = contractAddress(init);
+        // Create new purchase contract with new data
         send(SendParameters{
-                to: self.seller,
-                value: (msg.coursePrice - marketplaceFee),
-                mode: SendPayGasSeparately | SendIgnoreErrors,
-                body: self.courseId.asComment(),
-                bounce: false
-            }
-        );
-        // Send money to marketplaceFee contract
-        send(SendParameters{
-                to: marketplaceFeeAddress,
-                value: (marketplaceFee + self.deployFee),
-                mode: SendIgnoreErrors,
-                body: TransferToMarketplace{courseId: self.courseId}.toCell(),
+                to: address,
+                value: 0,
+                mode: SendIgnoreErrors | SendRemainingValue,
+                body: CreatePurchase{customer: sender()}.toCell(),
                 bounce: false,
                 code: init.code,
                 data: init.data
             }
         );
+    }
+
+    receive(msg: CreatePurchase){
+        self.customer = msg.customer;
+    }
+
+    receive("Withdraw"){
+        require(sender() == self.customer, "Only customer is allowed to withdraw");
+        send(SendParameters{
+                to: sender(),
+                value: ((myBalance() - context().value) - self.minTonForStorage),
+                mode: (SendIgnoreErrors + SendRemainingValue)
+            }
+        );
+    }
+
+    get fun address(courseId: String, coursePrice: Int, sellerId: Int, customerId: Int): Address {
+        let init: StateInit = initOf Purchase(courseId, coursePrice, sellerId, customerId);
+        return contractAddress(init);
     }
 }

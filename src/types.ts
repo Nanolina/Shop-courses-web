@@ -7,6 +7,7 @@ export interface ICourse {
   price: number;
   currency: string;
   imageUrl?: string;
+  userId: bigint;
   modules: IModule[];
 }
 
@@ -31,3 +32,4 @@ export interface ILesson {
 export type EntityType = 'module' | 'lesson';
 export type RoleType = 'user' | 'customer' | 'seller';
 export type RequestMethodType = 'post' | 'patch';
+export type DeployType = 'create' | 'purchase';

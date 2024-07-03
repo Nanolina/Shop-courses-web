@@ -1,5 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LESSON } from '../consts';
 import { createAxiosWithAuth, handleAuthError } from '../functions';
@@ -8,6 +9,8 @@ import { ILesson, IModule } from '../types';
 const tg = window.Telegram.WebApp;
 
 export function useCoursePartForm() {
+  const { t } = useTranslation();
+
   // type - create | update
   // parentId - create | update
   // itemId - update
@@ -202,10 +205,10 @@ export function useCoursePartForm() {
   }, [itemId]);
 
   useEffect(() => {
-    tg.MainButton.setParams({ text: itemId ? 'Save' : 'Create' });
+    tg.MainButton.setParams({ text: itemId ? t('save') : t('create') });
     tg.onEvent('mainButtonClicked', createOrUpdateCoursePart);
     return () => tg.offEvent('mainButtonClicked', createOrUpdateCoursePart);
-  }, [itemId, createOrUpdateCoursePart]);
+  }, [itemId, createOrUpdateCoursePart, t]);
 
   useEffect(() => {
     // Lesson

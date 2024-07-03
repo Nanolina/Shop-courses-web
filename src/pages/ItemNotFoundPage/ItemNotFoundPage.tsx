@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RiErrorWarningLine } from 'react-icons/ri';
 import Header from '../../components/Header/Header';
 import Container from '../../ui/Container/Container';
@@ -8,9 +9,12 @@ import styles from './ItemNotFoundPage.module.css';
 const tg = window.Telegram.WebApp;
 
 function ItemNotFoundPage({
-  error = 'Item not found',
+  error,
   isLoading = false,
+  hasButtonBackHeader = true,
 }: IItemNotFoundPageProps) {
+  const { t } = useTranslation();
+
   useEffect(() => {
     tg.MainButton.hide();
   }, []);
@@ -21,7 +25,7 @@ function ItemNotFoundPage({
 
   return (
     <Container>
-      <Header />
+      <Header hasButtonBack={hasButtonBackHeader} />
       <div className={styles.container}>
         <img
           src="/page-not-found.png"
@@ -30,9 +34,11 @@ function ItemNotFoundPage({
         />
         <h2 className={styles.opsMessage}>
           <RiErrorWarningLine />
-          Ooops, something went wrong
+          {t('something_wrong')}
         </h2>
-        <div className={styles.errorMessage}>{error}</div>
+        <div className={styles.errorMessage}>
+          {error || t('item_not_found')}
+        </div>
       </div>
     </Container>
   );

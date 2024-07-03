@@ -1,18 +1,20 @@
-import { retrieveLaunchParams } from '@tma.js/sdk';
-import { CHAIN, TonConnectButton } from '@tonconnect/ui-react';
-import { useCallback, useEffect, useState } from 'react';
+import { TonConnectButton } from '@tonconnect/ui-react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BsInfoCircleFill } from 'react-icons/bs';
 import { SiHiveBlockchain } from 'react-icons/si';
-import { useNavigate } from 'react-router-dom';
-import { categoryOptions, subcategoryOptions } from '../../category-data';
 import { CUSTOMER, SELLER, USER } from '../../consts';
 import {
-  createAxiosWithAuth,
   getCSSVariableValue,
-  handleAuthError,
+  getCategoryLabel,
+  getSubcategoryLabel,
 } from '../../functions';
-import { useContract, useTonConnect } from '../../hooks';
-import { ICourse } from '../../types';
+import {
+  useCourseActions,
+  useCourseContract,
+  usePurchaseContract,
+  useTonConnect,
+} from '../../hooks';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
 import { Loader } from '../../ui/Loader/Loader';
@@ -20,82 +22,68 @@ import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 
-const tg = window.Telegram.WebApp;
 const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
+const tg = window.Telegram.WebApp;
+const purchaseFee = 0.1;
 
 function CourseDetails({ course, role }: ICourseDetailsProps) {
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const [isActivateButtonDisabled, setIsActivateButtonDisabled] =
-    useState<boolean>(true);
-  const [activateButtonHint, setActivateButtonHint] = useState<string>('');
-  // const [isDeployedInBlockchain, setIsDeployedInBlockchain] = useState<any>('');
-  const [isMainnet, setIsMainnet] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const {
+    isLoading,
+    error,
+    isActivateButtonDisabled,
+    activateButtonHint,
+    isMainnet,
+    navigateToModulesPage,
+  } = useCourseActions(course, role);
 
-  const { wallet, connected, network } = useTonConnect();
-  const { purchaseCourse, createCourse, isContractDeployed } = useContract(
-    course.id,
-    course.price
-  );
-  const { initDataRaw } = retrieveLaunchParams();
+  const {
+    balance: courseContractBalance,
+    errorContract,
+    createCourse,
+  } = useCourseContract(course, role);
 
-  const getCategoryLabel = (value: string) => {
-    const category = categoryOptions.find((option) => option.value === value);
-    return category ? category.label : value;
-  };
+  const { errorContract: purchaseErrorContract, purchaseCourse } =
+    usePurchaseContract(course, role);
 
-  const getSubcategoryLabel = (category: string, value: string) => {
-    const subcategory = subcategoryOptions[category]?.find(
-      (option) => option.value === value
-    );
-    return subcategory ? subcategory.label : value;
-  };
+  const { connected } = useTonConnect();
 
-  const navigateToModulesPage = useCallback(
-    () => navigate(`/module/course/${course.id}`),
-    [course.id, navigate]
-  );
+  const getParamsMainButton = useCallback(() => {
+    const buttonColor = getCSSVariableValue('--tg-theme-button-color');
+    const isActive =
+      (isProduction && isMainnet && connected && courseContractBalance > 0) ||
+      (!isProduction && connected && courseContractBalance > 0);
+    const color = isActive ? buttonColor : '#e6e9e9';
 
-  const handlePurchaseCourse = useCallback(async () => {
-    purchaseCourse();
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.post<ICourse>(
-        `/course/${course?.id}/purchase`
-      );
-      if (response.status === 201) {
-        navigate('/course/purchased');
-      }
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
+    return {
+      is_active: isActive,
+      color,
+    };
+  }, [isMainnet, connected, courseContractBalance]);
+
+  const hintMessage = useMemo(() => {
+    if (isProduction && !isMainnet) {
+      return t('connect_wallet_mainnet');
     }
-  }, [course?.id, initDataRaw, navigate, purchaseCourse]);
-
-  useEffect(() => {
-    if (role === USER && !connected) {
-      tg.MainButton.hide();
-    } else {
-      tg.MainButton.show();
+    if (!connected) {
+      return t('connect_wallet');
     }
-  }, [connected, role]);
+    if (courseContractBalance <= 0) {
+      return t('course_not_activated');
+    }
+    return '';
+  }, [isMainnet, connected, courseContractBalance, t]);
 
   useEffect(() => {
     if (role === USER) {
-      const buttonColor = getCSSVariableValue('--tg-theme-button-color');
       tg.MainButton.setParams({
-        text: `${t('buy')} ${course.price} ${course.currency}`,
-        is_active: !!wallet,
-        color: !!wallet ? buttonColor : '#e6e9e9',
+        text: `${t('buy')} ${course.price + purchaseFee} ${course.currency}`,
+        is_active: getParamsMainButton().is_active,
+        color: getParamsMainButton().color,
       });
-      tg.onEvent('mainButtonClicked', handlePurchaseCourse);
-      return () => tg.offEvent('mainButtonClicked', handlePurchaseCourse);
+      tg.onEvent('mainButtonClicked', purchaseCourse);
+      return () => tg.offEvent('mainButtonClicked', purchaseCourse);
     } else if (role === SELLER || role === CUSTOMER) {
       tg.MainButton.setParams({
         text: t('modules'),
@@ -103,39 +91,14 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       tg.onEvent('mainButtonClicked', navigateToModulesPage);
       return () => tg.offEvent('mainButtonClicked', navigateToModulesPage);
     }
-  }, [course, navigateToModulesPage, handlePurchaseCourse, role, wallet, t]);
-
-  // Check course contract status
-  useEffect(() => {
-    async function checkDeploymentStatus() {
-      // const isDeployed = await isContractDeployed();
-      // setIsDeployedInBlockchain(isDeployed);
-    }
-
-    checkDeploymentStatus();
-  }, [isContractDeployed]);
-
-  // Сheck which network the wallet is from
-  useEffect(() => {
-    setIsMainnet(network === CHAIN.MAINNET);
-  }, [network]);
-
-  // Handle activate button
-  useEffect(() => {
-    let hint = '';
-    let disabled = true;
-
-    if (!connected) {
-      hint = 'Please connect the wallet';
-    } else if (isProduction && !isMainnet) {
-      hint = 'Please connect the wallet from the main network';
-    } else {
-      disabled = false;
-    }
-
-    setActivateButtonHint(hint);
-    setIsActivateButtonDisabled(disabled);
-  }, [connected, isMainnet]);
+  }, [
+    course,
+    navigateToModulesPage,
+    purchaseCourse,
+    role,
+    getParamsMainButton,
+    t,
+  ]);
 
   if (isLoading) return <Loader />;
 
@@ -162,8 +125,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
           </div>
         )}
         <div className={styles.category}>
-          <Label text={`${t('category')}: `} isBold />
-          <Label text={getCategoryLabel(course.category)} />
+          <Label text={`${t('сategory')}: `} isBold />
+          <Label text={getCategoryLabel(course.category, t)} />
         </div>
         {course.subcategory && (
           <div className={styles.category}>
@@ -171,25 +134,50 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             <Label
               text={getSubcategoryLabel(
                 course.category,
-                course.subcategory || ''
+                course.subcategory || '',
+                t
               )}
             />
           </div>
         )}
+        {role === SELLER && (
+          <div className={styles.category}>
+            <Label text={`${t('smart_contract_balance')}: `} isBold />
+            <Label text={`${courseContractBalance} TON`} />
+          </div>
+        )}
       </div>
-      <TonConnectButton />
+
+      {(role === SELLER || role === USER) && <TonConnectButton />}
 
       {role === SELLER && (
-        <Button
-          onClick={createCourse}
-          text={t('activate')}
-          icon={<SiHiveBlockchain size={18} />}
-          disabled={isActivateButtonDisabled}
-          hint={activateButtonHint}
-        />
+        <>
+          {courseContractBalance <= 0 && (
+            <div className={styles.warning}>
+              {t('course_purchase_not_available')}
+            </div>
+          )}
+          <Button
+            onClick={createCourse}
+            text={t('activate')}
+            icon={<SiHiveBlockchain size={18} />}
+            disabled={isActivateButtonDisabled}
+            hint={activateButtonHint}
+          />
+        </>
       )}
 
       {error && <MessageBox errorMessage={error} />}
+      {errorContract && <MessageBox errorMessage={errorContract} />}
+      {purchaseErrorContract && (
+        <MessageBox errorMessage={purchaseErrorContract} />
+      )}
+      {role !== SELLER && hintMessage && (
+        <div className={styles.hint}>
+          <BsInfoCircleFill size={16} />
+          {hintMessage}
+        </div>
+      )}
     </>
   );
 }

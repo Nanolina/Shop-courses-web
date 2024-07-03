@@ -1,21 +1,29 @@
 import "@stdlib/deploy";
 import "./messages";
-import "./purchase";
+import "./marketplaceFee";
 
+// Production
 contract Course with Deployable {
     const deployFee: Int = ton("0.05");
+    const minTonForStorage: Int = ton("0.02");
+    const devWallet1: Address = address("0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh"); // Alina
+    const devWallet2: Address = address("0QAaB9yd5ORKCKSHStCiNCvsT3eckoW3ddF4hQ6bM4u3Jzs1"); // Snezhanna
+    const prodWallet1: Address = address("UQCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sYIr"); // Alina
+    const prodWallet2: Address = address("UQAaB9yd5ORKCKSHStCiNCvsT3eckoW3ddF4hQ6bM4u3J4C_"); // Snezhanna
     courseId: String;
     coursePrice: Int as coins;
     seller: Address;
-    init(courseId: String, coursePrice: Int){
+    sellerId: Int as uint64;
+    init(courseId: String, coursePrice: Int, sellerId: Int){
         self.courseId = courseId;
         self.coursePrice = coursePrice;
+        self.sellerId = sellerId;
         self.seller = newAddress(0, 0);
     }
 
     receive(msg: NewCourse){
         require(context().value >= self.deployFee, "Insufficient funds to create a course");
-        let init: StateInit = initOf Course(msg.courseId, msg.coursePrice);
+        let init: StateInit = initOf Course(msg.courseId, msg.coursePrice, msg.sellerId);
         let address: Address = contractAddress(init);
         // Create new course contract with new data
         send(SendParameters{
@@ -34,17 +42,39 @@ contract Course with Deployable {
         self.seller = msg.seller;
     }
 
-    receive("New purchase"){
-        let totalFee: Int = (self.deployFee * 3 + self.coursePrice);
-        require(context().value >= totalFee, "Insufficient funds to buy a course");
-        let init: StateInit = initOf Purchase(sender(), self.seller, self.courseId);
-        let purchaseAddress: Address = contractAddress(init);
-        // Create Purchase contract
+    receive(msg: Sale){
+        require(context().value >= self.coursePrice, "Insufficient funds to send money to seller");
+
+        // MarketplaceFee
+        let marketplaceFee: Int = self.coursePrice * 15 / 100;
+        let init: StateInit = initOf MarketplaceFee(self.devWallet1, self.devWallet2);
+        if (msg.isProduction) {
+            init = initOf MarketplaceFee(self.prodWallet1, self.prodWallet2);
+        }
+        let marketplaceFeeAddress: Address = contractAddress(init);
+
+        // Seller response
+        let sellerResponse: StringBuilder = beginString();
+        sellerResponse.append("Selling a course: ");
+        sellerResponse.append(self.courseId);
+        sellerResponse.append("at https://t.me/shop_courses_bot");
+        let sellerResponseString: String = sellerResponse.toString();
+
+        // Send money to seller
         send(SendParameters{
-                to: purchaseAddress,
-                value: 0,
-                mode: SendIgnoreErrors | SendRemainingValue,
-                body: NewPurchase{coursePrice: self.coursePrice}.toCell(),
+                to: self.seller,
+                value: (self.coursePrice - marketplaceFee),
+                mode: SendPayGasSeparately | SendIgnoreErrors,
+                body: sellerResponseString.asComment(),
+                bounce: false
+            }
+        );
+        // Send money to marketplaceFee contract
+        send(SendParameters{
+                to: marketplaceFeeAddress,
+                value: marketplaceFee,
+                mode: SendIgnoreErrors | SendPayGasSeparately,
+                body: TransferToMarketplace{courseId: self.courseId}.toCell(),
                 bounce: false,
                 code: init.code,
                 data: init.data
@@ -52,13 +82,23 @@ contract Course with Deployable {
         );
     }
 
-    get fun address(courseId: String, coursePrice: Int): Address {
-        let init: StateInit = initOf Course(courseId, coursePrice);
+    receive("Withdraw"){
+        require(sender() == self.seller, "Only seller is allowed to withdraw");
+        send(SendParameters{
+                to: sender(),
+                value: ((myBalance() - context().value) - self.minTonForStorage),
+                mode: (SendIgnoreErrors + SendRemainingValue)
+            }
+        );
+    }
+
+    get fun address(courseId: String, coursePrice: Int, sellerId: Int): Address {
+        let init: StateInit = initOf Course(courseId, coursePrice, sellerId);
         return contractAddress(init);
     }
 
-    get fun addressPurchase(customer: Address, seller: Address, courseId: String): Address {
-        let init: StateInit = initOf Purchase(customer, seller, courseId);
+    get fun marketplaceFeeAddress(devWallet1: Address, devWallet2: Address): Address {
+        let init: StateInit = initOf MarketplaceFee(devWallet1, devWallet2);
         return contractAddress(init);
     }
 }

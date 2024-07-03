@@ -43,11 +43,20 @@
   height: 100%;
 }
 
-.modalTextContainer {
+.modalContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.modalImage {
+  max-width: 100%;
+  height: auto;
+}
+
+.modalText {
+  text-align: center;
 }

@@ -1,5 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PATCH, POST } from '../consts';
 import { createAxiosWithAuth, handleAuthError } from '../functions';
@@ -14,6 +15,8 @@ export const currencyOptions: IOption[] = [
 const tg = window.Telegram.WebApp;
 
 export function useCourseForm() {
+  const { t } = useTranslation();
+
   const { courseId = '' } = useParams<IMyCreatedCoursesPageParams>();
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -117,10 +120,10 @@ export function useCourseForm() {
 
   useEffect(() => {
     const mainButtonAction = courseId ? updateCourse : onCreateCourse;
-    tg.MainButton.setParams({ text: courseId ? 'Save' : 'Create' });
+    tg.MainButton.setParams({ text: courseId ? t('save') : t('create') });
     tg.onEvent('mainButtonClicked', mainButtonAction);
     return () => tg.offEvent('mainButtonClicked', mainButtonAction);
-  }, [onCreateCourse, updateCourse, courseId]);
+  }, [onCreateCourse, updateCourse, courseId, t]);
 
   useEffect(() => {
     if (!name || !category || !price || !currency) {

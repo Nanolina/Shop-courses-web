@@ -1,5 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -17,6 +18,7 @@ const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
 
 function LessonPage() {
+  const { t } = useTranslation();
   const { lessonId } = useParams<{ lessonId: string }>();
   const { setDisableNotification } = useNotification();
   const navigate = useNavigate();
@@ -92,10 +94,7 @@ function LessonPage() {
         size={24}
       />
       {!videoUrl && isLoaded ? (
-        <div>
-          The video is probably still uploading 📤 or not saved 💾. Please wait
-          ⏳
-        </div>
+        <div>{t('video_uploading')}⏳</div>
       ) : (
         <VideoPlayer url={videoUrl} />
       )}

@@ -8,6 +8,8 @@
 
 .button {
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
   background-color: var(--tg-theme-button-color);
   border-radius: 10px;
@@ -27,7 +29,7 @@
   justify-content: center;
   align-items: center;
   gap: 5px;
-  color: rgb(74, 74, 74);
+  color: var(--tg-theme-hint-color);
   font-size: 16px;
   font-style: italic;
 }

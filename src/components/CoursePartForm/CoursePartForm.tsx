@@ -1,5 +1,7 @@
 import { ChangeEvent, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MdCameraswitch } from 'react-icons/md';
+import { MODULE } from '../../consts';
 import { useCoursePartForm } from '../../hooks';
 import { IUseCoursePartFormReturnType } from '../../pages';
 import { ILesson } from '../../types';
@@ -14,8 +16,6 @@ import Textarea from '../../ui/Textarea/Textarea';
 import VideoPlayer from '../../ui/VideoPlayer/VideoPlayer';
 import { ICoursePartFormProps } from '../types';
 import styles from './CoursePartForm.module.css';
-import { useTranslation } from 'react-i18next';
-import { MODULE } from '../../consts';
 
 function CoursePartForm({ type, item }: ICoursePartFormProps) {
   const {
@@ -101,14 +101,16 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
             onClick={toggleBetweenImageUrlAndFile}
             text={
               useImageUrlCover
-                ? t('switch_to_file_image')
-                : t('switch_to_url_image')
+                ? t('switch_to_image_file')
+                : t('switch_to_image_link')
             }
             icon={<MdCameraswitch size={36} />}
           />
         </div>
         <Label
-          text={useImageUrlCover ? t('cover_label_url') : t('cover_label_file')}
+          text={
+            useImageUrlCover ? t('cover_label_link') : t('cover_label_file')
+          }
           isPadding
           isBold
         />
@@ -139,17 +141,15 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
                 onClick={toggleBetweenVideoUrlAndFile}
                 text={
                   useVideoUrlCover
-                    ? t('switch_to_file_video')
-                    : t('switch_to_url_video')
+                    ? t('switch_to_video_file')
+                    : t('switch_to_video_link')
                 }
                 icon={<MdCameraswitch size={36} />}
               />
             </div>
             <Label
               text={
-                useVideoUrlCover
-                  ? t('cover_label_url_video')
-                  : t('cover_label_file_video')
+                useVideoUrlCover ? t('video_link') : t('cover_label_file_video')
               }
               isPadding
               isBold

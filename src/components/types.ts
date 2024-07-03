@@ -1,4 +1,11 @@
-import { EntityType, ICourse, ILesson, IModule, RoleType } from '../types';
+import {
+  DeployType,
+  EntityType,
+  ICourse,
+  ILesson,
+  IModule,
+  RoleType,
+} from '../types';
 
 export interface ICoursePartItem {
   id: string;
@@ -70,18 +77,21 @@ export interface ICoursePartFormProps {
   item?: IModule | ILesson | undefined; // update
 }
 
-export interface ModalProps {
-  title: any;
+export interface IModalProps {
   isOpen: boolean;
   onClose: () => void;
-  content: React.ReactNode;
-  imageUrl?: string;
   confirm?: () => void;
   buttonRightText?: string;
+  children?: any;
 }
 
-export interface ModalEarnPointsProps {
+export interface IModalEarnPointsProps {
   isOpen: boolean;
   onClose: () => void;
   courseName: string;
+  deployType: DeployType | null;
+}
+
+export interface IPointsInfoModalContentProps {
+  page: number;
 }
