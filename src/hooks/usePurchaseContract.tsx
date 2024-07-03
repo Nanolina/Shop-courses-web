@@ -54,7 +54,7 @@ export function usePurchaseContract(course: ICourse, role: RoleType) {
         courseId,
         coursePriceInNano,
         BigInt(course.userId),
-        BigInt(customerId)
+        BigInt(initData?.user?.id || '')
       );
       const contractAddress = contractByData.address.toString();
       setPurchaseContractAddress(contractAddress);
@@ -63,7 +63,8 @@ export function usePurchaseContract(course: ICourse, role: RoleType) {
     } catch (error) {
       return '0';
     }
-  }, [courseId, coursePriceInNano, course.userId, customerId]);
+    // eslint-disable-next-line
+  }, [courseId, coursePriceInNano, course.userId]);
 
   const updateBalance = useCallback(async () => {
     const contractBalance = await getPurchaseContractBalance();

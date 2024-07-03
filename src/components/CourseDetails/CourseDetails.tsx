@@ -1,5 +1,5 @@
 import { TonConnectButton } from '@tonconnect/ui-react';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsInfoCircleFill } from 'react-icons/bs';
 import { SiHiveBlockchain } from 'react-icons/si';
@@ -41,17 +41,11 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const {
     balance: courseContractBalance,
     errorContract,
-    contractAddress: courseContractAddress,
     createCourse,
   } = useCourseContract(course, role);
 
-  const {
-    customerId,
-    balance: purchaseBalance,
-    errorContract: purchaseErrorContract,
-    purchaseContractAddress,
-    purchaseCourse,
-  } = usePurchaseContract(course, role);
+  const { errorContract: purchaseErrorContract, purchaseCourse } =
+    usePurchaseContract(course, role);
 
   const { connected } = useTonConnect();
 
@@ -68,7 +62,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     };
   }, [isMainnet, connected, courseContractBalance]);
 
-  const getHintMessage = () => {
+  const hintMessage = useMemo(() => {
     if (isProduction && !isMainnet) {
       return t('connect_wallet_mainnet');
     }
@@ -79,7 +73,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       return t('course_not_activated');
     }
     return '';
-  };
+  }, [isMainnet, connected, courseContractBalance, t]);
 
   useEffect(() => {
     if (role === USER) {
@@ -110,13 +104,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
 
   return (
     <>
-      <div>customerId {customerId}</div>
-      <div>contractCourseAddress {courseContractAddress}</div>
-      <div>purchaseContractAddress {purchaseContractAddress}</div>
-      <div>purchaseBalance {purchaseBalance}</div>
-      <div>purchaseErrorContract {purchaseErrorContract}</div>
-      <div>courseErrorContract {errorContract}</div>
-
       <div className={styles.info}>
         <Label text={course.name} isBig isBold />
         {course.description && (
@@ -138,7 +125,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
           </div>
         )}
         <div className={styles.category}>
-          <Label text={`${t('category')}: `} isBold />
+          <Label text={`${t('сategory')}: `} isBold />
           <Label text={getCategoryLabel(course.category, t)} />
         </div>
         {course.subcategory && (
@@ -161,7 +148,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         )}
       </div>
 
-      <TonConnectButton />
+      {(role === SELLER || role === USER) && <TonConnectButton />}
 
       {role === SELLER && (
         <>
@@ -185,10 +172,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       {purchaseErrorContract && (
         <MessageBox errorMessage={purchaseErrorContract} />
       )}
-      <div className={styles.hint}>
-        <BsInfoCircleFill size={16} />
-        {getHintMessage()}
-      </div>
+      {role !== SELLER && hintMessage && (
+        <div className={styles.hint}>
+          <BsInfoCircleFill size={16} />
+          {hintMessage}
+        </div>
+      )}
     </>
   );
 }
