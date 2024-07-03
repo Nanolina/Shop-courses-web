@@ -4,7 +4,7 @@ import 'swiper/css';
 import CoursesList from '../../components/CoursesList/CoursesList';
 import Points from '../../components/Points/Points';
 import Container from '../../ui/Container/Container';
-import SearchBar from '../../ui/SearchBar/SearchBar';
+import Points from '../../ui/Points/Points';
 
 const tg = window.Telegram.WebApp;
 
@@ -18,7 +18,6 @@ const MainPage: React.FC = () => {
   return (
     <Container>
       <Points />
-      <SearchBar />
       <CoursesList />
     </Container>
   );

@@ -11,6 +11,8 @@ import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import SearchBar from '../../ui/SearchBar/SearchBar';
 import styles from './CoursesOneCategoryPage.module.css';
+import SearchBar from '../../ui/SearchBar/SearchBar';
+import { filterCourses } from '../../functions/filterCourses';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
@@ -19,6 +21,9 @@ function CoursesOneCategoryPage() {
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [value, setValue] = useState<string>('');
+
+  const filteredCourses = filterCourses(courses, value);
 
   async function getAllCoursesOneCategory() {
     setIsLoading(true);
@@ -45,9 +50,12 @@ function CoursesOneCategoryPage() {
     <Container>
       <Header label={capitalizeFirstLetter(category)} />
       <Points />
-      <SearchBar />
+      <SearchBar onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          setValue(event.target.value)
+        }
+      />
       <div className={styles.container}>
-        {courses.map((course: any) => (
+        {filteredCourses.map((course: any) => (
           <CourseItem key={course.id} course={course} />
         ))}
       </div>
