@@ -100,9 +100,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       {role === SELLER && (
         <>
           <div className={styles.warning}>
-            The balance of the Course smart contract is 0. In this case, the
-            course purchase will not be available to users. Please click on the
-            "Activate" button
+            {t('course_purchase_not_available')}
           </div>
           <div className={styles.activateButtonContainer}>
             <Button

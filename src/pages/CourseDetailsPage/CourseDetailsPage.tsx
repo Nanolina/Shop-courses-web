@@ -1,5 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiEdit } from 'react-icons/fi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
@@ -18,6 +19,7 @@ import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
 
 function CourseDetailsPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
 
@@ -115,23 +117,26 @@ function CourseDetailsPage() {
             {error && <MessageBox errorMessage={error} />}
           </Container>
           <Modal
-            // title={
-            //   <div>
-            //     {t('delete_course')}
-            //     <b>{course.name}</b>?
-            //   </div>
-            // }
             isOpen={modalOpen}
             onClose={() => setModalOpen(false)}
-            // content={
-            //   <div className={styles.modalTextContainer}>
-            //     <div>{t('warning_delete_course')}</div>
-            //   </div>
-            // }
             confirm={deleteCourse}
-            // imageUrl="/delete.png"
-            buttonRightText="Delete"
-          />
+            buttonRightText={t('delete')}
+          >
+            <div className={styles.modalContainer}>
+              <div className={styles.modalText}>
+                {t('delete_course')}
+                <b> {course.name}</b>?
+              </div>
+              <img
+                src="/delete.png"
+                alt="Delete"
+                className={styles.modalImage}
+              />
+              <div className={styles.modalText}>
+                <div>{t('warning_delete_course')}</div>
+              </div>
+            </div>
+          </Modal>
         </>
       )}
     </>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RxCross2 } from 'react-icons/rx';
 import { IModalProps } from '../types';
 import styles from './Modal.module.css';
@@ -10,6 +11,7 @@ function Modal({
   buttonRightText,
   children,
 }: IModalProps) {
+  const { t } = useTranslation();
   const [show, setShow] = useState<boolean>(isOpen);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ function Modal({
         {confirm && (
           <div className={styles.containerBtn}>
             <button onClick={onClose} className={styles.btnCancel}>
-              Cancel
+              {t('cancel')}
             </button>
             <button
               onClick={() => {

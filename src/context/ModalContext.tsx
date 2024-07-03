@@ -5,12 +5,13 @@ import React, {
   useContext,
   useState,
 } from 'react';
+import { DeployType } from '../types';
 
 interface ModalContextProps {
   isOpen: boolean;
-  showModal: (type: string, name: string) => void;
+  showModal: (type: DeployType, name: string) => void;
   hideModal: () => void;
-  deployType: string | null;
+  deployType: DeployType | null;
   courseName: string;
 }
 
@@ -30,10 +31,10 @@ interface ModalProviderProps {
 
 export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [deployType, setDeployType] = useState<string | null>(null);
+  const [deployType, setDeployType] = useState<DeployType | null>(null);
   const [courseName, setCourseName] = useState<string>('');
 
-  const showModal = useCallback((type: string, name: string) => {
+  const showModal = useCallback((type: DeployType, name: string) => {
     setDeployType(type);
     setCourseName(name);
     setIsOpen(true);

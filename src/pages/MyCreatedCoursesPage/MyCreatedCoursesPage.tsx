@@ -11,10 +11,12 @@ import SearchBar from '../../ui/SearchBar/SearchBar';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import styles from './MyCreatedCoursePage.module.css';
 import { filterCourses } from '../../functions/filterCourses';
+import { useTranslation } from 'react-i18next';
 
 const tg = window.Telegram.WebApp;
 
 function MyCreatedCoursesPage() {
+  const { t } = useTranslation();
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
@@ -52,7 +54,12 @@ function MyCreatedCoursesPage() {
   if (isLoading) return <Loader />;
 
   if (!courses.length && !isLoading && isLoaded) {
-    return <ItemNotFoundPage error={error} isLoading={isLoading} />;
+    return (
+      <ItemNotFoundPage
+        error={error || `😊 ${t('not_created')} 📚✨`}
+        isLoading={isLoading}
+      />
+    );
   }
 
   return (

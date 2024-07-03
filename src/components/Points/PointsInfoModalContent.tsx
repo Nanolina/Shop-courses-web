@@ -1,19 +1,20 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { IPointsInfoModalContentProps } from '../types';
 import styles from './PointsInfoModalContent.module.css';
 
 const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
   page,
 }) => {
+  const { t } = useTranslation();
+
   switch (page) {
     case 1:
       return (
         <div className={styles.container}>
-          <h2 className={styles.title}>Earn points and get more benefits!</h2>
-          Our online video course marketplace offers you a unique opportunity to
-          earn points for active participation and get nice bonuses for it.
-          Here's how it works:
-          <h4 className={styles.subtitle}>How do I earn points?</h4>
+          <h2 className={styles.title}>{t('modal.benefits')}!</h2>
+          {t('modal.offers')}:
+          <h4 className={styles.subtitle}>{t('modal.how_earn_points')}?</h4>
           <img
             src="/earn-points.svg"
             alt="Earn points"
@@ -21,17 +22,16 @@ const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
           />
           <ul className={styles.list}>
             <li>
-              <strong>Activating courses:</strong> Earn points for sending your
-              courses to the blockchain.
+              <strong>{t('modal.activating_courses')}:</strong>{' '}
+              {t('modal.earn_for_blockchain')}.
             </li>
             <li>
-              <strong>Course purchases:</strong> Earn points for every course
-              purchase on our platform.
+              <strong>{t('modal.course_purchases')}:</strong>{' '}
+              {t('modal.earn_for_purchase')}.
             </li>
             <li>
-              <strong>Reviews and invitations (in the future):</strong> Soon you
-              will be able to earn points for writing reviews and inviting
-              friends.
+              <strong>{t('modal.reviews_and_invitations')}:</strong>{' '}
+              {t('modal.earn_for_reviews')}.
             </li>
           </ul>
         </div>
@@ -39,7 +39,7 @@ const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
     case 2:
       return (
         <div className={styles.container}>
-          <h2 className={styles.subtitle}>What can I spend my points on?</h2>
+          <h2 className={styles.subtitle}>{t('modal.spend')}?</h2>
           <img
             src="/spend-points.png"
             alt="Spend points"
@@ -47,13 +47,12 @@ const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
           />
           <ul className={styles.list}>
             <li>
-              <strong>Exchange for tokens:</strong> In the future you will be
-              able to exchange your points for tokens and use them as you see
-              fit.
+              <strong>{t('modal.exchange')}:</strong>{' '}
+              {t('modal.future_exchange')}.
             </li>
             <li>
-              <strong>Course discounts:</strong> Use your points to get
-              discounts on course purchases.
+              <strong>{t('modal.discounts')}:</strong>{' '}
+              {t('modal.discounts_purchases')}.
             </li>
           </ul>
         </div>
@@ -61,16 +60,14 @@ const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
     case 3:
       return (
         <div className={styles.container}>
-          <h2 className={styles.subtitle}>Why it's beneficial</h2>
+          <h2 className={styles.subtitle}>{t('modal.why_its_beneficial')}?</h2>
           <img
             src="/bonuses.png"
             alt="Why it's beneficial"
             className={styles.image}
           />
           <div className={styles.text}></div>
-          Our users receive additional benefits for actively participating on
-          the platform. Earn points and enjoy the benefits we offer. The more
-          you participate, the more bonuses you get!
+          {t('modal.additional_benefits')}!
         </div>
       );
     default:

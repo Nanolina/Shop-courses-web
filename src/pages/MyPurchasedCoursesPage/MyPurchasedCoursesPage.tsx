@@ -1,8 +1,10 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import CourseItem from '../../components/CourseItem/CourseItem';
 import Points from '../../components/Points/Points';
 import { createAxiosWithAuth, handleAuthError } from '../../functions';
+import { filterCourses } from '../../functions/filterCourses';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
@@ -10,11 +12,11 @@ import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import SearchBar from '../../ui/SearchBar/SearchBar';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import styles from './MyPurchasedCoursesPage.module.css';
-import { filterCourses } from '../../functions/filterCourses';
 
 const tg = window.Telegram.WebApp;
 
 function MyPurchasedCoursesPage() {
+  const { t } = useTranslation();
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
@@ -55,10 +57,7 @@ function MyPurchasedCoursesPage() {
   if (!courses.length && !isLoading && isLoaded) {
     return (
       <ItemNotFoundPage
-        error={
-          error ||
-          '😊 You have not purchased any courses yet. Explore our offers and find something interesting for you! 📚✨'
-        }
+        error={error || `😊 ${t('not_purchased')} 📚✨`}
         isLoading={isLoading}
       />
     );

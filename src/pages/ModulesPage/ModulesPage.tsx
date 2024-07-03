@@ -1,5 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { MODULE } from '../../consts';
 import { createAxiosWithAuth } from '../../functions';
@@ -11,6 +12,7 @@ import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetModules, IModulesPageParams } from '../types';
 
 const ModulesPage: React.FC = () => {
+  const { t } = useTranslation();
   const { courseId = '' } = useParams<IModulesPageParams>();
 
   const [modules, setModules] = useState<IModule[]>([]);
@@ -48,10 +50,7 @@ const ModulesPage: React.FC = () => {
   if (isLoading) return <Loader />;
   if (!role && !isLoading && isLoaded) {
     return (
-      <ItemNotFoundPage
-        error="The role for modules has not been given"
-        isLoading={isLoading}
-      />
+      <ItemNotFoundPage error={t('not_have_role')} isLoading={isLoading} />
     );
   }
 
