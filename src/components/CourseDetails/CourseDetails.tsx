@@ -1,5 +1,5 @@
 import { TonConnectButton } from '@tonconnect/ui-react';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SiHiveBlockchain } from 'react-icons/si';
 import { CUSTOMER, SELLER, USER } from '../../consts';
@@ -21,6 +21,7 @@ import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 
+const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 const tg = window.Telegram.WebApp;
 const purchaseFee = 0.1;
 
@@ -32,6 +33,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     error,
     isActivateButtonDisabled,
     activateButtonHint,
+    isMainnet,
     navigateToModulesPage,
   } = useCourseActions(course, role);
 
@@ -46,15 +48,26 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     purchaseCourse,
   } = usePurchaseContract(course, role);
 
-  const { wallet } = useTonConnect();
+  const { connected } = useTonConnect();
+
+  const getParamsMainButton = useCallback(() => {
+    const buttonColor = getCSSVariableValue('--tg-theme-button-color');
+    const isActive =
+      (isProduction && isMainnet && connected) || (!isProduction && connected);
+    const color = isActive ? buttonColor : '#e6e9e9';
+
+    return {
+      is_active: isActive,
+      color,
+    };
+  }, [isMainnet, connected]);
 
   useEffect(() => {
     if (role === USER) {
-      const buttonColor = getCSSVariableValue('--tg-theme-button-color');
       tg.MainButton.setParams({
         text: `${t('buy')} ${course.price + purchaseFee} ${course.currency}`,
-        is_active: !!wallet,
-        color: !!wallet ? buttonColor : '#e6e9e9',
+        is_active: getParamsMainButton().is_active,
+        color: getParamsMainButton().color,
       });
       tg.onEvent('mainButtonClicked', purchaseCourse);
       return () => tg.offEvent('mainButtonClicked', purchaseCourse);
@@ -65,19 +78,49 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       tg.onEvent('mainButtonClicked', navigateToModulesPage);
       return () => tg.offEvent('mainButtonClicked', navigateToModulesPage);
     }
-  }, [course, navigateToModulesPage, purchaseCourse, role, wallet, t]);
+  }, [
+    course,
+    navigateToModulesPage,
+    purchaseCourse,
+    role,
+    getParamsMainButton,
+    t,
+  ]);
 
   if (isLoading) return <Loader />;
 
   return (
     <>
+      <div>customerId {customerId}</div>
+      <div>contractCourseAddress {contractAddress}</div>
+      <div>purchaseContractAddress {purchaseContractAddress}</div>
+      <div>purchaseBalance {purchaseBalance}</div>
+      <div>purchaseErrorContract {purchaseErrorContract}</div>
+      <div>courseErrorContract {errorContract}</div>
+      {role === SELLER && (
+        <>
+          <div className={styles.warning}>
+            The balance of the Course smart contract is 0. In this case, the
+            course purchase will not be available to users. Please click on the
+            "Activate" button
+          </div>
+          <div className={styles.activateButtonContainer}>
+            <Button
+              onClick={createCourse}
+              text={t('activate')}
+              icon={<SiHiveBlockchain size={18} />}
+              disabled={isActivateButtonDisabled}
+              hint={activateButtonHint}
+            />
+            <div className={styles.hint}>
+              <Label text={`${t('smart_contract_balance')}: `} />
+              <Label text={`${balance} TON`} />
+            </div>
+          </div>
+        </>
+      )}
+
       <div className={styles.info}>
-        <div>customerId {customerId}</div>
-        <div>contractCourseAddress {contractAddress}</div>
-        <div>purchaseContractAddress {purchaseContractAddress}</div>
-        <div>purchaseBalance {purchaseBalance}</div>
-        <div>purchaseErrorContract {purchaseErrorContract}</div>
-        <div>courseErrorContract {errorContract}</div>
         <Label text={course.name} isBig isBold />
         {course.description && (
           <div className={styles.descriptionText}>{course.description}</div>
@@ -112,24 +155,9 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             />
           </div>
         )}
-        {role === SELLER && (
-          <div className={styles.category}>
-            <Label text={`${t('smart_contract_balance')}: `} isBold />
-            <Label text={`${balance} TON`} />
-          </div>
-        )}
       </div>
-      <TonConnectButton />
 
-      {role === SELLER && (
-        <Button
-          onClick={createCourse}
-          text={t('activate')}
-          icon={<SiHiveBlockchain size={18} />}
-          disabled={isActivateButtonDisabled}
-          hint={activateButtonHint}
-        />
-      )}
+      <TonConnectButton />
 
       {error && <MessageBox errorMessage={error} />}
       {errorContract && <MessageBox errorMessage={errorContract} />}

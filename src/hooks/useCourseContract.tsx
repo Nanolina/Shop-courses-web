@@ -94,7 +94,7 @@ export function useCourseContract(course: ICourse, role: RoleType) {
   }, [updateBalance]);
 
   return {
-    balance,
+    balance: parseFloat(balance),
     errorContract,
     contractAddress,
     createCourse: async () => {

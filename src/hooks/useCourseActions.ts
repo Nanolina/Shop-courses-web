@@ -101,6 +101,7 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     error,
     isActivateButtonDisabled,
     activateButtonHint,
+    isMainnet,
     handleAddPointsForCreating,
     handlePurchaseCourse,
     navigateToModulesPage,
