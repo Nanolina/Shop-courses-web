@@ -44,18 +44,28 @@ contract Course with Deployable {
 
     receive(msg: Sale){
         require(context().value >= self.coursePrice, "Insufficient funds to send money to seller");
+
+        // MarketplaceFee
         let marketplaceFee: Int = self.coursePrice * 15 / 100;
         let init: StateInit = initOf MarketplaceFee(self.devWallet1, self.devWallet2);
         if (msg.isProduction) {
             init = initOf MarketplaceFee(self.prodWallet1, self.prodWallet2);
         }
         let marketplaceFeeAddress: Address = contractAddress(init);
+
+        // Seller response
+        let sellerResponse: StringBuilder = beginString();
+        sellerResponse.append("Selling a course: ");
+        sellerResponse.append(self.courseId);
+        sellerResponse.append("at https://t.me/shop_courses_bot");
+        let sellerResponseString: String = sellerResponse.toString();
+
         // Send money to seller
         send(SendParameters{
                 to: self.seller,
                 value: (self.coursePrice - marketplaceFee),
                 mode: SendPayGasSeparately | SendIgnoreErrors,
-                body: self.courseId.asComment(),
+                body: sellerResponseString.asComment(),
                 bounce: false
             }
         );

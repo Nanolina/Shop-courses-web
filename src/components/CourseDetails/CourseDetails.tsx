@@ -37,8 +37,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     navigateToModulesPage,
   } = useCourseActions(course, role);
 
-  const { balance, errorContract, contractAddress, createCourse } =
-    useCourseContract(course, role);
+  const {
+    balance: courseContractBalance,
+    errorContract,
+    contractAddress: courseContractAddress,
+    createCourse,
+  } = useCourseContract(course, role);
 
   const {
     customerId,
@@ -53,14 +57,15 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const getParamsMainButton = useCallback(() => {
     const buttonColor = getCSSVariableValue('--tg-theme-button-color');
     const isActive =
-      (isProduction && isMainnet && connected) || (!isProduction && connected);
+      (isProduction && isMainnet && connected && courseContractBalance > 0) ||
+      (!isProduction && connected && courseContractBalance > 0);
     const color = isActive ? buttonColor : '#e6e9e9';
 
     return {
       is_active: isActive,
       color,
     };
-  }, [isMainnet, connected]);
+  }, [isMainnet, connected, courseContractBalance]);
 
   useEffect(() => {
     if (role === USER) {
@@ -92,31 +97,11 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   return (
     <>
       <div>customerId {customerId}</div>
-      <div>contractCourseAddress {contractAddress}</div>
+      <div>contractCourseAddress {courseContractAddress}</div>
       <div>purchaseContractAddress {purchaseContractAddress}</div>
       <div>purchaseBalance {purchaseBalance}</div>
       <div>purchaseErrorContract {purchaseErrorContract}</div>
       <div>courseErrorContract {errorContract}</div>
-      {role === SELLER && (
-        <>
-          <div className={styles.warning}>
-            {t('course_purchase_not_available')}
-          </div>
-          <div className={styles.activateButtonContainer}>
-            <Button
-              onClick={createCourse}
-              text={t('activate')}
-              icon={<SiHiveBlockchain size={18} />}
-              disabled={isActivateButtonDisabled}
-              hint={activateButtonHint}
-            />
-            <div className={styles.hint}>
-              <Label text={`${t('smart_contract_balance')}: `} />
-              <Label text={`${balance} TON`} />
-            </div>
-          </div>
-        </>
-      )}
 
       <div className={styles.info}>
         <Label text={course.name} isBig isBold />
@@ -153,12 +138,38 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             />
           </div>
         )}
+        {role === SELLER && (
+          <div className={styles.category}>
+            <Label text={`${t('smart_contract_balance')}: `} isBold />
+            <Label text={`${courseContractBalance} TON`} />
+          </div>
+        )}
       </div>
 
       <TonConnectButton />
 
+      {role === SELLER && (
+        <>
+          {courseContractBalance <= 0 && (
+            <div className={styles.warning}>
+              {t('course_purchase_not_available')}
+            </div>
+          )}
+          <Button
+            onClick={createCourse}
+            text={t('activate')}
+            icon={<SiHiveBlockchain size={18} />}
+            disabled={isActivateButtonDisabled}
+            hint={activateButtonHint}
+          />
+        </>
+      )}
+
       {error && <MessageBox errorMessage={error} />}
       {errorContract && <MessageBox errorMessage={errorContract} />}
+      {purchaseErrorContract && (
+        <MessageBox errorMessage={purchaseErrorContract} />
+      )}
     </>
   );
 }

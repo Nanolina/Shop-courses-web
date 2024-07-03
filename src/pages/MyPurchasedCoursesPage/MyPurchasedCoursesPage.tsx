@@ -11,7 +11,6 @@ import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import SearchBar from '../../ui/SearchBar/SearchBar';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
-import styles from './MyPurchasedCoursesPage.module.css';
 
 const tg = window.Telegram.WebApp;
 
@@ -71,7 +70,7 @@ function MyPurchasedCoursesPage() {
           setValue(event.target.value)
         }
       />
-      <div className={styles.container}>
+      <div className="myCoursesContainer">
         {filteredCourses.map((course) => (
           <CourseItem key={course.id} course={course} />
         ))}

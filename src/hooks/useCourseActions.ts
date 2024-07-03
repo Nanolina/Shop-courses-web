@@ -1,6 +1,7 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { CHAIN } from '@tonconnect/ui-react';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { USER } from '../consts';
 import { usePoints } from '../context';
@@ -12,6 +13,8 @@ const tg = window.Telegram.WebApp;
 const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 
 export function useCourseActions(course: ICourse, role: RoleType) {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const { connected, network } = useTonConnect();
   const { refreshPoints } = usePoints();
@@ -85,16 +88,16 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     let disabled = true;
 
     if (!connected) {
-      hint = 'Please connect the wallet';
+      hint = t('connect_wallet');
     } else if (isProduction && !isMainnet) {
-      hint = 'Please connect the wallet from the main network';
+      hint = t('connect_wallet_mainnet');
     } else {
       disabled = false;
     }
 
     setActivateButtonHint(hint);
     setIsActivateButtonDisabled(disabled);
-  }, [connected, isMainnet]);
+  }, [connected, isMainnet, t]);
 
   return {
     isLoading,

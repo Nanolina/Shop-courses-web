@@ -107,7 +107,7 @@ export function usePurchaseContract(course: ICourse, role: RoleType) {
 
   return {
     customerId,
-    balance,
+    balance: parseFloat(balance),
     errorContract,
     purchaseContractAddress,
 

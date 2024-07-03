@@ -50,20 +50,3 @@
   font-size: 16px;
   color: var(--tg-theme-text-color);
 }
-
-.activateButtonContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  justify-content: flex-end;
-  align-items: flex-end;
-  width: 100%;
-  padding-top: 10px;
-}
-
-.hint {
-  color: var(--tg-theme-hint-color);
-  font-size: 16px;
-  font-style: italic;
-  text-align: right;
-}

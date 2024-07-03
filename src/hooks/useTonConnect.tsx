@@ -5,8 +5,6 @@ import { encodeSaleMessage } from '../functions';
 import { Course } from '../ton/wrappers/Course';
 import { ICourse } from '../types';
 
-const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
-
 export function useTonConnect(
   course?: ICourse // only for purchase
 ): {
@@ -54,7 +52,7 @@ export function useTonConnect(
           messages.push({
             address: courseContractAddress,
             amount: toNano(course?.price.toString()).toString(),
-            payload: encodeSaleMessage(isProduction),
+            payload: encodeSaleMessage(),
           });
         }
 
