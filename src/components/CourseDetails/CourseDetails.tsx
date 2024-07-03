@@ -125,7 +125,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         )}
         <div className={styles.category}>
           <Label text={`${t('category')}: `} isBold />
-          <Label text={getCategoryLabel(course.category)} />
+          <Label text={getCategoryLabel(course.category, t)} />
         </div>
         {course.subcategory && (
           <div className={styles.category}>
@@ -133,7 +133,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             <Label
               text={getSubcategoryLabel(
                 course.category,
-                course.subcategory || ''
+                course.subcategory || '', t
               )}
             />
           </div>

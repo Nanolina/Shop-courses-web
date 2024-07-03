@@ -1,9 +1,7 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
-import { categoryOptions } from '../../category-data';
-import { capitalizeFirstLetter } from '../../functions';
+import { getCategoryLabel } from '../../functions';
 import { ICourse } from '../../types';
 import Label from '../../ui/Label/Label';
 import CourseItem from '../CourseItem/CourseItem';
@@ -17,15 +15,7 @@ function CoursesListByCategory({
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const getCategoryLabel = useMemo(
-    () => (value: string) => {
-      const category = categoryOptions.find((option) => option.value === value);
-      return category ? category.label : capitalizeFirstLetter(value);
-    },
-    []
-  );
-
-  const categoryLabel = getCategoryLabel(category);
+  const categoryLabel = getCategoryLabel(category, t);
 
   return (
     <div className={styles.container}>
