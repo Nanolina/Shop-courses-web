@@ -1,5 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
+import { TwaAnalyticsProvider } from '@tonsolutions/telemetree-react';
 import { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
@@ -114,11 +115,17 @@ function App() {
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => (
-  <NotificationProvider>
-    <PointsProvider>
-      <ModalProvider>
-        <App />
-      </ModalProvider>
-    </PointsProvider>
-  </NotificationProvider>
+  <TwaAnalyticsProvider
+    projectId={process.env.REACT_APP_TELEMETREE_PROJECT_ID || ''}
+    apiKey={process.env.REACT_APP_TELEMETREE_API_KEY || ''}
+    appName={process.env.REACT_APP_TELEMETREE_APPLICATION_NAME || ''}
+  >
+    <NotificationProvider>
+      <PointsProvider>
+        <ModalProvider>
+          <App />
+        </ModalProvider>
+      </PointsProvider>
+    </NotificationProvider>
+  </TwaAnalyticsProvider>
 );
