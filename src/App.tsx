@@ -116,9 +116,9 @@ function App() {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => (
   <TwaAnalyticsProvider
-    projectId={process.env.REACT_APP_TELEMETREE_PROJECT_ID || ''}
-    apiKey={process.env.REACT_APP_TELEMETREE_API_KEY || ''}
-    appName={process.env.REACT_APP_TELEMETREE_APPLICATION_NAME || ''}
+    projectId={process.env.REACT_APP_TELEMETREE_PROJECT_ID || 'courses_project_id'}
+    apiKey={process.env.REACT_APP_TELEMETREE_API_KEY || 'courses_api_key'}
+    appName={process.env.REACT_APP_TELEMETREE_APPLICATION_NAME || 'courses_app_name'}
   >
     <NotificationProvider>
       <PointsProvider>

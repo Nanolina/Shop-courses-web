@@ -1,5 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { CHAIN } from '@tonconnect/ui-react';
+import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -14,8 +15,9 @@ const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 
 export function useCourseActions(course: ICourse, role: RoleType) {
   const { t } = useTranslation();
-
   const navigate = useNavigate();
+  const eventBuilder = useTWAEvent();
+
   const { connected, network } = useTonConnect();
   const { refreshPoints } = usePoints();
   const { initDataRaw } = retrieveLaunchParams();
@@ -42,13 +44,14 @@ export function useCourseActions(course: ICourse, role: RoleType) {
       );
       if (response.status === 200) {
         await refreshPoints();
+        eventBuilder.track('Contract Course created in TON', {});
       }
     } catch (error: any) {
       handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }
-  }, [course?.id, initDataRaw, refreshPoints]);
+  }, [course?.id, initDataRaw, refreshPoints, eventBuilder]);
 
   const handlePurchaseCourse = useCallback(async () => {
     setIsLoading(true);
@@ -61,13 +64,14 @@ export function useCourseActions(course: ICourse, role: RoleType) {
       if (response.status === 200) {
         await refreshPoints();
         navigate('/course/purchased');
+        eventBuilder.track('Contract Purchase created in TON', {});
       }
     } catch (error: any) {
       handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }
-  }, [course?.id, initDataRaw, navigate, refreshPoints]);
+  }, [course?.id, initDataRaw, navigate, refreshPoints, eventBuilder]);
 
   useEffect(() => {
     if (role === USER && !connected) {

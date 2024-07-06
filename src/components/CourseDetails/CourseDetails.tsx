@@ -24,7 +24,7 @@ import styles from './CourseDetails.module.css';
 
 const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 const tg = window.Telegram.WebApp;
-const purchaseFee = 0.1;
+const purchaseFee = 0.07;
 
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const { t } = useTranslation();
