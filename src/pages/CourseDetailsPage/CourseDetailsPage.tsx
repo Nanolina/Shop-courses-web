@@ -1,4 +1,5 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
+import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiEdit } from 'react-icons/fi';
@@ -21,6 +22,7 @@ import styles from './CourseDetailsPage.module.css';
 function CourseDetailsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const eventBuilder = useTWAEvent();
   const { courseId } = useParams<{ courseId: string }>();
 
   const [course, setCourse] = useState<ICourse | null>(null);
@@ -69,6 +71,7 @@ function CourseDetailsPage() {
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       await axiosWithAuth.delete<ICourse>(`/course/${course.id}`);
       navigate('/course/created');
+      eventBuilder.track('Course deleted', {});
     } catch (error: any) {
       handleAuthError(error, setError);
     } finally {
