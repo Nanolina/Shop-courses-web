@@ -163,7 +163,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         )}
       </div>
 
-      {(role === SELLER || role === USER) && <TonConnectButton />}
+      <TonConnectButton />
 
       {role === SELLER && (
         <>
