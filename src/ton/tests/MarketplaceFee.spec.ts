@@ -6,7 +6,6 @@ import { MarketplaceFee } from '../wrappers/MarketplaceFee';
 describe('MarketplaceFee', () => {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
-    let customer: SandboxContract<TreasuryContract>;
     let marketplaceFee: SandboxContract<MarketplaceFee>;
     const devWallet1 = address('0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh'); // Online courses test
     const devWallet2 = address('0QBW7iBmFMDXVUYNByjYdcbORgZcE4sdLOXRUktfdHFdYSiK'); // Test
@@ -17,7 +16,6 @@ describe('MarketplaceFee', () => {
         marketplaceFee = blockchain.openContract(await MarketplaceFee.fromInit(devWallet1, devWallet2));
 
         deployer = await blockchain.treasury('deployer');
-        customer = await blockchain.treasury('customer');
 
         const deployResult = await marketplaceFee.send(
             deployer.getSender(),
@@ -75,33 +73,33 @@ describe('MarketplaceFee', () => {
         });
     });
 
-    it('should withdraw money to owner', async () => {
-        const result = await marketplaceFee.send(
+    it('should throw an error if the withdrawal is not made by the owner', async () => {
+        await marketplaceFee.send(
             deployer.getSender(),
             {
-                value: toNano('0.1'),
+                value: toNano('0.6'),
             },
-            'Withdraw',
+            {
+                $$type: 'TransferToMarketplace',
+                courseId: '123',
+            },
         );
+        const strangerUser = await blockchain.treasury('strangerUser');
+        const balanceBefore = await marketplaceFee.getBalance();
 
-        expect(result.transactions).toHaveTransaction({
-            from: marketplaceFee.address,
-            to: deployer.address,
-            success: true,
-        });
-    });
-
-    it('should throw an error if the withdrawal is not made by the customer', async () => {
         const result: any = await marketplaceFee.send(
-            customer.getSender(),
+            strangerUser.getSender(),
             {
                 value: toNano('0.1'),
             },
             'Withdraw',
         );
+        const balanceAfter = await marketplaceFee.getBalance();
 
         expect(result.events[1].from).toEqualAddress(marketplaceFee.address);
-        expect(result.events[1].to).toEqualAddress(customer.address);
+        expect(result.events[1].to).toEqualAddress(strangerUser.address);
         expect(result.events[1].bounced).toBe(true);
+        expect(balanceBefore).toBe(balanceAfter);
+        expect(balanceAfter).not.toBe(0n);
     });
 });

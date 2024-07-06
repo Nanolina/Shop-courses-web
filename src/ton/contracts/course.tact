@@ -5,7 +5,6 @@ import "./marketplaceFee";
 // Production
 contract Course with Deployable {
     const deployFee: Int = ton("0.05");
-    const minTonForStorage: Int = ton("0.02");
     const devWallet1: Address = address("0QCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sTmh"); // Alina
     const devWallet2: Address = address("0QAaB9yd5ORKCKSHStCiNCvsT3eckoW3ddF4hQ6bM4u3Jzs1"); // Snezhanna
     const prodWallet1: Address = address("UQCkaRROu1Vk0sIgV7Z5CLJBNtCokgiBMeOg4Ddmv3X3sYIr"); // Alina
@@ -86,8 +85,8 @@ contract Course with Deployable {
         require(sender() == self.seller, "Only seller is allowed to withdraw");
         send(SendParameters{
                 to: sender(),
-                value: ((myBalance() - context().value) - self.minTonForStorage),
-                mode: (SendIgnoreErrors + SendRemainingValue)
+                value: 0,
+                mode: (SendIgnoreErrors + SendRemainingBalance)
             }
         );
     }
@@ -100,5 +99,9 @@ contract Course with Deployable {
     get fun marketplaceFeeAddress(devWallet1: Address, devWallet2: Address): Address {
         let init: StateInit = initOf MarketplaceFee(devWallet1, devWallet2);
         return contractAddress(init);
+    }
+
+    get fun balance(): Int {
+        return myBalance();
     }
 }

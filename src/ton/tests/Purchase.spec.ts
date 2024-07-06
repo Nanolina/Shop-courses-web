@@ -91,32 +91,79 @@ describe('Purchase', () => {
     });
 
     it('should withdraw money to customer', async () => {
-        const result = await purchase.send(
+        // Create new Purchase and send money to this contract
+        const newPurchase = blockchain.openContract(
+            await Purchase.fromInit('345', toNano('3'), 6015565141n, 3856305638n),
+        );
+        const message: NewPurchase = {
+            $$type: 'NewPurchase',
+            courseId: '345',
+            coursePrice: toNano('3'),
+            sellerId: 6015565141n,
+            customerId: 3856305638n,
+        };
+        await purchase.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.07'),
+            },
+            message,
+        );
+
+        const balanceBefore = await newPurchase.getBalance();
+        const result = await newPurchase.send(
             deployer.getSender(),
             {
                 value: toNano('0.1'),
             },
             'Withdraw',
         );
+        const balanceAfter = await newPurchase.getBalance();
 
         expect(result.transactions).toHaveTransaction({
-            from: purchase.address,
+            from: newPurchase.address,
             to: deployer.address,
             success: true,
         });
+        expect(balanceAfter).toBe(0n);
+        expect(balanceAfter).toBeLessThan(balanceBefore);
     });
 
     it('should throw an error if the withdrawal is not made by the customer', async () => {
-        const result: any = await purchase.send(
+        // Create new Purchase and send money to this contract
+        const newPurchase = blockchain.openContract(
+            await Purchase.fromInit('345', toNano('3'), 6015565141n, 3856305638n),
+        );
+        const message: NewPurchase = {
+            $$type: 'NewPurchase',
+            courseId: '345',
+            coursePrice: toNano('3'),
+            sellerId: 6015565141n,
+            customerId: 3856305638n,
+        };
+        await purchase.send(
             deployer.getSender(),
+            {
+                value: toNano('0.07'),
+            },
+            message,
+        );
+
+        const balanceBefore = await newPurchase.getBalance();
+        const strangerCustomer = await blockchain.treasury('strangerCustomer');
+        const result: any = await newPurchase.send(
+            strangerCustomer.getSender(),
             {
                 value: toNano('0.1'),
             },
             'Withdraw',
         );
+        const balanceAfter = await newPurchase.getBalance();
 
-        expect(result.events[1].from).toEqualAddress(purchase.address);
-        expect(result.events[1].to).toEqualAddress(deployer.address);
+        expect(result.events[1].from).toEqualAddress(newPurchase.address);
+        expect(result.events[1].to).toEqualAddress(strangerCustomer.address);
         expect(result.events[1].bounced).toBe(true);
+        expect(balanceBefore).toBe(balanceAfter);
+        expect(balanceAfter).not.toBe(0n);
     });
 });

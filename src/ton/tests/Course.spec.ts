@@ -212,6 +212,7 @@ describe('Course', () => {
             coursePrice: toNano('2'),
             sellerId: 1708576552n,
         };
+
         // Send new transaction to create course to save seller
         await newCourse.send(
             seller.getSender(),
@@ -221,6 +222,7 @@ describe('Course', () => {
             message,
         );
 
+        const balanceBefore = await newCourse.getBalance();
         const result = await newCourse.send(
             seller.getSender(),
             {
@@ -229,11 +231,14 @@ describe('Course', () => {
             'Withdraw',
         );
 
+        const balanceAfter = await newCourse.getBalance();
         expect(result.transactions).toHaveTransaction({
             from: newCourse.address,
             to: seller.address,
             success: true,
         });
+        expect(balanceAfter).toBe(0n);
+        expect(balanceAfter).toBeLessThan(balanceBefore);
     });
 
     it('should throw an error if the withdrawal is not made by the seller', async () => {
@@ -255,6 +260,7 @@ describe('Course', () => {
             message,
         );
 
+        const balanceBefore = await newCourse.getBalance();
         const result: any = await newCourse.send(
             customer.getSender(),
             {
@@ -263,8 +269,11 @@ describe('Course', () => {
             'Withdraw',
         );
 
+        const balanceAfter = await newCourse.getBalance();
         expect(result.events[1].from).toEqualAddress(newCourse.address);
         expect(result.events[1].to).toEqualAddress(customer.address);
         expect(result.events[1].bounced).toBe(true);
+        expect(balanceBefore).toBe(balanceAfter);
+        expect(balanceAfter).not.toBe(0n);
     });
 });

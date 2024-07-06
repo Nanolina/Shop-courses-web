@@ -3,7 +3,6 @@ import "./messages";
 
 contract Purchase with Deployable {
     const deployFee: Int = ton("0.05");
-    const minTonForStorage: Int = ton("0.02");
     courseId: String;
     coursePrice: Int as coins;
     sellerId: Int as uint64;
@@ -40,16 +39,15 @@ contract Purchase with Deployable {
 
     receive("Withdraw"){
         require(sender() == self.customer, "Only customer is allowed to withdraw");
-        send(SendParameters{
-                to: sender(),
-                value: ((myBalance() - context().value) - self.minTonForStorage),
-                mode: (SendIgnoreErrors + SendRemainingValue)
-            }
-        );
+        send(SendParameters{to: sender(), value: 0, mode: (SendIgnoreErrors + SendRemainingBalance)});
     }
 
     get fun address(courseId: String, coursePrice: Int, sellerId: Int, customerId: Int): Address {
         let init: StateInit = initOf Purchase(courseId, coursePrice, sellerId, customerId);
         return contractAddress(init);
+    }
+
+    get fun balance(): Int {
+        return myBalance();
     }
 }
