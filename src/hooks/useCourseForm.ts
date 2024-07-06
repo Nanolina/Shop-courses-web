@@ -1,4 +1,5 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
+import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -16,6 +17,7 @@ const tg = window.Telegram.WebApp;
 
 export function useCourseForm() {
   const { t } = useTranslation();
+  const eventBuilder = useTWAEvent();
 
   const { courseId = '' } = useParams<IMyCreatedCoursesPageParams>();
   const [name, setName] = useState<string>('');
@@ -54,6 +56,7 @@ export function useCourseForm() {
         const response = await axiosWithAuth[method]<ICourse>(url, formData);
         if (response.status === 201 && method === POST) {
           navigate(`/course/${response.data.id}`);
+          eventBuilder.track('Course created', {});
         } else if (response.status === 200 && method === PATCH) {
           navigate('/course/created');
         }

@@ -1,5 +1,6 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { Address, OpenedContract, fromNano, toNano } from '@ton/core';
+import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useCallback, useEffect, useState } from 'react';
 import TonWeb from 'tonweb';
 import { useModal } from '../context';
@@ -20,6 +21,7 @@ const tonweb = new TonWeb(
 );
 
 export function usePurchaseContract(course: ICourse, role: RoleType) {
+  const eventBuilder = useTWAEvent();
   const courseId = course.id;
   const { client } = useTonClient();
   const { sender } = useTonConnect(course);
@@ -83,6 +85,7 @@ export function usePurchaseContract(course: ICourse, role: RoleType) {
         try {
           await handlePurchaseCourse();
           showModal('purchase', course.name);
+          eventBuilder.track('Contract Purchase created in TON', {});
         } catch (error: any) {}
 
         clearInterval(intervalId);

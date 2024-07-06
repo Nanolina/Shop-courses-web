@@ -1,4 +1,5 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
+import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -19,6 +20,7 @@ const serverUrl = process.env.REACT_APP_SERVER_URL || '';
 
 function LessonPage() {
   const { t } = useTranslation();
+  const eventBuilder = useTWAEvent();
   const { lessonId } = useParams<{ lessonId: string }>();
   const { setDisableNotification } = useNotification();
   const navigate = useNavigate();
@@ -40,6 +42,7 @@ function LessonPage() {
       setLesson(response.data);
       setVideoUrl(response.data.videoUrl || '');
       setIsLoaded(true);
+      eventBuilder.track('Lesson opened', {});
     } catch (error: any) {
       handleAuthError(error, setError);
       setIsLoaded(true);
