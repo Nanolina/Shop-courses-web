@@ -44,8 +44,11 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     createCourse,
   } = useCourseContract(course, role);
 
-  const { errorContract: purchaseErrorContract, purchaseCourse } =
-    usePurchaseContract(course, role);
+  const {
+    balance: purchaseContractBalance,
+    errorContract: purchaseErrorContract,
+    purchaseCourse,
+  } = usePurchaseContract(course, role);
 
   const { connected } = useTonConnect();
 
@@ -76,7 +79,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   }, [isMainnet, connected, courseContractBalance, t]);
 
   useEffect(() => {
-    if (role === USER) {
+    if (role === USER || (role === CUSTOMER && purchaseContractBalance <= 0)) {
       tg.MainButton.setParams({
         text: `${t('buy')} ${course.price + purchaseFee} ${course.currency}`,
         is_active: getParamsMainButton().is_active,
@@ -84,9 +87,14 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       });
       tg.onEvent('mainButtonClicked', purchaseCourse);
       return () => tg.offEvent('mainButtonClicked', purchaseCourse);
-    } else if (role === SELLER || role === CUSTOMER) {
+    } else if (
+      role === SELLER ||
+      (role === CUSTOMER && purchaseContractBalance > 0)
+    ) {
       tg.MainButton.setParams({
         text: t('modules'),
+        is_active: true,
+        color: getCSSVariableValue('--tg-theme-button-color'),
       });
       tg.onEvent('mainButtonClicked', navigateToModulesPage);
       return () => tg.offEvent('mainButtonClicked', navigateToModulesPage);
@@ -97,6 +105,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     purchaseCourse,
     role,
     getParamsMainButton,
+    purchaseContractBalance,
     t,
   ]);
 
@@ -144,6 +153,12 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
           <div className={styles.category}>
             <Label text={`${t('smart_contract_balance')}: `} isBold />
             <Label text={`${courseContractBalance} TON`} />
+          </div>
+        )}
+        {role === CUSTOMER && (
+          <div className={styles.category}>
+            <Label text={`${t('smart_contract_balance')}: `} isBold />
+            <Label text={`${purchaseContractBalance} TON`} />
           </div>
         )}
       </div>
