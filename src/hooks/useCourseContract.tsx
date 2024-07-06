@@ -90,7 +90,13 @@ export function useCourseContract(course: ICourse, role: RoleType) {
 
     // Clear the interval when unmounting a component or changing dependencies
     return () => clearInterval(intervalId);
-  }, [getContractBalance, handleAddPointsForCreating, showModal, course.name]);
+  }, [
+    getContractBalance,
+    handleAddPointsForCreating,
+    showModal,
+    course.name,
+    eventBuilder,
+  ]);
 
   useEffect(() => {
     updateBalance();

@@ -77,6 +77,7 @@ export function useCourseForm() {
       currency,
       image,
       navigate,
+      eventBuilder,
     ]
   );
 

@@ -99,6 +99,7 @@ export function usePurchaseContract(course: ICourse, role: RoleType) {
     handlePurchaseCourse,
     showModal,
     course.name,
+    eventBuilder,
   ]);
 
   useEffect(() => {
