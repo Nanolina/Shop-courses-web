@@ -24,8 +24,8 @@ function Points() {
 
   return (
     <>
-      <div className={styles.points}>
-        <BsInfoCircleFill size={16} onClick={() => setModalOpen(true)} />
+      <div className={styles.points} onClick={() => setModalOpen(true)}>
+        <BsInfoCircleFill size={16} />
         {t('my_points')}: <b>{points}</b>
       </div>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>

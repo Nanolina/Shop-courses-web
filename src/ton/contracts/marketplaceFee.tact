@@ -35,11 +35,10 @@ contract MarketplaceFee with Deployable, Ownable {
 
     receive("Withdraw"){
         require(sender() == self.owner, "Only owner is allowed to withdraw");
-        send(SendParameters{
-                to: sender(),
-                value: ((myBalance() - context().value) - self.minTonForStorage),
-                mode: (SendIgnoreErrors + SendRemainingValue)
-            }
-        );
+        send(SendParameters{to: sender(), value: 0, mode: (SendIgnoreErrors + SendRemainingBalance)});
+    }
+
+    get fun balance(): Int {
+        return myBalance();
     }
 }

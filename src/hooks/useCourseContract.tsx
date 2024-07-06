@@ -1,5 +1,4 @@
 import { Address, OpenedContract, fromNano, toNano } from '@ton/core';
-import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useCallback, useEffect, useState } from 'react';
 import TonWeb from 'tonweb';
 import { useModal } from '../context';
@@ -20,7 +19,6 @@ const tonweb = new TonWeb(
 );
 
 export function useCourseContract(course: ICourse, role: RoleType) {
-  const eventBuilder = useTWAEvent();
   const courseId = course.id;
   const { client } = useTonClient();
   const { sender } = useTonConnect();
@@ -79,7 +77,6 @@ export function useCourseContract(course: ICourse, role: RoleType) {
         try {
           await handleAddPointsForCreating();
           showModal('create', course.name);
-          eventBuilder.track('Contract Course created in TON', {});
         } catch (error: any) {
           setErrorContract(error?.message);
         }
@@ -90,13 +87,7 @@ export function useCourseContract(course: ICourse, role: RoleType) {
 
     // Clear the interval when unmounting a component or changing dependencies
     return () => clearInterval(intervalId);
-  }, [
-    getContractBalance,
-    handleAddPointsForCreating,
-    showModal,
-    course.name,
-    eventBuilder,
-  ]);
+  }, [getContractBalance, handleAddPointsForCreating, showModal, course.name]);
 
   useEffect(() => {
     updateBalance();
