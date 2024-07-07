@@ -41,12 +41,14 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     errorContract: courseErrorContract,
     createCourse,
     loading: courseLoading,
+    contractAddress: courseContractAddress,
   } = useCourseContract(course, role);
 
   const {
     errorContract: purchaseErrorContract,
     purchaseCourse,
     loading: purchaseLoading,
+    contractAddress: purchaseContractAddress,
   } = usePurchaseContract(course, role);
 
   useEffect(() => {
@@ -125,16 +127,28 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
           </div>
         )}
         {dataLoaded && role === SELLER && (
-          <div className={styles.category}>
-            <Label text={`${t('smart_contract_balance')}: `} isBold />
-            <Label text={`${courseContractBalance} TON`} />
-          </div>
+          <>
+            <div className={styles.category}>
+              <Label text={`${t('smart_contract_balance')}: `} isBold />
+              <Label text={`${courseContractBalance} TON`} />
+            </div>
+            <div className={styles.contractAddress}>
+              <Label text={`${t('smart_contract_address')}: `} isBold />
+              <Label text={courseContractAddress} />
+            </div>
+          </>
         )}
-        {dataLoaded && role === CUSTOMER && purchaseContractBalance > 0 && (
-          <div className={styles.category}>
-            <Label text={`${t('smart_contract_balance')}: `} isBold />
-            <Label text={`${purchaseContractBalance} TON`} />
-          </div>
+        {dataLoaded && role === CUSTOMER && (
+          <>
+            <div className={styles.category}>
+              <Label text={`${t('smart_contract_balance')}: `} isBold />
+              <Label text={`${purchaseContractBalance} TON`} />
+            </div>
+            <div className={styles.contractAddress}>
+              <Label text={`${t('smart_contract_address')}: `} isBold />
+              <Label text={purchaseContractAddress} />
+            </div>
+          </>
         )}
       </div>
 
@@ -143,9 +157,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       {role === SELLER && (
         <>
           {dataLoaded && courseContractBalance <= 0 && (
-            <div className={styles.warning}>
-              {t('course_purchase_not_available')}
-            </div>
+            <div className={styles.warning}>{t('course_need_deploy')}</div>
           )}
           <Button
             onClick={createCourse}
@@ -155,6 +167,10 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             hint={activateButtonHint}
           />
         </>
+      )}
+
+      {role === CUSTOMER && dataLoaded && purchaseContractBalance <= 0 && (
+        <div className={styles.warning}>{t('purchase_need_deploy')}</div>
       )}
 
       {courseErrorContract && <MessageBox errorMessage={courseErrorContract} />}
