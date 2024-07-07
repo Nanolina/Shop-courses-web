@@ -29,6 +29,7 @@ export function usePurchaseContract(course: ICourse, role: RoleType) {
   const [customerId, setCustomerId] = useState<any>(0);
   const [contractAddress, setContractAddress] = useState<string>('');
   const [errorContract, setErrorContract] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
 
   const coursePriceInNano = toNano(course.price.toString());
 
@@ -71,9 +72,11 @@ export function usePurchaseContract(course: ICourse, role: RoleType) {
   }, [courseId, coursePriceInNano, course.userId]);
 
   const updateContractData = useCallback(async () => {
+    setLoading(true);
     const { balance, address } = await getContractData();
     setContractAddress(address);
     setPurchaseContractBalance(balance);
+    setLoading(false);
   }, [getContractData, setPurchaseContractBalance]);
 
   useEffect(() => {
@@ -113,6 +116,7 @@ export function usePurchaseContract(course: ICourse, role: RoleType) {
     customerId,
     errorContract,
     contractAddress,
+    loading,
 
     // Send money to 2 contracts: seller contract with type Sale (useTonConnect) and create purchase contract "NewPurchase"
     purchaseCourse: async () => {

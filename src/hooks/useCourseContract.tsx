@@ -28,6 +28,7 @@ export function useCourseContract(course: ICourse, role: RoleType) {
 
   const [contractAddress, setContractAddress] = useState<string>('');
   const [errorContract, setErrorContract] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
 
   const coursePriceInNano = toNano(course.price.toString());
 
@@ -69,9 +70,11 @@ export function useCourseContract(course: ICourse, role: RoleType) {
 
   // Get contract address and balance
   const updateContractData = useCallback(async () => {
+    setLoading(true);
     const { balance, address } = await getContractData();
     setContractAddress(address);
     setCourseContractBalance(balance);
+    setLoading(false);
   }, [getContractData, setCourseContractBalance]);
 
   // Send data to backend to monitor contract status
@@ -80,7 +83,7 @@ export function useCourseContract(course: ICourse, role: RoleType) {
     try {
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       if (contractAddress) {
-        await axiosWithAuth.post<any>('/ton/monitor', {
+        await axiosWithAuth.post('/ton/monitor', {
           contractAddress,
           courseId,
           initialBalance: courseContractBalance,
@@ -106,6 +109,7 @@ export function useCourseContract(course: ICourse, role: RoleType) {
   return {
     errorContract,
     contractAddress,
+    loading,
     createCourse: async () => {
       const message: NewCourse = {
         courseId,

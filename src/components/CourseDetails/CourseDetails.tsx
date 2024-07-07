@@ -1,5 +1,5 @@
 import { TonConnectButton } from '@tonconnect/ui-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsInfoCircleFill } from 'react-icons/bs';
 import { SiHiveBlockchain } from 'react-icons/si';
@@ -27,6 +27,7 @@ const purchaseFee = 0.07;
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const { t } = useTranslation();
   const { courseContractBalance, purchaseContractBalance } = useContract();
+  const [dataLoaded, setDataLoaded] = useState<boolean>(false);
 
   const {
     isActivateButtonDisabled,
@@ -36,11 +37,23 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     hintMessage,
   } = useCourseActions(course, role);
 
-  const { errorContract: courseErrorContract, createCourse } =
-    useCourseContract(course, role);
+  const {
+    errorContract: courseErrorContract,
+    createCourse,
+    loading: courseLoading,
+  } = useCourseContract(course, role);
 
-  const { errorContract: purchaseErrorContract, purchaseCourse } =
-    usePurchaseContract(course, role);
+  const {
+    errorContract: purchaseErrorContract,
+    purchaseCourse,
+    loading: purchaseLoading,
+  } = usePurchaseContract(course, role);
+
+  useEffect(() => {
+    if (!courseLoading || !purchaseLoading) {
+      setDataLoaded(true);
+    }
+  }, [courseLoading, purchaseLoading]);
 
   useEffect(() => {
     if (role === USER || (role === CUSTOMER && purchaseContractBalance <= 0)) {
@@ -111,13 +124,13 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             />
           </div>
         )}
-        {role === SELLER && (
+        {dataLoaded && role === SELLER && (
           <div className={styles.category}>
             <Label text={`${t('smart_contract_balance')}: `} isBold />
             <Label text={`${courseContractBalance} TON`} />
           </div>
         )}
-        {role === CUSTOMER && (
+        {dataLoaded && role === CUSTOMER && purchaseContractBalance > 0 && (
           <div className={styles.category}>
             <Label text={`${t('smart_contract_balance')}: `} isBold />
             <Label text={`${purchaseContractBalance} TON`} />
@@ -129,7 +142,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
 
       {role === SELLER && (
         <>
-          {courseContractBalance <= 0 && (
+          {dataLoaded && courseContractBalance <= 0 && (
             <div className={styles.warning}>
               {t('course_purchase_not_available')}
             </div>
