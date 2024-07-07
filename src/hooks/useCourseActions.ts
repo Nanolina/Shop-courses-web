@@ -1,12 +1,10 @@
-import { retrieveLaunchParams } from '@tma.js/sdk';
 import { CHAIN } from '@tonconnect/ui-react';
-import { useTWAEvent } from '@tonsolutions/telemetree-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { USER } from '../consts';
-import { usePoints } from '../context';
-import { createAxiosWithAuth, handleAuthError } from '../functions';
+import { useContract } from '../context';
+import { getCSSVariableValue } from '../functions';
 import { ICourse, RoleType } from '../types';
 import { useTonConnect } from './useTonConnect';
 
@@ -16,62 +14,45 @@ const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 export function useCourseActions(course: ICourse, role: RoleType) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const eventBuilder = useTWAEvent();
 
   const { connected, network } = useTonConnect();
-  const { refreshPoints } = usePoints();
-  const { initDataRaw } = retrieveLaunchParams();
+  const { courseContractBalance } = useContract();
 
   const [isActivateButtonDisabled, setIsActivateButtonDisabled] =
     useState<boolean>(true);
   const [activateButtonHint, setActivateButtonHint] = useState<string>('');
   const [isMainnet, setIsMainnet] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
 
   const navigateToModulesPage = useCallback(
     () => navigate(`/module/course/${course.id}`),
     [course.id, navigate]
   );
 
-  const handleAddPointsForCreating = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.post<ICourse>(
-        `/course/${course?.id}/points/add/creation`
-      );
-      if (response.status === 200) {
-        await refreshPoints();
-        eventBuilder.track('Contract Course created in TON', {});
-      }
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [course?.id, initDataRaw, refreshPoints, eventBuilder]);
+  const getParamsMainButton = useCallback(() => {
+    const buttonColor = getCSSVariableValue('--tg-theme-button-color');
+    const isActive =
+      (isProduction && isMainnet && connected && courseContractBalance > 0) ||
+      (!isProduction && connected && courseContractBalance > 0);
+    const color = isActive ? buttonColor : '#e6e9e9';
 
-  const handlePurchaseCourse = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.post<ICourse>(
-        `/course/${course?.id}/purchase`
-      );
-      if (response.status === 200) {
-        await refreshPoints();
-        navigate('/course/purchased');
-        eventBuilder.track('Contract Purchase created in TON', {});
-      }
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
+    return {
+      is_active: isActive,
+      color,
+    };
+  }, [isMainnet, connected, courseContractBalance]);
+
+  const hintMessage = useMemo(() => {
+    if (isProduction && !isMainnet) {
+      return t('connect_wallet_mainnet');
     }
-  }, [course?.id, initDataRaw, navigate, refreshPoints, eventBuilder]);
+    if (!connected) {
+      return t('connect_wallet');
+    }
+    if (courseContractBalance <= 0) {
+      return t('course_not_activated');
+    }
+    return '';
+  }, [isMainnet, connected, courseContractBalance, t]);
 
   useEffect(() => {
     if (role === USER && !connected) {
@@ -104,13 +85,11 @@ export function useCourseActions(course: ICourse, role: RoleType) {
   }, [connected, isMainnet, t]);
 
   return {
-    isLoading,
-    error,
     isActivateButtonDisabled,
     activateButtonHint,
     isMainnet,
-    handleAddPointsForCreating,
-    handlePurchaseCourse,
     navigateToModulesPage,
+    getParamsMainButton,
+    hintMessage,
   };
 }

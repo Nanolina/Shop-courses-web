@@ -12,6 +12,7 @@ import { createAxiosWithAuth } from '../functions';
 interface PointsContextProps {
   points: number;
   refreshPoints: () => void;
+  setPoints: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const PointsContext = createContext<PointsContextProps | undefined>(undefined);
@@ -42,7 +43,9 @@ export const PointsProvider: React.FC<PointsProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <PointsContext.Provider value={{ points, refreshPoints: fetchPoints }}>
+    <PointsContext.Provider
+      value={{ points, setPoints, refreshPoints: fetchPoints }}
+    >
       {children}
     </PointsContext.Provider>
   );

@@ -1,11 +1,12 @@
+import { retrieveLaunchParams } from '@tma.js/sdk';
 import { Address, OpenedContract, fromNano, toNano } from '@ton/core';
 import { useCallback, useEffect, useState } from 'react';
 import TonWeb from 'tonweb';
-import { useModal } from '../context';
+import { useContract } from '../context';
+import { createAxiosWithAuth } from '../functions';
 import { Course, NewCourse } from '../ton/wrappers/Course';
-import { ICourse, RoleType } from '../types';
+import { DeployEnum, ICourse, RoleType } from '../types';
 import { useAsyncInitialize } from './useAsyncInitialize';
-import { useCourseActions } from './useCourseActions';
 import { useTonClient } from './useTonClient';
 import { useTonConnect } from './useTonConnect';
 
@@ -22,85 +23,93 @@ export function useCourseContract(course: ICourse, role: RoleType) {
   const courseId = course.id;
   const { client } = useTonClient();
   const { sender } = useTonConnect();
-  const { showModal } = useModal();
+  const { initDataRaw, initData } = retrieveLaunchParams();
+  const { courseContractBalance, setCourseContractBalance } = useContract();
 
-  const [balance, setBalance] = useState<string>('0');
   const [contractAddress, setContractAddress] = useState<string>('');
   const [errorContract, setErrorContract] = useState<string>('');
-
-  const { handleAddPointsForCreating } = useCourseActions(course, role);
 
   const coursePriceInNano = toNano(course.price.toString());
 
   // Deployed course contract
   const courseDefaultContract = useAsyncInitialize(async () => {
     if (!client) return;
-    const contractAddress: any = Address.parse(
+    const address: any = Address.parse(
       process.env.REACT_APP_COURSE_CONTRACT_ADDRESS || ''
     );
 
-    const contract = await Course.fromAddress(contractAddress);
+    const contract = await Course.fromAddress(address);
     return client.open(contract) as OpenedContract<Course>;
   }, [client]);
 
   // Course contract with new data
-  const getContractBalance = useCallback(async () => {
+  const getContractData = useCallback(async () => {
     try {
       const contractByData = await Course.fromInit(
         courseId,
         coursePriceInNano,
         BigInt(course.userId)
       );
-      const contractAddress = contractByData.address.toString();
-      setContractAddress(contractAddress);
-      const balanceInfo = await tonweb.provider.getBalance(contractAddress);
-      return balanceInfo;
-    } catch (error) {
-      return '0';
+      const address = contractByData.address.toString();
+      const balanceInNano = await tonweb.provider.getBalance(address);
+      const balance = parseFloat(fromNano(balanceInNano));
+
+      return {
+        balance,
+        address,
+      };
+    } catch (error: any) {
+      setErrorContract(error?.message);
+      return {
+        balance: 0,
+        address: '',
+      };
     }
   }, [courseId, coursePriceInNano, course.userId]);
 
-  const updateBalance = useCallback(async () => {
-    const contractBalance = await getContractBalance();
-    setBalance(fromNano(contractBalance));
-  }, [getContractBalance]);
+  // Get contract address and balance
+  const updateContractData = useCallback(async () => {
+    const { balance, address } = await getContractData();
+    setContractAddress(address);
+    setCourseContractBalance(balance);
+  }, [getContractData, setCourseContractBalance]);
 
-  const checkAndUpdateBalance = useCallback(async () => {
-    const initialBalance = await getContractBalance();
-    setBalance(fromNano(initialBalance));
-
-    const intervalId = setInterval(async () => {
-      const currentBalance = await getContractBalance();
-      if (currentBalance !== initialBalance) {
-        setBalance(fromNano(currentBalance));
-
-        try {
-          await handleAddPointsForCreating();
-          showModal('create', course.name);
-        } catch (error: any) {
-          setErrorContract(error?.message);
-        }
-
-        clearInterval(intervalId);
+  // Send data to backend to monitor contract status
+  const monitorContract = useCallback(async () => {
+    if (!initDataRaw) return;
+    try {
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      if (contractAddress) {
+        await axiosWithAuth.post<any>('/ton/monitor', {
+          contractAddress,
+          courseId,
+          initialBalance: courseContractBalance,
+          type: DeployEnum.Create,
+          language: initData?.user?.languageCode,
+        });
       }
-    }, 5000); // 5 sec
-
-    // Clear the interval when unmounting a component or changing dependencies
-    return () => clearInterval(intervalId);
-  }, [getContractBalance, handleAddPointsForCreating, showModal, course.name]);
+    } catch (error: any) {
+      return error?.message;
+    }
+  }, [
+    initDataRaw,
+    courseId,
+    initData?.user?.languageCode,
+    courseContractBalance,
+    contractAddress,
+  ]);
 
   useEffect(() => {
-    updateBalance();
-  }, [updateBalance]);
+    updateContractData();
+  }, [updateContractData]);
 
   return {
-    balance: parseFloat(balance),
     errorContract,
     contractAddress,
     createCourse: async () => {
       const message: NewCourse = {
-        $$type: 'NewCourse',
         courseId,
+        $$type: 'NewCourse',
         coursePrice: coursePriceInNano,
         sellerId: BigInt(course.userId),
       };
@@ -112,7 +121,7 @@ export function useCourseContract(course: ICourse, role: RoleType) {
           },
           message
         );
-        await checkAndUpdateBalance();
+        await monitorContract();
       } catch (error: any) {
         setErrorContract(
           `Transaction failed or was rejected. ${error?.message}`

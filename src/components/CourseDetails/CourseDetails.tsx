@@ -1,9 +1,10 @@
 import { TonConnectButton } from '@tonconnect/ui-react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsInfoCircleFill } from 'react-icons/bs';
 import { SiHiveBlockchain } from 'react-icons/si';
 import { CUSTOMER, SELLER, USER } from '../../consts';
+import { useContract } from '../../context';
 import {
   getCSSVariableValue,
   getCategoryLabel,
@@ -13,70 +14,33 @@ import {
   useCourseActions,
   useCourseContract,
   usePurchaseContract,
-  useTonConnect,
 } from '../../hooks';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
-import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 
-const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 const tg = window.Telegram.WebApp;
 const purchaseFee = 0.07;
 
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const { t } = useTranslation();
+  const { courseContractBalance, purchaseContractBalance } = useContract();
 
   const {
-    isLoading,
-    error,
     isActivateButtonDisabled,
     activateButtonHint,
-    isMainnet,
     navigateToModulesPage,
+    getParamsMainButton,
+    hintMessage,
   } = useCourseActions(course, role);
 
-  const {
-    balance: courseContractBalance,
-    errorContract,
-    createCourse,
-  } = useCourseContract(course, role);
+  const { errorContract: courseErrorContract, createCourse } =
+    useCourseContract(course, role);
 
-  const {
-    balance: purchaseContractBalance,
-    errorContract: purchaseErrorContract,
-    purchaseCourse,
-  } = usePurchaseContract(course, role);
-
-  const { connected } = useTonConnect();
-
-  const getParamsMainButton = useCallback(() => {
-    const buttonColor = getCSSVariableValue('--tg-theme-button-color');
-    const isActive =
-      (isProduction && isMainnet && connected && courseContractBalance > 0) ||
-      (!isProduction && connected && courseContractBalance > 0);
-    const color = isActive ? buttonColor : '#e6e9e9';
-
-    return {
-      is_active: isActive,
-      color,
-    };
-  }, [isMainnet, connected, courseContractBalance]);
-
-  const hintMessage = useMemo(() => {
-    if (isProduction && !isMainnet) {
-      return t('connect_wallet_mainnet');
-    }
-    if (!connected) {
-      return t('connect_wallet');
-    }
-    if (courseContractBalance <= 0) {
-      return t('course_not_activated');
-    }
-    return '';
-  }, [isMainnet, connected, courseContractBalance, t]);
+  const { errorContract: purchaseErrorContract, purchaseCourse } =
+    usePurchaseContract(course, role);
 
   useEffect(() => {
     if (role === USER || (role === CUSTOMER && purchaseContractBalance <= 0)) {
@@ -108,8 +72,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     purchaseContractBalance,
     t,
   ]);
-
-  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -182,8 +144,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         </>
       )}
 
-      {error && <MessageBox errorMessage={error} />}
-      {errorContract && <MessageBox errorMessage={errorContract} />}
+      {courseErrorContract && <MessageBox errorMessage={courseErrorContract} />}
       {purchaseErrorContract && (
         <MessageBox errorMessage={purchaseErrorContract} />
       )}

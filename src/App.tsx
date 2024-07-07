@@ -7,7 +7,14 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Bounce, ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
 import ModalEarnPoints from './components/ModalEarnPoints/ModalEarnPoints';
-import { ModalProvider, PointsProvider, useNotification } from './context';
+import {
+  ContractProvider,
+  ModalProvider,
+  PointsProvider,
+  useContract,
+  useNotification,
+  usePoints,
+} from './context';
 import NotificationProvider from './context/NotificationContext';
 import i18n from './i18n/i18n';
 import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage';
@@ -22,6 +29,7 @@ import MainPage from './pages/MainPage/MainPage';
 import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
 import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCoursesPage';
+import { DeployEnum } from './types';
 
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
@@ -30,26 +38,65 @@ const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
 function App() {
   const { showNotification } = useNotification();
   const { initData } = retrieveLaunchParams();
+  const { refreshPoints, setPoints } = usePoints();
+  const { setCourseContractBalance, setPurchaseContractBalance } =
+    useContract();
 
   useEffect(() => {
     tg.ready();
     tg.setHeaderColor('secondary_bg_color');
   }, []);
 
-  // To receive notifications when a video is successfully uploaded to Cloudinary
+  // To receive notifications from backend if the video is uploaded to Cloudinary
   useEffect(() => {
     const socket = io(serverUrl);
 
-    socket.on('notification', (data) => {
-      const { message, status } = data;
-      showNotification(message, status);
+    socket.on('video-uploaded', (data) => {
+      const { status, userId, message } = data;
+      if (initData?.user?.id === userId) showNotification(message, status);
     });
 
     return () => {
-      socket.off('notification');
+      socket.off('video-uploaded');
       socket.close();
     };
-  }, [showNotification]);
+  }, [showNotification, initData?.user?.id]);
+
+  // To receive notifications from backend if the smart contract balance is updated (points have been credited)
+  useEffect(() => {
+    const socket = io(serverUrl);
+
+    socket.on('contract-updated', (data) => {
+      const { status, userId, message, type, balance, points } = data;
+      if (initData?.user?.id === userId) {
+        showNotification(message, status);
+
+        if (points) {
+          setPoints(points);
+        }
+
+        if (balance && type) {
+          if (type === DeployEnum.Create) {
+            setCourseContractBalance(balance);
+          } else {
+            setPurchaseContractBalance(balance);
+          }
+        }
+      }
+    });
+
+    return () => {
+      socket.off('contract-updated');
+      socket.close();
+    };
+  }, [
+    showNotification,
+    initData?.user?.id,
+    refreshPoints,
+    setPoints,
+    setCourseContractBalance,
+    setPurchaseContractBalance,
+  ]);
 
   // Language
   useEffect(() => {
@@ -116,15 +163,21 @@ function App() {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => (
   <TwaAnalyticsProvider
-    projectId={process.env.REACT_APP_TELEMETREE_PROJECT_ID || 'courses_project_id'}
+    projectId={
+      process.env.REACT_APP_TELEMETREE_PROJECT_ID || 'courses_project_id'
+    }
     apiKey={process.env.REACT_APP_TELEMETREE_API_KEY || 'courses_api_key'}
-    appName={process.env.REACT_APP_TELEMETREE_APPLICATION_NAME || 'courses_app_name'}
+    appName={
+      process.env.REACT_APP_TELEMETREE_APPLICATION_NAME || 'courses_app_name'
+    }
   >
     <NotificationProvider>
       <PointsProvider>
-        <ModalProvider>
-          <App />
-        </ModalProvider>
+        <ContractProvider>
+          <ModalProvider>
+            <App />
+          </ModalProvider>
+        </ContractProvider>
       </PointsProvider>
     </NotificationProvider>
   </TwaAnalyticsProvider>
