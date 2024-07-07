@@ -1,3 +1,4 @@
+// Interface
 export interface ICourse {
   id: string;
   name: string;
@@ -29,7 +30,18 @@ export interface ILesson {
   videoUrl?: string;
 }
 
+// Type
 export type EntityType = 'module' | 'lesson';
 export type RoleType = 'user' | 'customer' | 'seller';
 export type RequestMethodType = 'post' | 'patch';
 export type DeployType = 'create' | 'purchase';
+
+// Enum
+export enum StatusEnum {
+  Success = 'success',
+  Error = 'error',
+}
+export enum DeployEnum {
+  Create = 'create',
+  Purchase = 'purchase',
+}

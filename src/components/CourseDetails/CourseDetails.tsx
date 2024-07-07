@@ -1,9 +1,10 @@
 import { TonConnectButton } from '@tonconnect/ui-react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsInfoCircleFill } from 'react-icons/bs';
 import { SiHiveBlockchain } from 'react-icons/si';
 import { CUSTOMER, SELLER, USER } from '../../consts';
+import { useContract } from '../../context';
 import {
   getCSSVariableValue,
   getCategoryLabel,
@@ -13,70 +14,46 @@ import {
   useCourseActions,
   useCourseContract,
   usePurchaseContract,
-  useTonConnect,
 } from '../../hooks';
 import Button from '../../ui/Button/Button';
 import Label from '../../ui/Label/Label';
-import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
 
-const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 const tg = window.Telegram.WebApp;
 const purchaseFee = 0.07;
 
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const { t } = useTranslation();
+  const { courseContractBalance, purchaseContractBalance } = useContract();
+  const [dataLoaded, setDataLoaded] = useState<boolean>(false);
 
   const {
-    isLoading,
-    error,
     isActivateButtonDisabled,
     activateButtonHint,
-    isMainnet,
     navigateToModulesPage,
+    getParamsMainButton,
+    hintMessage,
   } = useCourseActions(course, role);
 
   const {
-    balance: courseContractBalance,
-    errorContract,
+    errorContract: courseErrorContract,
     createCourse,
+    loading: courseLoading,
   } = useCourseContract(course, role);
 
   const {
-    balance: purchaseContractBalance,
     errorContract: purchaseErrorContract,
     purchaseCourse,
+    loading: purchaseLoading,
   } = usePurchaseContract(course, role);
 
-  const { connected } = useTonConnect();
-
-  const getParamsMainButton = useCallback(() => {
-    const buttonColor = getCSSVariableValue('--tg-theme-button-color');
-    const isActive =
-      (isProduction && isMainnet && connected && courseContractBalance > 0) ||
-      (!isProduction && connected && courseContractBalance > 0);
-    const color = isActive ? buttonColor : '#e6e9e9';
-
-    return {
-      is_active: isActive,
-      color,
-    };
-  }, [isMainnet, connected, courseContractBalance]);
-
-  const hintMessage = useMemo(() => {
-    if (isProduction && !isMainnet) {
-      return t('connect_wallet_mainnet');
+  useEffect(() => {
+    if (!courseLoading || !purchaseLoading) {
+      setDataLoaded(true);
     }
-    if (!connected) {
-      return t('connect_wallet');
-    }
-    if (courseContractBalance <= 0) {
-      return t('course_not_activated');
-    }
-    return '';
-  }, [isMainnet, connected, courseContractBalance, t]);
+  }, [courseLoading, purchaseLoading]);
 
   useEffect(() => {
     if (role === USER || (role === CUSTOMER && purchaseContractBalance <= 0)) {
@@ -108,8 +85,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     purchaseContractBalance,
     t,
   ]);
-
-  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -149,13 +124,13 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             />
           </div>
         )}
-        {role === SELLER && (
+        {dataLoaded && role === SELLER && (
           <div className={styles.category}>
             <Label text={`${t('smart_contract_balance')}: `} isBold />
             <Label text={`${courseContractBalance} TON`} />
           </div>
         )}
-        {role === CUSTOMER && (
+        {dataLoaded && role === CUSTOMER && purchaseContractBalance > 0 && (
           <div className={styles.category}>
             <Label text={`${t('smart_contract_balance')}: `} isBold />
             <Label text={`${purchaseContractBalance} TON`} />
@@ -167,7 +142,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
 
       {role === SELLER && (
         <>
-          {courseContractBalance <= 0 && (
+          {dataLoaded && courseContractBalance <= 0 && (
             <div className={styles.warning}>
               {t('course_purchase_not_available')}
             </div>
@@ -182,8 +157,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         </>
       )}
 
-      {error && <MessageBox errorMessage={error} />}
-      {errorContract && <MessageBox errorMessage={errorContract} />}
+      {courseErrorContract && <MessageBox errorMessage={courseErrorContract} />}
       {purchaseErrorContract && (
         <MessageBox errorMessage={purchaseErrorContract} />
       )}
