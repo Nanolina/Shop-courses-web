@@ -5,7 +5,7 @@ import { getTranslatedType } from '../../functions';
 import ReadyCoursePart from '../ReadyCoursePart/ReadyCoursePart';
 import { ICoursePartListProps } from '../types';
 import styles from './CoursePartList.module.css';
-import { SELLER } from '../../consts';
+import { MODULE, SELLER } from '../../consts';
 
 function CoursePartList({
   type,
@@ -16,6 +16,7 @@ function CoursePartList({
 }: ICoursePartListProps) {
   const { t } = useTranslation();
   const [isSeller, setIsSeller] = useState<boolean>(false);
+  const [isModules, setIsModules] = useState<boolean>(false);
 
   const { singular_genitive_case } = getTranslatedType(type, t);
 
@@ -23,7 +24,10 @@ function CoursePartList({
     if (role === SELLER) {
       setIsSeller(true);
     }
-  }, [role]);
+    if (type === MODULE) {
+      setIsModules(true);
+    }
+  }, [role, type]);
 
   return (
     <>
@@ -34,9 +38,13 @@ function CoursePartList({
             <FiBox size={24} color="var(--tg-theme-accent-text-color)" />
             {isSeller ? (
               <h4>{t('not_created_type', { type: singular_genitive_case })}</h4>
+            ) : isModules ? (
+              <h4>
+                {t('not_modules_available', { type: singular_genitive_case })}
+              </h4>
             ) : (
               <h4>
-                {t('no_type_available', { type: singular_genitive_case })}
+                {t('not_lessons_available', { type: singular_genitive_case })}
               </h4>
             )}
           </div>
