@@ -58,6 +58,8 @@
   "not_created": "You haven't created any courses yet. Share your knowledge with others",
   "not_created_type": "You have not created any {{type}}s yet",
   "not_have_role": "The role has not been given",
+  "not_lessons_available": "This module does not have any {{types}} available yet",
+  "not_modules_available": "This course does not have any available {{type}} yet",
   "not_purchased": "You haven't purchased any courses yet. Explore our offers and find something interesting for you",
   "price": "Price",
   "purchase_need_deploy": "The balance of the purchase smart contract is 0. You should purchase this course to view modules and lessons",
