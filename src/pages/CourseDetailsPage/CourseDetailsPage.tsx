@@ -2,9 +2,9 @@ import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FiEdit } from 'react-icons/fi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
+import { RiEdit2Fill } from 'react-icons/ri';
 import { useNavigate, useParams } from 'react-router-dom';
 import CourseDetails from '../../components/CourseDetails/CourseDetails';
 import Modal from '../../components/Modal/Modal';
@@ -19,6 +19,8 @@ import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
 
+const iconSize = 25;
+const iconColor = 'white';
 function CourseDetailsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -54,11 +56,6 @@ function CourseDetailsPage() {
     }
   }, [courseId, initDataRaw]);
 
-  useEffect(() => {
-    getCourseDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseId]);
-
   const handleBack = () => navigate(-1);
   const handleEdit = () => navigate(`/course/edit/${courseId}`);
   const handleDelete = () => setModalOpen(true);
@@ -79,6 +76,11 @@ function CourseDetailsPage() {
     }
   }
 
+  useEffect(() => {
+    getCourseDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseId]);
+
   if (isLoading) return <Loader />;
   if (!course && !isLoading && isLoaded) {
     return <ItemNotFoundPage error={error} isLoading={isLoading} />;
@@ -97,22 +99,22 @@ function CourseDetailsPage() {
             <IoIosArrowBack
               className={`${styles.icon} ${styles.backIcon}`}
               onClick={handleBack}
-              size={30}
-              color="var(--tg-theme-accent-text-color)"
+              size={iconSize}
+              color={iconColor}
             />
             {role === SELLER && (
               <>
-                <FiEdit
+                <RiEdit2Fill
                   className={`${styles.icon} ${styles.editIcon}`}
                   onClick={handleEdit}
-                  size={30}
-                  color="var(--tg-theme-accent-text-color)"
+                  size={iconSize}
+                  color={iconColor}
                 />
                 <MdDelete
                   className={`${styles.icon} ${styles.deleteIcon}`}
                   onClick={handleDelete}
-                  size={30}
-                  color="var(--tg-theme-accent-text-color)"
+                  size={iconSize}
+                  color={iconColor}
                 />
               </>
             )}
