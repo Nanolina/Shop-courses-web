@@ -97,19 +97,22 @@ function CourseDetailsPage() {
             <IoIosArrowBack
               className={`${styles.icon} ${styles.backIcon}`}
               onClick={handleBack}
-              size={20}
+              size={30}
+              color="var(--tg-theme-accent-text-color)"
             />
             {role === SELLER && (
               <>
                 <FiEdit
                   className={`${styles.icon} ${styles.editIcon}`}
                   onClick={handleEdit}
-                  size={20}
+                  size={30}
+                  color="var(--tg-theme-accent-text-color)"
                 />
                 <MdDelete
                   className={`${styles.icon} ${styles.deleteIcon}`}
                   onClick={handleDelete}
-                  size={24}
+                  size={30}
+                  color="var(--tg-theme-accent-text-color)"
                 />
               </>
             )}
