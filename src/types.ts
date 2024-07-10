@@ -30,6 +30,14 @@ export interface ILesson {
   videoUrl?: string;
 }
 
+export interface IUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  codeValidation: string;
+}
+
 // Type
 export type EntityType = 'module' | 'lesson';
 export type RoleType = 'user' | 'customer' | 'seller';

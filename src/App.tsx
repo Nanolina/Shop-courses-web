@@ -30,6 +30,7 @@ import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
 import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCoursesPage';
 import { DeployEnum } from './types';
+import UserPage from './pages/UserPage/UserPage';
 
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
@@ -110,6 +111,7 @@ function App() {
           <Routes>
             {/* all users */}
             <Route path="/" element={<MainPage />} />
+            <Route path="/user" element={<UserPage />} />
             <Route path="/course/:courseId" element={<CourseDetailsPage />} />
             <Route
               path="course/category/:category"
