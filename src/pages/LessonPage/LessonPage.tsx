@@ -96,10 +96,10 @@ function LessonPage() {
         onClick={() => navigate(-1)}
         size={24}
       />
-      {!videoUrl && isLoaded ? (
-        <div>{t('video_uploading')}⏳</div>
-      ) : (
+      {videoUrl ? (
         <VideoPlayer url={videoUrl} />
+      ) : (
+        <div className={styles.notUploaded}>{t('video_uploading')}⏳</div>
       )}
       {error && <MessageBox errorMessage={error} />}
     </div>
