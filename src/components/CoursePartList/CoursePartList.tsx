@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiBox } from 'react-icons/fi';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import { MODULE, SELLER } from '../../consts';
 import { getTranslatedType } from '../../functions';
 import ReadyCoursePart from '../ReadyCoursePart/ReadyCoursePart';
 import { ICoursePartListProps } from '../types';
 import styles from './CoursePartList.module.css';
-import { MODULE, SELLER } from '../../consts';
 
 function CoursePartList({
   type,
@@ -33,7 +35,12 @@ function CoursePartList({
     <>
       {!items.length ? (
         <>
-          <img src="/no-items.png" alt="No items" className={styles.image} />
+          <LazyLoadImage
+            src="/no-items.png"
+            alt="No items"
+            effect="blur"
+            className={styles.image}
+          />
           <div className={styles.notCreatedContainer}>
             <FiBox size={24} color="var(--tg-theme-accent-text-color)" />
             {isSeller ? (

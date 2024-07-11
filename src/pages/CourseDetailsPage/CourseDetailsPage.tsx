@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { FiEdit } from 'react-icons/fi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import CourseDetails from '../../components/CourseDetails/CourseDetails';
 import Modal from '../../components/Modal/Modal';
@@ -89,9 +91,10 @@ function CourseDetailsPage() {
       {course && role && (
         <>
           <div className={styles.imageContainer}>
-            <img
+            <LazyLoadImage
               src={course.imageUrl || '/course.png'}
               alt="Course"
+              effect="blur"
               className={styles.image}
             />
             <IoIosArrowBack
@@ -130,9 +133,10 @@ function CourseDetailsPage() {
                 {t('delete_course')}
                 <b> {course.name}</b>?
               </div>
-              <img
+              <LazyLoadImage
                 src="/delete.png"
                 alt="Delete"
+                effect="blur"
                 className={styles.modalImage}
               />
               <div className={styles.modalText}>

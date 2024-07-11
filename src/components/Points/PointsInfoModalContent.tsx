@@ -1,5 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import { IPointsInfoModalContentProps } from '../types';
 import styles from './PointsInfoModalContent.module.css';
 
@@ -15,9 +17,10 @@ const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
           <h2 className={styles.title}>{t('modal.benefits')}!</h2>
           {t('modal.offers')}:
           <h4 className={styles.subtitle}>{t('modal.how_earn_points')}?</h4>
-          <img
+          <LazyLoadImage
             src="/earn-points.svg"
             alt="Earn points"
+            effect="blur"
             className={styles.image}
           />
           <ul className={styles.list}>
@@ -40,9 +43,10 @@ const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
       return (
         <div className={styles.container}>
           <h2 className={styles.subtitle}>{t('modal.spend')}?</h2>
-          <img
+          <LazyLoadImage
             src="/spend-points.png"
             alt="Spend points"
+            effect="blur"
             className={styles.image}
           />
           <ul className={styles.list}>
@@ -61,9 +65,10 @@ const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
       return (
         <div className={styles.container}>
           <h2 className={styles.subtitle}>{t('modal.why_its_beneficial')}?</h2>
-          <img
+          <LazyLoadImage
             src="/bonuses.png"
             alt="Why it's beneficial"
+            effect="blur"
             className={styles.image}
           />
           <div className={styles.text}></div>
