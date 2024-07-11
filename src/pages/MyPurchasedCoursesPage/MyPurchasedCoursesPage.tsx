@@ -1,5 +1,5 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CourseItem from '../../components/CourseItem/CourseItem';
 import Points from '../../components/Points/Points';
@@ -22,9 +22,12 @@ function MyPurchasedCoursesPage() {
   const [error, setError] = useState<string>('');
   const [value, setValue] = useState<string>('');
 
-  const filteredCourses = filterCourses(courses, value);
-
   const { initDataRaw } = retrieveLaunchParams();
+
+  const filteredCourses = useMemo(
+    () => filterCourses(courses, value),
+    [courses, value]
+  );
 
   async function getAllMyPurchasedCourses() {
     setIsLoading(true);
