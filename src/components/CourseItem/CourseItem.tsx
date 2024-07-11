@@ -1,3 +1,5 @@
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useNavigate } from 'react-router-dom';
 import { ICourseItemProps } from '../types';
 import styles from './CourseItem.module.css';
@@ -10,9 +12,10 @@ function CourseItem({ course }: ICourseItemProps) {
       className={styles.container}
       onClick={() => navigate(`/course/${course.id}`)}
     >
-      <img
-        src={course.imageUrl || '/course.png'}
+      <LazyLoadImage
         alt={course.name}
+        src={course.imageUrl || '/course.png'}
+        effect="blur"
         className={styles.image}
       />
 
