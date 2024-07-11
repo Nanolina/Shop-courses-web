@@ -30,7 +30,7 @@ function ItemNotFoundPage({
       <Header hasButtonBack={hasButtonBackHeader} />
       <div className={styles.container}>
         <LazyLoadImage
-          src="/page-not-found.png"
+          src="https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707656/page-not-found_kbrqa1.png"
           alt="Page not found"
           effect="blur"
           className={styles.image}

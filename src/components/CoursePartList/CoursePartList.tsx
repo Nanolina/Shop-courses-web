@@ -36,7 +36,7 @@ function CoursePartList({
       {!items.length ? (
         <>
           <LazyLoadImage
-            src="/no-items.png"
+            src="https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707649/no-items_jjte4l.png"
             alt="No items"
             effect="blur"
             className={styles.image}

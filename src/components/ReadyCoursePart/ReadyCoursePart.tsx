@@ -78,11 +78,10 @@ function ReadyCoursePart({
     }
     switch (type) {
       case MODULE:
-        return '/module.png';
+        return 'https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707637/module_vagwor.png';
       case LESSON:
-        return '/lesson.png';
       default:
-        return '/lesson.png';
+        return 'https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707632/lesson_exgdu0.png';
     }
   };
 
@@ -132,7 +131,7 @@ function ReadyCoursePart({
             <b> {item.name}</b>?
           </div>
           <LazyLoadImage
-            src="/delete.png"
+            src="https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707415/delete_jy0ot5.png"
             alt="Delete"
             effect="blur"
             className={styles.modalImage}

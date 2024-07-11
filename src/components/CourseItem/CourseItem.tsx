@@ -14,7 +14,10 @@ function CourseItem({ course }: ICourseItemProps) {
     >
       <LazyLoadImage
         alt={course.name}
-        src={course.imageUrl || '/course.png'}
+        src={
+          course.imageUrl ||
+          'https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707398/course_nn1fj5.png'
+        }
         effect="blur"
         className={styles.image}
       />

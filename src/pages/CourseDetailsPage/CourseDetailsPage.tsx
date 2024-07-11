@@ -92,7 +92,10 @@ function CourseDetailsPage() {
         <>
           <div className={styles.imageContainer}>
             <LazyLoadImage
-              src={course.imageUrl || '/course.png'}
+              src={
+                course.imageUrl ||
+                'https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707398/course_nn1fj5.png'
+              }
               alt="Course"
               effect="blur"
               className={styles.image}
@@ -134,7 +137,7 @@ function CourseDetailsPage() {
                 <b> {course.name}</b>?
               </div>
               <LazyLoadImage
-                src="/delete.png"
+                src="https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707415/delete_jy0ot5.png"
                 alt="Delete"
                 effect="blur"
                 className={styles.modalImage}

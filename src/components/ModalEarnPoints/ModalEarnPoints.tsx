@@ -15,7 +15,7 @@ function ModalEarnPoints() {
       <div className={styles.container}>
         <h3 className={styles.hooray}>{t('modal.hooray')}</h3>
         <LazyLoadImage
-          src="/reward.png"
+          src="https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707659/reward_etxdqk.png"
           alt="Earn points"
           effect="blur"
           className={styles.image}
