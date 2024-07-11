@@ -3,6 +3,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiEdit } from 'react-icons/fi';
 import { MdDelete } from 'react-icons/md';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useNavigate } from 'react-router-dom';
 import { LESSON, MODULE, SELLER } from '../../consts';
 import {
@@ -76,11 +78,10 @@ function ReadyCoursePart({
     }
     switch (type) {
       case MODULE:
-        return '/module.png';
+        return 'https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707637/module_vagwor.png';
       case LESSON:
-        return '/lesson.png';
       default:
-        return '/lesson.png';
+        return 'https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707632/lesson_exgdu0.png';
     }
   };
 
@@ -94,7 +95,12 @@ function ReadyCoursePart({
 
   return (
     <div className={styles.container} onClick={navigateHandler}>
-      <img className={styles.image} src={getImageUrl()} alt="cover" />
+      <LazyLoadImage
+        src={getImageUrl()}
+        alt="cover"
+        effect="blur"
+        className={styles.image}
+      />
       <div className={styles.info}>
         <div className={styles.name}>{item.name}</div>
         <div className={styles.description}>{item.description}</div>
@@ -124,7 +130,12 @@ function ReadyCoursePart({
             {t('delete_type', { type: singular })}
             <b> {item.name}</b>?
           </div>
-          <img src="/delete.png" alt="Delete" className={styles.modalImage} />
+          <LazyLoadImage
+            src="https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707415/delete_jy0ot5.png"
+            alt="Delete"
+            effect="blur"
+            className={styles.modalImage}
+          />
           <div
             className={styles.modalText}
           >{`${type === MODULE ? t('module_all_lessons') : t('this_lesson')}`}</div>
