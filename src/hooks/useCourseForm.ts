@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -30,41 +31,28 @@ export function useCourseForm() {
   const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between URL and upload (button)
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-
+  const [error, setError] = useState<string | null>(null);
   const { initDataRaw } = retrieveLaunchParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const createOrUpdateCourse = useCallback(
     async (url: string, method: RequestMethodType) => {
-      setIsLoading(true);
-      try {
-        if (!initDataRaw) throw new Error('Not enough authorization data');
-        const formData = new FormData();
-        formData.append('name', name);
-        if (description) formData.append('description', description);
-        if (imageUrl) formData.append('imageUrl', imageUrl);
-        formData.append('category', category);
-        if (subcategory) formData.append('subcategory', subcategory);
-        formData.append('price', price.toString());
-        formData.append('currency', currency);
-        if (image) formData.append('image', image);
-        if (!image && !imageUrl) formData.append('isRemoveImage', 'true');
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const formData = new FormData();
+      formData.append('name', name);
+      if (description) formData.append('description', description);
+      if (imageUrl) formData.append('imageUrl', imageUrl);
+      formData.append('category', category);
+      if (subcategory) formData.append('subcategory', subcategory);
+      formData.append('price', price.toString());
+      formData.append('currency', currency);
+      if (image) formData.append('image', image);
+      if (!image && !imageUrl) formData.append('isRemoveImage', 'true');
 
-        const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-        const response = await axiosWithAuth[method]<ICourse>(url, formData);
-        if (response.status === 201 && method === POST) {
-          navigate(`/course/${response.data.id}`);
-          eventBuilder.track('Course created', {});
-        } else if (response.status === 200 && method === PATCH) {
-          navigate('/course/created');
-        }
-      } catch (error: any) {
-        handleAuthError(error, setError);
-      } finally {
-        setIsLoading(false);
-      }
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth[method]<ICourse>(url, formData);
+      return response.data;
     },
     [
       initDataRaw,
@@ -76,18 +64,46 @@ export function useCourseForm() {
       price,
       currency,
       image,
-      navigate,
-      eventBuilder,
     ]
   );
 
+  const createCourseMutation = useMutation({
+    mutationFn: () => createOrUpdateCourse('/course', POST),
+    onSuccess: (data) => {
+      navigate(`/course/${data.id}`);
+      eventBuilder.track('Course created', {});
+      queryClient.invalidateQueries({
+        queryKey: ['allCourses'],
+      });
+    },
+    onError: (error: any) => {
+      handleAuthError(error, setError);
+    },
+  });
+
+  const updateCourseMutation = useMutation({
+    mutationFn: () => createOrUpdateCourse(`/course/${courseId}`, PATCH),
+    onSuccess: () => {
+      navigate('/course/created');
+      queryClient.invalidateQueries({
+        queryKey: ['courseDetails', courseId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['allCourses'],
+      });
+    },
+    onError: (error: any) => {
+      handleAuthError(error, setError);
+    },
+  });
+
   const onCreateCourse = useCallback(
-    () => createOrUpdateCourse('/course', 'post'),
-    [createOrUpdateCourse]
+    () => createCourseMutation.mutate(),
+    [createCourseMutation]
   );
-  const updateCourse = useCallback(
-    () => createOrUpdateCourse(`/course/${courseId}`, 'patch'),
-    [createOrUpdateCourse, courseId]
+  const onUpdateCourse = useCallback(
+    () => updateCourseMutation.mutate(),
+    [updateCourseMutation]
   );
 
   const toggleBetweenUrlAndFile = () => setUseUrlCover(!useUrlCover);
@@ -123,11 +139,11 @@ export function useCourseForm() {
   };
 
   useEffect(() => {
-    const mainButtonAction = courseId ? updateCourse : onCreateCourse;
+    const mainButtonAction = courseId ? onUpdateCourse : onCreateCourse;
     tg.MainButton.setParams({ text: courseId ? t('save') : t('create') });
     tg.onEvent('mainButtonClicked', mainButtonAction);
     return () => tg.offEvent('mainButtonClicked', mainButtonAction);
-  }, [onCreateCourse, updateCourse, courseId, t]);
+  }, [onCreateCourse, onUpdateCourse, courseId, t]);
 
   useEffect(() => {
     if (!name || !category || !price || !currency) {
@@ -162,8 +178,7 @@ export function useCourseForm() {
     currency,
     setCurrency,
     currencyOptions,
-    isLoading,
-    error,
+    error: createCourseMutation.error || updateCourseMutation.error || error,
     // Image
     image,
     setImage,

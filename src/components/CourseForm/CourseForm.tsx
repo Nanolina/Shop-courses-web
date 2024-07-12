@@ -9,7 +9,6 @@ import Button from '../../ui/Button/Button';
 import ImagePreview from '../../ui/ImagePreview/ImagePreview';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
-import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import Select from '../../ui/Select/Select';
 import TextInput from '../../ui/TextInput/TextInput';
@@ -35,7 +34,6 @@ function CourseForm({ course }: { course?: ICourse }) {
     currency,
     setCurrency,
     currencyOptions,
-    isLoading,
     error,
     // Image
     previewUrl,
@@ -64,8 +62,17 @@ function CourseForm({ course }: { course?: ICourse }) {
         setPreviewUrl(course.imageUrl);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [course]);
+  }, [
+    course,
+    setName,
+    setDescription,
+    setImageUrl,
+    setCategory,
+    setSubcategory,
+    setPrice,
+    setCurrency,
+    setPreviewUrl,
+  ]);
 
   const sortedCategoryOptions = categoryOptions
     .map((option) => ({
@@ -83,8 +90,6 @@ function CourseForm({ course }: { course?: ICourse }) {
           }))
           .sort((a, b) => a.label.localeCompare(b.label))
       : [];
-
-  if (isLoading) return <Loader />;
 
   return (
     <div className={styles.container}>

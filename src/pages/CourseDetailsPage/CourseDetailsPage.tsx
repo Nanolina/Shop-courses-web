@@ -1,6 +1,12 @@
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useTWAEvent } from '@tonsolutions/telemetree-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiEdit } from 'react-icons/fi';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -13,82 +19,88 @@ import Modal from '../../components/Modal/Modal';
 import Points from '../../components/Points/Points';
 import { SELLER } from '../../consts';
 import { createAxiosWithAuth, handleAuthError } from '../../functions';
-import { ICourse, RoleType } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
-import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
+
+const fetchCourseDetails = async (
+  courseId: string,
+  initDataRaw: string | undefined
+) => {
+  if (!initDataRaw) throw new Error('Not enough authorization data');
+  const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+  const response = await axiosWithAuth.get(`/course/${courseId}`);
+  return response.data;
+};
+
+const deleteCourseAPI = async (
+  courseId: string,
+  initDataRaw: string | undefined
+) => {
+  if (!initDataRaw) throw new Error('Not enough authorization data');
+  const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+  await axiosWithAuth.delete(`/course/${courseId}`);
+};
 
 function CourseDetailsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const eventBuilder = useTWAEvent();
-  const { courseId } = useParams<{ courseId: string }>();
-
-  const [course, setCourse] = useState<ICourse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
-  const [error, setError] = useState<string>('');
-  const [role, setRole] = useState<RoleType | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const { courseId = '' } = useParams<{ courseId: string }>();
 
   const { initDataRaw } = retrieveLaunchParams();
+  const queryClient = useQueryClient();
 
-  const getCourseDetails = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get<IGetCourse>(
-        `/course/${courseId}`
-      );
-      const { role, course } = response.data;
-      setCourse(course);
-      setRole(role);
-      setIsLoaded(true);
-    } catch (error: any) {
-      handleAuthError(error, setError);
-      setIsLoaded(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [courseId, initDataRaw]);
+  const [errorPage, setErrorPage] = useState<string | null>(null);
 
-  useEffect(() => {
-    getCourseDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseId]);
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['courseDetails', courseId],
+    queryFn: () => fetchCourseDetails(courseId, initDataRaw),
+    enabled: !!courseId,
+    placeholderData: keepPreviousData,
+  });
 
-  const handleBack = () => navigate(-1);
-  const handleEdit = () => navigate(`/course/edit/${courseId}`);
-  const handleDelete = () => setModalOpen(true);
-
-  async function deleteCourse() {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw || !course)
-        throw new Error('Not enough authorization data or course not found');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      await axiosWithAuth.delete<ICourse>(`/course/${course.id}`);
+  const mutation = useMutation({
+    mutationFn: () => deleteCourseAPI(courseId, initDataRaw),
+    onSuccess: () => {
       navigate('/course/created');
       eventBuilder.track('Course deleted', {});
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
-    }
+      queryClient.invalidateQueries({
+        queryKey: ['courseDetails', courseId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['allCourses'],
+      });
+    },
+    onError: (error: any) => {
+      handleAuthError(error, setErrorPage);
+    },
+  });
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  const handleBack = useCallback(() => navigate(-1), [navigate]);
+  const handleEdit = useCallback(
+    () => navigate(`/course/edit/${courseId}`),
+    [navigate, courseId]
+  );
+  const handleDelete = useCallback(() => setModalOpen(true), []);
+
+  if (isLoading) {
+    return <Loader />;
   }
 
-  if (isLoading) return <Loader />;
-  if (!course && !isLoading && isLoaded) {
-    return <ItemNotFoundPage error={error} isLoading={isLoading} />;
+  if (!data?.course) {
+    return <ItemNotFoundPage error="Course not found" />;
   }
+
+  const { course, role } = data;
 
   return (
     <>
-      {course && role && (
+      {course && role ? (
         <>
           <div className={styles.imageContainer}>
             <LazyLoadImage
@@ -123,12 +135,14 @@ function CourseDetailsPage() {
           <Container>
             <Points />
             <CourseDetails course={course} role={role} />
-            {error && <MessageBox errorMessage={error} />}
+            {(error || errorPage) && (
+              <MessageBox errorMessage={error?.message} />
+            )}
           </Container>
           <Modal
             isOpen={modalOpen}
             onClose={() => setModalOpen(false)}
-            confirm={deleteCourse}
+            confirm={() => mutation.mutate()}
             buttonRightText={t('delete')}
           >
             <div className={styles.modalContainer}>
@@ -148,6 +162,8 @@ function CourseDetailsPage() {
             </div>
           </Modal>
         </>
+      ) : (
+        <ItemNotFoundPage isLoading={isLoading} error={t('not_enough_data')} />
       )}
     </>
   );

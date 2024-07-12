@@ -60,7 +60,6 @@ export function useCourseContract(course: ICourse, role: RoleType) {
         address,
       };
     } catch (error: any) {
-      setErrorContract(error?.message);
       return {
         balance: 0,
         address: '',
