@@ -96,6 +96,9 @@ export interface IUseUserPageReturnType {
   showCode: boolean;
   showIsVerifiedEmail: boolean;
   setShowIsVerifiedEmail: (showIsVerifiedEmail: boolean) => void;
+  activButton: boolean;
+  setActivButton: (activButton: boolean) => void;
+  resendCode: () => void;
 }
 
 export interface IUserPageParams {

@@ -25,6 +25,7 @@ export function useUserPage() {
   const [error, setError] = useState<string>('');
   const [showIsVerifiedEmail, setShowIsVerifiedEmail] =
     useState<boolean>(false);
+  const [activButton, setActivButton] = useState<boolean>(true);
 
   const navigate = useNavigate();
 
@@ -97,6 +98,22 @@ export function useUserPage() {
     }
   }, [initDataRaw, code, navigate]);
 
+  const resendCode = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      if (!initDataRaw) throw new Error('Not enough authorization data');
+      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+      const response = await axiosWithAuth.post(`/user/email/code/resend`);
+      if (response.status === 200) {
+        setActivButton(false);
+      }
+    } catch (error: any) {
+      handleAuthError(error, setError);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [initDataRaw, setActivButton]);
+
   useEffect(() => {
     if (!firstName || !lastName || !email) {
       tg.MainButton.hide();
@@ -161,5 +178,8 @@ export function useUserPage() {
     showCode,
     showIsVerifiedEmail,
     setShowIsVerifiedEmail,
+    activButton,
+    setActivButton,
+    resendCode,
   };
 }
