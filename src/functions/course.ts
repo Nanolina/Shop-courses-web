@@ -22,20 +22,24 @@ export const fetchAllCoursesAPI = async (): Promise<ICourse[]> => {
 };
 
 export const fetchCourseDetailsAPI = async (
-  courseId: string,
+  courseId: string | undefined,
   initDataRaw: string | undefined
 ) => {
-  if (!initDataRaw) throw new Error('Not enough authorization data');
+  if (!initDataRaw || !courseId) {
+    throw new Error('Not enough authorization data or no course data');
+  }
   const axiosWithAuth = createAxiosWithAuth(initDataRaw);
   const response = await axiosWithAuth.get(`/course/${courseId}`);
   return response.data;
 };
 
 export const deleteCourseAPI = async (
-  courseId: string,
+  courseId: string | undefined,
   initDataRaw: string | undefined
 ) => {
-  if (!initDataRaw) throw new Error('Not enough authorization data');
+  if (!initDataRaw || courseId) {
+    throw new Error('Not enough authorization data or no course data');
+  }
   const axiosWithAuth = createAxiosWithAuth(initDataRaw);
   await axiosWithAuth.delete(`/course/${courseId}`);
 };

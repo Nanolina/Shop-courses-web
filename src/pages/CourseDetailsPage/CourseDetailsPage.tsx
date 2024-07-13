@@ -28,7 +28,7 @@ function CourseDetailsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const eventBuilder = useTWAEvent();
-  const { courseId = '' } = useParams<{ courseId: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
 
   const { initDataRaw } = retrieveLaunchParams();
   const queryClient = useQueryClient();

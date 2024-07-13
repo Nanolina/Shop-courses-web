@@ -42,14 +42,14 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     createCourse,
     loading: courseLoading,
     contractAddress: courseContractAddress,
-  } = useCourseContract(course, role);
+  } = useCourseContract(course);
 
   const {
     errorContract: purchaseErrorContract,
     purchaseCourse,
     loading: purchaseLoading,
     contractAddress: purchaseContractAddress,
-  } = usePurchaseContract(course, role);
+  } = usePurchaseContract(course);
 
   useEffect(() => {
     if (!courseLoading || !purchaseLoading) {
