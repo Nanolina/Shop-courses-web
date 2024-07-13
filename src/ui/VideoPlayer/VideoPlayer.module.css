@@ -6,8 +6,11 @@
   position: absolute;
   top: 5px;
   right: 35px;
-  color: rgb(193, 193, 193);
+  color: white;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 20%;
+  background-color: rgba(250, 230, 200, 0.4);
+  padding: 3px;
 }
 
 @media (orientation: landscape) {

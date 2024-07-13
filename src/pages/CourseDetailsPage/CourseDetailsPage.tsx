@@ -2,7 +2,6 @@ import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FiEdit } from 'react-icons/fi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -20,7 +19,10 @@ import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
+import { RiEdit2Fill } from 'react-icons/ri';
 
+const iconSize = 20;
+const iconColor = 'white';
 function CourseDetailsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -56,11 +58,6 @@ function CourseDetailsPage() {
     }
   }, [courseId, initDataRaw]);
 
-  useEffect(() => {
-    getCourseDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseId]);
-
   const handleBack = () => navigate(-1);
   const handleEdit = () => navigate(`/course/edit/${courseId}`);
   const handleDelete = () => setModalOpen(true);
@@ -80,6 +77,11 @@ function CourseDetailsPage() {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    getCourseDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseId]);
 
   if (isLoading) return <Loader />;
   if (!course && !isLoading && isLoaded) {
@@ -103,19 +105,22 @@ function CourseDetailsPage() {
             <IoIosArrowBack
               className={`${styles.icon} ${styles.backIcon}`}
               onClick={handleBack}
-              size={20}
+              size={iconSize}
+              color={iconColor}
             />
             {role === SELLER && (
               <>
-                <FiEdit
+                <RiEdit2Fill
                   className={`${styles.icon} ${styles.editIcon}`}
                   onClick={handleEdit}
-                  size={20}
+                  size={iconSize}
+                  color={iconColor}
                 />
                 <MdDelete
                   className={`${styles.icon} ${styles.deleteIcon}`}
                   onClick={handleDelete}
-                  size={24}
+                  size={iconSize}
+                  color={iconColor}
                 />
               </>
             )}
