@@ -81,3 +81,12 @@ export const fetchAllMyCreatedCourses = async (
   const response = await axiosWithAuth.get<ICourse[]>('/course/created');
   return response.data;
 };
+
+export const fetchAllMyPurchasedCourses = async (
+  initDataRaw: string | undefined
+) => {
+  if (!initDataRaw) throw new Error('Not enough authorization data');
+  const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+  const response = await axiosWithAuth.get<ICourse[]>('/course/purchased');
+  return response.data;
+};

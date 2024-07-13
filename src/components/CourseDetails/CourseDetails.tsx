@@ -179,7 +179,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       )}
       {role !== SELLER && hintMessage && (
         <div className={styles.hint}>
-          <BsInfoCircleFill size={16} />
+          <BsInfoCircleFill size={24} />
           {hintMessage}
         </div>
       )}

@@ -4,9 +4,10 @@ export {
   createOrUpdateCourseAPI,
   deleteCourseAPI,
   fetchAllCoursesAPI,
+  fetchAllMyCreatedCourses,
+  fetchAllMyPurchasedCourses,
   fetchCourseDetailsAPI,
   groupCoursesByCategory,
-  fetchAllMyCreatedCourses,
 } from './course';
 export { encodeSaleMessage } from './encodeSaleMessage';
 export { handleAuthError } from './errorHandlers';

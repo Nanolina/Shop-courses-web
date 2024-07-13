@@ -3,4 +3,5 @@ const queryKeys = {
   CoursesList: ['allCourses'],
   CourseDetailsPage: ['courseDetails', 'courseId'],
   MyCreatedCoursesPage: ['myCreatedCourses', 'initDataRaw'],
+  MyPurchasedCoursesPage: ['myPurchasedCourses', 'initDataRaw'],
 };
