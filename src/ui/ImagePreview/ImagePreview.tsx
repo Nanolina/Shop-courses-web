@@ -7,12 +7,7 @@ function ImagePreview({ imagePreview, removeImage }: IImagePreviewProps) {
     <div className={styles.containerWithFullWidth}>
       <div className={styles.container}>
         <img src={imagePreview} alt="Preview" className={styles.image} />
-        <RxCross2
-          className={styles.cross}
-          color="var(--tg-theme-accent-text-color)"
-          size={20}
-          onClick={removeImage}
-        />
+        <RxCross2 className={styles.cross} size={20} onClick={removeImage} />
       </div>
     </div>
   );

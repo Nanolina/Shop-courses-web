@@ -19,7 +19,7 @@ import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
 
-const iconSize = 25;
+const iconSize = 20;
 const iconColor = 'white';
 function CourseDetailsPage() {
   const { t } = useTranslation();
