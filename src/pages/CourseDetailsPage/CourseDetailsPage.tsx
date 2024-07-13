@@ -35,6 +35,7 @@ function CourseDetailsPage() {
   const queryClient = useQueryClient();
 
   const [errorPage, setErrorPage] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const { data, error, isLoading } = useQuery<IGetCourse>({
     queryKey: ['courseDetails', courseId],
@@ -62,8 +63,6 @@ function CourseDetailsPage() {
     },
   });
 
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-
   const handleBack = useCallback(() => navigate(-1), [navigate]);
   const handleEdit = useCallback(
     () => navigate(`/course/edit/${courseId}`),
@@ -72,7 +71,7 @@ function CourseDetailsPage() {
   const handleDelete = useCallback(() => setModalOpen(true), []);
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader hasBackground />;
   }
 
   if (!data?.course) {
@@ -144,6 +143,7 @@ function CourseDetailsPage() {
               </div>
             </div>
           </Modal>
+          {mutation.isPending && <Loader />}
         </>
       ) : (
         <ItemNotFoundPage isLoading={isLoading} error={t('not_enough_data')} />

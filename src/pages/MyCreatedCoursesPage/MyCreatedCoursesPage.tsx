@@ -41,8 +41,6 @@ function MyCreatedCoursesPage() {
     tg.MainButton.hide();
   }, []);
 
-  if (isLoading) return <Loader />;
-
   if (!courses.length && !isLoading) {
     return isError ? (
       <ItemNotFoundPage error={error?.message} isLoading={isLoading} />
@@ -68,6 +66,7 @@ function MyCreatedCoursesPage() {
           <CourseItem key={course.id} course={course} />
         ))}
       </div>
+      {isLoading && <Loader />}
       {isError && <MessageBox errorMessage={error.message} />}
     </Container>
   );

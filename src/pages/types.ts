@@ -22,8 +22,6 @@ export interface IUseCourseFormReturnType {
   setPrice: (price: number) => void;
   currency: string;
   setCurrency: (currency: string) => void;
-  categoryOptions: IOption[];
-  subcategoryOptions: Record<string, IOption[]>;
   isLoading: boolean;
   error: string;
   // Image

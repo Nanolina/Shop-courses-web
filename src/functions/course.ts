@@ -38,8 +38,8 @@ export const deleteCourseAPI = async (
   courseId: string | undefined,
   initDataRaw: string | undefined
 ) => {
-  if (!initDataRaw || courseId) {
-    throw new Error('Not enough authorization data or no course data');
+  if (!initDataRaw) {
+    throw new Error('Not enough authorization data');
   }
   const axiosWithAuth = createAxiosWithAuth(initDataRaw);
   await axiosWithAuth.delete<void>(`/course/${courseId}`);
@@ -64,14 +64,20 @@ export const createOrUpdateCourseAPI = async (
   } = dto;
   const formData = new FormData();
   formData.append('name', name);
-  if (description) formData.append('description', description);
-  if (imageUrl) formData.append('imageUrl', imageUrl);
+  formData.append('description', description || '');
   formData.append('category', category);
-  if (subcategory) formData.append('subcategory', subcategory);
+  if (subcategory) {
+    formData.append('subcategory', subcategory);
+  }
   formData.append('price', price.toString());
   formData.append('currency', currency);
-  if (image) formData.append('image', image);
-  if (!image && !imageUrl) formData.append('isRemoveImage', 'true');
+  if (imageUrl) formData.append('imageUrl', imageUrl);
+  if (image) {
+    formData.append('image', image);
+  }
+  if (!image && !imageUrl) {
+    formData.append('isRemoveImage', 'true');
+  }
 
   const axiosWithAuth = createAxiosWithAuth(initDataRaw);
   const response = await axiosWithAuth[method]<ICourse>(url, formData);

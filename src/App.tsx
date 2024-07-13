@@ -140,7 +140,7 @@ function App() {
       <I18nextProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>
           <Router>
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader hasBackground />}>
               <Routes>
                 {/* all users */}
                 <Route path="/" element={<MainPage />} />

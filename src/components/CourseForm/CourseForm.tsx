@@ -1,10 +1,8 @@
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdCameraswitch } from 'react-icons/md';
+import { useCourseFormContext } from '../../context/CourseFormContext';
 import { currencyOptions } from '../../currency-options';
-import { useCourseForm } from '../../hooks';
-import { IUseCourseFormReturnType } from '../../pages/types';
-import { ICourse } from '../../types';
 import Button from '../../ui/Button/Button';
 import ImagePreview from '../../ui/ImagePreview/ImagePreview';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
@@ -16,9 +14,8 @@ import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
 import styles from './CourseForm.module.css';
 
-function CourseForm({ course }: { course?: ICourse }) {
+function CourseForm() {
   const { t } = useTranslation();
-
   const {
     name,
     setName,
@@ -33,8 +30,9 @@ function CourseForm({ course }: { course?: ICourse }) {
     setPrice,
     currency,
     setCurrency,
-    error,
     isLoading,
+    error,
+
     // Image
     previewUrl,
     handleImageChange,
@@ -44,9 +42,7 @@ function CourseForm({ course }: { course?: ICourse }) {
     toggleBetweenUrlAndFile,
     sortedCategoryOptions,
     sortedSubcategoryOptions,
-  } = useCourseForm(course) as IUseCourseFormReturnType;
-
-  if (isLoading) return <Loader />;
+  } = useCourseFormContext();
 
   return (
     <div className={styles.container}>
@@ -153,6 +149,7 @@ function CourseForm({ course }: { course?: ICourse }) {
         </div>
       )}
 
+      {isLoading && <Loader />}
       {error && <MessageBox errorMessage={error} />}
     </div>
   );

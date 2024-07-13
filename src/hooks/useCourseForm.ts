@@ -37,7 +37,6 @@ export function useCourseForm(course?: ICourse) {
     course?.imageUrl || null
   );
   const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between URL and upload (button)
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   // Category/subcategory functions
@@ -76,9 +75,6 @@ export function useCourseForm(course?: ICourse) {
   const createCourseMutation = useMutation({
     mutationFn: () =>
       createOrUpdateCourseAPI('/course', POST, dataToSend, initDataRaw),
-    onMutate: () => {
-      setIsLoading(true);
-    },
     onSuccess: (data) => {
       navigate(`/course/${data.id}`);
       eventBuilder.track('Course created', {});
@@ -99,9 +95,6 @@ export function useCourseForm(course?: ICourse) {
         dataToSend,
         initDataRaw
       ),
-    onMutate: () => {
-      setIsLoading(true);
-    },
     onSuccess: () => {
       navigate('/course/created');
       queryClient.invalidateQueries({
@@ -213,7 +206,7 @@ export function useCourseForm(course?: ICourse) {
     setPrice,
     currency,
     setCurrency,
-    isLoading,
+    isLoading: createCourseMutation.isPending || updateCourseMutation.isPending,
     error: createCourseMutation.error || updateCourseMutation.error || error,
     // Image
     image,
@@ -227,5 +220,6 @@ export function useCourseForm(course?: ICourse) {
     toggleBetweenUrlAndFile,
     sortedCategoryOptions,
     sortedSubcategoryOptions,
+    updateCourseMutation,
   };
 }
