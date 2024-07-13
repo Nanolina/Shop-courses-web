@@ -1,9 +1,10 @@
+import { useQuery } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CourseItem from '../../components/CourseItem/CourseItem';
 import Points from '../../components/Points/Points';
-import { createAxiosWithAuth, handleAuthError } from '../../functions';
+import { fetchAllMyCreatedCourses } from '../../functions';
 import { filterCourses } from '../../functions/filterCourses';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
@@ -16,38 +17,25 @@ const tg = window.Telegram.WebApp;
 
 function MyCreatedCoursesPage() {
   const { t } = useTranslation();
-  const [courses, setCourses] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
-  const [error, setError] = useState<string>('');
   const { initDataRaw } = retrieveLaunchParams();
+
   const [value, setValue] = useState<string>('');
 
-    const filteredCourses = useMemo(
-      () => filterCourses(courses, value),
-      [courses, value]
-    );
+  const {
+    data: courses = [],
+    error,
+    isLoading,
+    isError,
+  } = useQuery<ICourse[], Error>({
+    queryKey: ['myCreatedCourses', initDataRaw],
+    queryFn: () => fetchAllMyCreatedCourses(initDataRaw),
+    enabled: !!initDataRaw,
+  });
 
-  async function getAllMyCreatedCourses() {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get<ICourse[]>('/course/created');
-      setCourses(response.data);
-      setIsLoaded(true);
-    } catch (error: any) {
-      handleAuthError(error, setError);
-      setIsLoaded(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    getAllMyCreatedCourses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const filteredCourses = useMemo(
+    () => filterCourses(courses, value),
+    [courses, value]
+  );
 
   useEffect(() => {
     tg.MainButton.hide();
@@ -55,9 +43,9 @@ function MyCreatedCoursesPage() {
 
   if (isLoading) return <Loader />;
 
-  if (!courses.length && !isLoading && isLoaded) {
-    return error ? (
-      <ItemNotFoundPage error={error} isLoading={isLoading} />
+  if (!courses.length && !isLoading) {
+    return isError ? (
+      <ItemNotFoundPage error={error?.message} isLoading={isLoading} />
     ) : (
       <ItemNotFoundPage
         error={`😊 ${t('not_created')} 📚✨`}
@@ -80,7 +68,7 @@ function MyCreatedCoursesPage() {
           <CourseItem key={course.id} course={course} />
         ))}
       </div>
-      {error && <MessageBox errorMessage={error} />}
+      {isError && <MessageBox errorMessage={error.message} />}
     </Container>
   );
 }

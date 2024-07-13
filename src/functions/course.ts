@@ -72,3 +72,12 @@ export const createOrUpdateCourseAPI = async (
   const response = await axiosWithAuth[method]<ICourse>(url, formData);
   return response.data;
 };
+
+export const fetchAllMyCreatedCourses = async (
+  initDataRaw: string | undefined
+) => {
+  if (!initDataRaw) throw new Error('Not enough authorization data');
+  const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+  const response = await axiosWithAuth.get<ICourse[]>('/course/created');
+  return response.data;
+};

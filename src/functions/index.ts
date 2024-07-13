@@ -6,6 +6,7 @@ export {
   fetchAllCoursesAPI,
   fetchCourseDetailsAPI,
   groupCoursesByCategory,
+  fetchAllMyCreatedCourses,
 } from './course';
 export { encodeSaleMessage } from './encodeSaleMessage';
 export { handleAuthError } from './errorHandlers';
