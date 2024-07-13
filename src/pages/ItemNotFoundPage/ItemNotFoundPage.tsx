@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RiErrorWarningLine } from 'react-icons/ri';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import Header from '../../components/Header/Header';
 import Container from '../../ui/Container/Container';
 import { IItemNotFoundPageProps } from '../types';
@@ -27,9 +29,10 @@ function ItemNotFoundPage({
     <Container>
       <Header hasButtonBack={hasButtonBackHeader} />
       <div className={styles.container}>
-        <img
-          src="/page-not-found.png"
+        <LazyLoadImage
+          src="https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707656/page-not-found_kbrqa1.png"
           alt="Page not found"
+          effect="blur"
           className={styles.image}
         />
         <h2 className={styles.opsMessage}>

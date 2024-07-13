@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
-import { RiEdit2Fill } from 'react-icons/ri';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import CourseDetails from '../../components/CourseDetails/CourseDetails';
 import Modal from '../../components/Modal/Modal';
@@ -91,9 +92,13 @@ function CourseDetailsPage() {
       {course && role && (
         <>
           <div className={styles.imageContainer}>
-            <img
-              src={course.imageUrl || '/course.png'}
+            <LazyLoadImage
+              src={
+                course.imageUrl ||
+                'https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707398/course_nn1fj5.png'
+              }
               alt="Course"
+              effect="blur"
               className={styles.image}
             />
             <IoIosArrowBack
@@ -135,9 +140,10 @@ function CourseDetailsPage() {
                 {t('delete_course')}
                 <b> {course.name}</b>?
               </div>
-              <img
-                src="/delete.png"
+              <LazyLoadImage
+                src="https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707415/delete_jy0ot5.png"
                 alt="Delete"
+                effect="blur"
                 className={styles.modalImage}
               />
               <div className={styles.modalText}>

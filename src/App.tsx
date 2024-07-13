@@ -1,6 +1,9 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
-import { TwaAnalyticsProvider } from '@tonsolutions/telemetree-react';
+import {
+  TwaAnalyticsProvider,
+  useTWAEvent,
+} from '@tonsolutions/telemetree-react';
 import { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
@@ -36,6 +39,7 @@ const serverUrl = process.env.REACT_APP_SERVER_URL || '';
 const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
 
 function App() {
+  const eventBuilder = useTWAEvent();
   const { showNotification } = useNotification();
   const { initData } = retrieveLaunchParams();
   const { refreshPoints, setPoints } = usePoints();
@@ -77,8 +81,10 @@ function App() {
 
         if (balance && type) {
           if (type === DeployEnum.Create) {
+            eventBuilder.track('Course activated', {});
             setCourseContractBalance(balance);
           } else {
+            eventBuilder.track('Course purchased', {});
             setPurchaseContractBalance(balance);
           }
         }
@@ -96,6 +102,7 @@ function App() {
     setPoints,
     setCourseContractBalance,
     setPurchaseContractBalance,
+    eventBuilder,
   ]);
 
   // Language
