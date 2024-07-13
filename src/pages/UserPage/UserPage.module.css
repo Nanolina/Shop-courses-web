@@ -19,7 +19,7 @@
   gap: 10px;
 }
 
-.code_valid {
+.codeValid {
   width: 55vw;
   height: 50px;
   padding: 10px;
@@ -31,12 +31,12 @@
   border-radius: 10px;
 }
 
-.code_valid:focus {
+.codeValid:focus {
   outline: none;
   border: 1px solid var(--tg-theme-accent-text-color);
 }
 
-.isVerif {
+.isVerifiedEmail {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -48,18 +48,16 @@
   height: 50px;
 }
 
-.info_red {
+.infoRed {
   text-align: center;
   border: 2px solid rgb(255, 0, 0);
-  /* background-color: rgb(235, 38, 38); */
   border-radius: 20px;
   padding: 10px;
 }
 
-.info_green {
+.infoGreen {
   text-align: center;
   border: 2px solid rgb(41, 193, 59);
-  /* background-color: #46f62792; */
   border-radius: 20px;
   padding: 10px;
 }

@@ -23,9 +23,10 @@ export function useUserPage() {
   const [showCode, setShowCode] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [isVerifiedEmail, setIsVerifiedEmail] = useState<boolean>(false);
   const [showIsVerifiedEmail, setShowIsVerifiedEmail] =
     useState<boolean>(false);
-  const [activButton, setActivButton] = useState<boolean>(true);
+  const [buttonResendCode, setButtonResendCode] = useState<boolean>(true);
 
   const navigate = useNavigate();
 
@@ -48,7 +49,7 @@ export function useUserPage() {
         setPhone(phoneFromDB);
         setEmail(emailFromDB);
         setShowIsVerifiedEmail(isVerifiedEmail);
-        setEmailFromDB(response.data.email);
+        setEmailFromDB(emailFromDB);
       }
     } catch (error: any) {
       handleAuthError(error, setError);
@@ -57,7 +58,7 @@ export function useUserPage() {
     }
   }, [initDataRaw]);
 
-  const saveDataAndGenerationCode = useCallback(async () => {
+  const saveDataAndGenerateCode = useCallback(async () => {
     setIsLoading(true);
     try {
       if (!initDataRaw) throw new Error('Not enough authorization data');
@@ -67,11 +68,12 @@ export function useUserPage() {
         lastName,
         email,
       });
-      if (response.status === 200 && !response.data.isVerifiedEmail) {
-        setShowIsVerifiedEmail(response.data.isVerifiedEmail);
+      setIsVerifiedEmail(response.data.isVerifiedEmail);
+      if (response.status === 200 && !isVerifiedEmail) {
+        setShowIsVerifiedEmail(isVerifiedEmail);
         setShowCode(true);
-      } else if (response.status === 200 && response.data.isVerifiedEmail) {
-        setShowIsVerifiedEmail(response.data.isVerifiedEmail);
+      } else if (response.status === 200 && isVerifiedEmail) {
+        setShowIsVerifiedEmail(isVerifiedEmail);
         tg.MainButton.hide();
         navigate('/');
       }
@@ -80,7 +82,15 @@ export function useUserPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [initDataRaw, firstName, lastName, email, navigate]);
+  }, [
+    initDataRaw,
+    firstName,
+    lastName,
+    email,
+    isVerifiedEmail,
+    setIsVerifiedEmail,
+    navigate,
+  ]);
 
   const sendCodeFromUser = useCallback(async () => {
     setIsLoading(true);
@@ -105,14 +115,14 @@ export function useUserPage() {
       const axiosWithAuth = createAxiosWithAuth(initDataRaw);
       const response = await axiosWithAuth.post(`/user/email/code/resend`);
       if (response.status === 200) {
-        setActivButton(false);
+        setButtonResendCode(false);
       }
     } catch (error: any) {
       handleAuthError(error, setError);
     } finally {
       setIsLoading(false);
     }
-  }, [initDataRaw, setActivButton]);
+  }, [initDataRaw, setButtonResendCode]);
 
   useEffect(() => {
     if (!firstName || !lastName || !email) {
@@ -128,8 +138,8 @@ export function useUserPage() {
         text: t('get_code'),
         color: getCSSVariableValue('--tg-theme-button-color'),
       });
-      tg.onEvent('mainButtonClicked', saveDataAndGenerationCode);
-      return () => tg.offEvent('mainButtonClicked', saveDataAndGenerationCode);
+      tg.onEvent('mainButtonClicked', saveDataAndGenerateCode);
+      return () => tg.offEvent('mainButtonClicked', saveDataAndGenerateCode);
     } else if (showCode) {
       tg.MainButton.setParams({
         text: t('send'),
@@ -142,13 +152,13 @@ export function useUserPage() {
         text: t('save'),
         color: getCSSVariableValue('--tg-theme-button-color'),
       });
-      tg.onEvent('mainButtonClicked', saveDataAndGenerationCode);
-      return () => tg.offEvent('mainButtonClicked', saveDataAndGenerationCode);
+      tg.onEvent('mainButtonClicked', saveDataAndGenerateCode);
+      return () => tg.offEvent('mainButtonClicked', saveDataAndGenerateCode);
     }
   }, [
     code,
     t,
-    saveDataAndGenerationCode,
+    saveDataAndGenerateCode,
     sendCodeFromUser,
     showCode,
     showIsVerifiedEmail,
@@ -178,8 +188,8 @@ export function useUserPage() {
     showCode,
     showIsVerifiedEmail,
     setShowIsVerifiedEmail,
-    activButton,
-    setActivButton,
+    buttonResendCode,
+    setButtonResendCode,
     resendCode,
   };
 }

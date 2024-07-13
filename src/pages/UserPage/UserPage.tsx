@@ -9,6 +9,8 @@ import { CgBriefcase } from 'react-icons/cg';
 import { useUserPage } from '../../hooks/useUserPage';
 import { IUseUserPageReturnType } from '../types';
 import Button from '../../ui/Button/Button';
+import Container from '../../ui/Container/Container';
+import { MessageBox } from '../../ui/MessageBox/MessageBox';
 
 function UserPage() {
   const { t } = useTranslation();
@@ -21,12 +23,13 @@ function UserPage() {
     phone,
     email,
     setEmail,
+    error,
     code,
     setCode,
     showCode,
     showIsVerifiedEmail,
-    activButton,
-    setActivButton,
+    buttonResendCode,
+    setButtonResendCode,
     resendCode,
   } = useUserPage() as IUseUserPageReturnType;
 
@@ -36,21 +39,21 @@ function UserPage() {
     const idInterval = setInterval(() => {
       setCounter(counter--);
       if (counter === 0) {
-        setActivButton(true);
+        setButtonResendCode(true);
         setCounter(120);
         clearInterval(idInterval);
       }
     }, 1000);
-  }, [counter, setCounter, setActivButton]);
+  }, [counter, setCounter, setButtonResendCode]);
 
   return (
-    <div className={styles.container}>
+    <Container>
       <div className={styles.formGroup}>
         <Header
           label={t('my_personal_data')}
           hasButtonBack={false}
           icon={<CgBriefcase />}
-        ></Header>
+        />
         <Label text={t('first_name')} isRequired isPadding isBold />
         <TextInput
           value={firstName}
@@ -58,7 +61,7 @@ function UserPage() {
             setFirstName(event.target.value)
           }
         />
-        <Label text={t('last_name')} isRequired isPadding isBold />
+        <Label text={t('last_name')} isPadding isBold />
         <TextInput
           value={lastName}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
@@ -84,7 +87,7 @@ function UserPage() {
           <div className={styles.code}>
             <Label text={t('code')} isPadding isBold />
             <input
-              className={styles.code_valid}
+              className={styles.codeValid}
               value={code}
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 setCode(event.target.value)
@@ -98,7 +101,7 @@ function UserPage() {
                 resendCode();
                 showCouner();
               }}
-              disabled={!activButton}
+              disabled={!buttonResendCode}
             ></Button>
             <div className={styles.counter}>
               <MdOutlineUpdate />
@@ -110,14 +113,14 @@ function UserPage() {
           </div>
         </>
       ) : showIsVerifiedEmail ? (
-        <div className={styles.isVerif}>
+        <div className={styles.isVerifiedEmail}>
           {' '}
           <img
             className={styles.icons}
             src="https://cdn-icons-png.flaticon.com/512/9709/9709605.png"
             alt="chek"
           />
-          <p className={styles.info_green}>{t('email_confirmed')}</p>
+          <p className={styles.infoGreen}>{t('email_confirmed')}</p>
         </div>
       ) : (
         <div className={styles.isVerif}>
@@ -126,10 +129,11 @@ function UserPage() {
             src="https://static.vecteezy.com/system/resources/previews/018/887/460/original/signs-close-icon-png.png"
             alt="cross"
           />
-          <p className={styles.info_red}>{t('email_not_confirmed')}</p>
+          <p className={styles.infoRed}>{t('email_not_confirmed')}</p>
         </div>
       )}
-    </div>
+      {error && <MessageBox errorMessage={error} />}
+    </Container>
   );
 }
 export default UserPage;
