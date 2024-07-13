@@ -23,7 +23,7 @@ export function useUserPage() {
   const [showCode, setShowCode] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [isVerifiedEmail, setIsVerifiedEmail] = useState<boolean>(false);
+  const [isVerifiedEmail, setIsVerifiedEmail] = useState<boolean>(true);
   const [showIsVerifiedEmail, setShowIsVerifiedEmail] =
     useState<boolean>(false);
   const [buttonResendCode, setButtonResendCode] = useState<boolean>(true);
@@ -73,7 +73,7 @@ export function useUserPage() {
         setShowIsVerifiedEmail(isVerifiedEmail);
         setShowCode(true);
       } else if (response.status === 200 && isVerifiedEmail) {
-        setShowIsVerifiedEmail(isVerifiedEmail);
+        setShowIsVerifiedEmail(!isVerifiedEmail);
         tg.MainButton.hide();
         navigate('/');
       }
@@ -164,6 +164,7 @@ export function useUserPage() {
     showIsVerifiedEmail,
     emailFromDB,
     email,
+    isVerifiedEmail,
   ]);
 
   useEffect(() => {
