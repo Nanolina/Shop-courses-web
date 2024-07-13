@@ -19,6 +19,7 @@ import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
+import { RiEdit2Fill } from 'react-icons/ri';
 
 const iconSize = 20;
 const iconColor = 'white';
