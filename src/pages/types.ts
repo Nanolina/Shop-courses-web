@@ -7,7 +7,6 @@ export interface ICoursePartPageProps {
   parentId: string;
   items: ICoursePartItem[];
   role: RoleType;
-  updateItems: () => void;
 }
 
 export interface IUseCourseFormReturnType {

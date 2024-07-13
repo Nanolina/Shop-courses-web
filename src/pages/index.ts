@@ -1,1 +1,6 @@
-export type { IUseCoursePartFormReturnType } from './types';
+export type {
+  IGetCourse,
+  IGetLessons,
+  IGetModules,
+  IUseCoursePartFormReturnType,
+} from './types';

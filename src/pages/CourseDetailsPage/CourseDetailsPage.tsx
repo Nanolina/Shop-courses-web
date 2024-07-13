@@ -22,6 +22,7 @@ import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
+import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
 
 function CourseDetailsPage() {
@@ -35,7 +36,7 @@ function CourseDetailsPage() {
 
   const [errorPage, setErrorPage] = useState<string | null>(null);
 
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading } = useQuery<IGetCourse>({
     queryKey: ['courseDetails', courseId],
     queryFn: () => fetchCourseDetailsAPI(courseId, initDataRaw),
     enabled: !!courseId,

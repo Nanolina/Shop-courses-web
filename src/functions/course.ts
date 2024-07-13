@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { IGetCourse } from '../pages';
 import { ICourse, RequestMethodType } from '../types';
 import { createAxiosWithAuth } from './axiosWithAuth';
 import { ICourseDataToCreateOrUpdate } from './types';
@@ -29,7 +30,7 @@ export const fetchCourseDetailsAPI = async (
     throw new Error('Not enough authorization data or no course data');
   }
   const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-  const response = await axiosWithAuth.get(`/course/${courseId}`);
+  const response = await axiosWithAuth.get<IGetCourse>(`/course/${courseId}`);
   return response.data;
 };
 
@@ -41,7 +42,7 @@ export const deleteCourseAPI = async (
     throw new Error('Not enough authorization data or no course data');
   }
   const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-  await axiosWithAuth.delete(`/course/${courseId}`);
+  await axiosWithAuth.delete<void>(`/course/${courseId}`);
 };
 
 export const createOrUpdateCourseAPI = async (

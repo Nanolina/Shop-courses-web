@@ -9,6 +9,11 @@ export {
   fetchCourseDetailsAPI,
   groupCoursesByCategory,
 } from './course';
+export {
+  deleteCoursePartAPI,
+  fetchLessonsAPI,
+  fetchModulesAPI,
+} from './coursePart';
 export { encodeSaleMessage } from './encodeSaleMessage';
 export { handleAuthError } from './errorHandlers';
 export { getCSSVariableValue } from './getCSSVariableValue';

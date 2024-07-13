@@ -12,7 +12,7 @@ const CoursesList = () => {
   const [value, setValue] = useState<string>('');
 
   const queryClient = useQueryClient();
-  const { data, error } = useQuery({
+  const { data, error } = useQuery<ICourse[]>({
     queryKey: ['allCourses'],
     queryFn: fetchAllCoursesAPI,
     placeholderData: () => {
