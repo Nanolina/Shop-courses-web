@@ -25,7 +25,7 @@ import i18n from './i18n/i18n';
 import { DeployEnum } from './types';
 import { Loader } from './ui/Loader/Loader';
 
-// Ленивая загрузка страниц
+// Lazy page loading
 const CourseDetailsPage = lazy(
   () => import('./pages/CourseDetailsPage/CourseDetailsPage')
 );
