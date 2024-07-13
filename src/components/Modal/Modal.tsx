@@ -26,7 +26,7 @@ function Modal({
         <RxCross2
           className={styles.cross}
           color="var(--tg-theme-accent-text-color)"
-          size={20}
+          size={24}
           onClick={onClose}
         />
         {children}

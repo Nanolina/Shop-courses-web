@@ -16,7 +16,6 @@ function ImagePreview({ imagePreview, removeImage }: IImagePreviewProps) {
         />
         <RxCross2
           className={styles.cross}
-          color="var(--tg-theme-accent-text-color)"
           size={20}
           onClick={removeImage}
         />
