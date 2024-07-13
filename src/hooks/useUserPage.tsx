@@ -23,7 +23,6 @@ export function useUserPage() {
   const [showCode, setShowCode] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [isVerifiedEmail, setIsVerifiedEmail] = useState<boolean>(true);
   const [showIsVerifiedEmail, setShowIsVerifiedEmail] =
     useState<boolean>(false);
   const [buttonResendCode, setButtonResendCode] = useState<boolean>(true);
@@ -68,12 +67,12 @@ export function useUserPage() {
         lastName,
         email,
       });
-      setIsVerifiedEmail(response.data.isVerifiedEmail);
+      const isVerifiedEmail = response.data.isVerifiedEmail;
       if (response.status === 200 && !isVerifiedEmail) {
-        setShowIsVerifiedEmail(isVerifiedEmail);
+        setShowIsVerifiedEmail(!isVerifiedEmail);
         setShowCode(true);
       } else if (response.status === 200 && isVerifiedEmail) {
-        setShowIsVerifiedEmail(!isVerifiedEmail);
+        setShowIsVerifiedEmail(isVerifiedEmail);
         tg.MainButton.hide();
         navigate('/');
       }
@@ -82,15 +81,7 @@ export function useUserPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [
-    initDataRaw,
-    firstName,
-    lastName,
-    email,
-    isVerifiedEmail,
-    setIsVerifiedEmail,
-    navigate,
-  ]);
+  }, [initDataRaw, firstName, lastName, email, navigate]);
 
   const sendCodeFromUser = useCallback(async () => {
     setIsLoading(true);
@@ -164,7 +155,6 @@ export function useUserPage() {
     showIsVerifiedEmail,
     emailFromDB,
     email,
-    isVerifiedEmail,
   ]);
 
   useEffect(() => {
