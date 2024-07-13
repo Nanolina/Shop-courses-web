@@ -1,25 +1,15 @@
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { Address, OpenedContract, fromNano, toNano } from '@ton/core';
 import { useCallback, useEffect, useState } from 'react';
-import TonWeb from 'tonweb';
 import { useContract } from '../context';
-import { createAxiosWithAuth } from '../functions';
+import { createAxiosWithAuth, tonweb } from '../functions';
 import { NewPurchase, Purchase } from '../ton/wrappers/Purchase';
-import { DeployEnum, ICourse, RoleType } from '../types';
+import { DeployEnum, ICourse } from '../types';
 import { useAsyncInitialize } from './useAsyncInitialize';
 import { useTonClient } from './useTonClient';
 import { useTonConnect } from './useTonConnect';
 
-const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
-const tonweb = new TonWeb(
-  new TonWeb.HttpProvider(
-    isProduction
-      ? 'https://toncenter.com/api/v2/jsonRPC'
-      : 'https://testnet.toncenter.com/api/v2/jsonRPC'
-  )
-);
-
-export function usePurchaseContract(course: ICourse, role: RoleType) {
+export function usePurchaseContract(course: ICourse) {
   const courseId = course.id;
   const { client } = useTonClient();
   const { sender } = useTonConnect(course);
@@ -62,7 +52,6 @@ export function usePurchaseContract(course: ICourse, role: RoleType) {
         address,
       };
     } catch (error: any) {
-      setErrorContract(error?.message);
       return {
         balance: 0,
         address: '',

@@ -9,13 +9,7 @@ import ReadyCoursePart from '../ReadyCoursePart/ReadyCoursePart';
 import { ICoursePartListProps } from '../types';
 import styles from './CoursePartList.module.css';
 
-function CoursePartList({
-  type,
-  parentId,
-  items,
-  role,
-  updateItems,
-}: ICoursePartListProps) {
+function CoursePartList({ type, parentId, items, role }: ICoursePartListProps) {
   const { t } = useTranslation();
   const [isSeller, setIsSeller] = useState<boolean>(false);
   const [isModules, setIsModules] = useState<boolean>(false);
@@ -63,7 +57,6 @@ function CoursePartList({
             type={type}
             parentId={parentId}
             role={role}
-            updateItems={updateItems}
           />
         ))
       )}

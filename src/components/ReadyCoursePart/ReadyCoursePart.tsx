@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +9,7 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useNavigate } from 'react-router-dom';
 import { LESSON, MODULE, SELLER } from '../../consts';
 import {
-  createAxiosWithAuth,
+  deleteCoursePartAPI,
   getTranslatedType,
   handleAuthError,
 } from '../../functions';
@@ -23,38 +24,40 @@ function ReadyCoursePart({
   type,
   parentId,
   role,
-  updateItems,
 }: IReadyCoursePartProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   const [isSeller, setIsSeller] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   const { initDataRaw } = retrieveLaunchParams();
 
   const { singular } = getTranslatedType(type, t);
 
-  async function handleDelete(event: any) {
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteCoursePartAPI(type, item.id, initDataRaw),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [`${type}s`, parentId],
+      }),
+    onError: (error: any) => {
+      handleAuthError(error, setError);
+    },
+  });
+
+  const handleDelete = async (event: any) => {
     event.stopPropagation();
     setModalOpen(true);
-  }
+  };
 
-  async function deleteItem() {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      await axiosWithAuth.delete(`/${type}/${item.id}`);
-      updateItems();
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const deleteItem = async () => {
+    deleteMutation.mutate();
+    setModalOpen(false);
+  };
 
   const handleEdit = useCallback(
     (event: React.MouseEvent<SVGElement>) => {
@@ -90,8 +93,6 @@ function ReadyCoursePart({
       setIsSeller(true);
     }
   }, [role]);
-
-  if (isLoading) return <Loader />;
 
   return (
     <div className={styles.container} onClick={navigateHandler}>
@@ -141,6 +142,7 @@ function ReadyCoursePart({
           >{`${type === MODULE ? t('module_all_lessons') : t('this_lesson')}`}</div>
         </div>
       </Modal>
+      {deleteMutation.isPending && <Loader />}
       {error && <MessageBox errorMessage={error} />}
     </div>
   );

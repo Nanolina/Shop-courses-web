@@ -8,7 +8,7 @@ export interface ICourse {
   price: number;
   currency: string;
   imageUrl?: string;
-  userId: bigint;
+  userId: number;
   modules: IModule[];
 }
 

@@ -10,13 +10,7 @@ import { ICoursePartPageProps } from '../types';
 
 const tg = window.Telegram.WebApp;
 
-function CoursePartPage({
-  type,
-  parentId,
-  items,
-  role,
-  updateItems,
-}: ICoursePartPageProps) {
+function CoursePartPage({ type, parentId, items, role }: ICoursePartPageProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -46,7 +40,6 @@ function CoursePartPage({
         parentId={parentId}
         items={items}
         role={role}
-        updateItems={updateItems}
       />
     </Container>
   );
