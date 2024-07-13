@@ -1,7 +1,7 @@
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdCameraswitch } from 'react-icons/md';
-import { categoryOptions, subcategoryOptions } from '../../category-data';
+import { currencyOptions } from '../../currency-options';
 import { useCourseForm } from '../../hooks';
 import { IUseCourseFormReturnType } from '../../pages/types';
 import { ICourse } from '../../types';
@@ -9,6 +9,7 @@ import Button from '../../ui/Button/Button';
 import ImagePreview from '../../ui/ImagePreview/ImagePreview';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
 import Label from '../../ui/Label/Label';
+import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import Select from '../../ui/Select/Select';
 import TextInput from '../../ui/TextInput/TextInput';
@@ -24,7 +25,6 @@ function CourseForm({ course }: { course?: ICourse }) {
     description,
     setDescription,
     imageUrl,
-    setImageUrl,
     category,
     setCategory,
     subcategory,
@@ -33,63 +33,20 @@ function CourseForm({ course }: { course?: ICourse }) {
     setPrice,
     currency,
     setCurrency,
-    currencyOptions,
     error,
+    isLoading,
     // Image
     previewUrl,
-    setPreviewUrl,
     handleImageChange,
     handleRemoveImage,
     handleUrlChange,
     useUrlCover,
     toggleBetweenUrlAndFile,
-  } = useCourseForm() as IUseCourseFormReturnType;
+    sortedCategoryOptions,
+    sortedSubcategoryOptions,
+  } = useCourseForm(course) as IUseCourseFormReturnType;
 
-  const getCategoryLabel = (value: string) => t(`categories.${value}`);
-  const getSubcategoryLabel = (value: string) => t(`subcategories.${value}`);
-
-  // Setting initial values from item
-  useEffect(() => {
-    if (course) {
-      setName(course.name);
-      setDescription(course.description || '');
-      setImageUrl(course.imageUrl || '');
-      setCategory(course.category);
-      setSubcategory(course.subcategory || '');
-      setPrice(course.price);
-      setCurrency(course.currency);
-      if (course.imageUrl) {
-        setPreviewUrl(course.imageUrl);
-      }
-    }
-  }, [
-    course,
-    setName,
-    setDescription,
-    setImageUrl,
-    setCategory,
-    setSubcategory,
-    setPrice,
-    setCurrency,
-    setPreviewUrl,
-  ]);
-
-  const sortedCategoryOptions = categoryOptions
-    .map((option) => ({
-      ...option,
-      label: getCategoryLabel(option.value),
-    }))
-    .sort((a, b) => a.label.localeCompare(b.label));
-
-  const sortedSubcategoryOptions =
-    category && subcategoryOptions[category]
-      ? subcategoryOptions[category]
-          .map((option) => ({
-            ...option,
-            label: getSubcategoryLabel(option.value),
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      : [];
+  if (isLoading) return <Loader />;
 
   return (
     <div className={styles.container}>

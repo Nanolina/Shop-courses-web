@@ -1,9 +1,4 @@
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useCallback, useState } from 'react';
@@ -18,31 +13,16 @@ import CourseDetails from '../../components/CourseDetails/CourseDetails';
 import Modal from '../../components/Modal/Modal';
 import Points from '../../components/Points/Points';
 import { SELLER } from '../../consts';
-import { createAxiosWithAuth, handleAuthError } from '../../functions';
+import {
+  deleteCourseAPI,
+  fetchCourseDetailsAPI,
+  handleAuthError,
+} from '../../functions';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import styles from './CourseDetailsPage.module.css';
-
-const fetchCourseDetails = async (
-  courseId: string,
-  initDataRaw: string | undefined
-) => {
-  if (!initDataRaw) throw new Error('Not enough authorization data');
-  const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-  const response = await axiosWithAuth.get(`/course/${courseId}`);
-  return response.data;
-};
-
-const deleteCourseAPI = async (
-  courseId: string,
-  initDataRaw: string | undefined
-) => {
-  if (!initDataRaw) throw new Error('Not enough authorization data');
-  const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-  await axiosWithAuth.delete(`/course/${courseId}`);
-};
 
 function CourseDetailsPage() {
   const { t } = useTranslation();
@@ -57,9 +37,11 @@ function CourseDetailsPage() {
 
   const { data, error, isLoading } = useQuery({
     queryKey: ['courseDetails', courseId],
-    queryFn: () => fetchCourseDetails(courseId, initDataRaw),
+    queryFn: () => fetchCourseDetailsAPI(courseId, initDataRaw),
     enabled: !!courseId,
-    placeholderData: keepPreviousData,
+    placeholderData: () => {
+      return queryClient.getQueryData(['courseDetails', courseId]);
+    },
   });
 
   const mutation = useMutation({
@@ -93,7 +75,7 @@ function CourseDetailsPage() {
   }
 
   if (!data?.course) {
-    return <ItemNotFoundPage error="Course not found" />;
+    return <ItemNotFoundPage error={t('item_not_found')} />;
   }
 
   const { course, role } = data;

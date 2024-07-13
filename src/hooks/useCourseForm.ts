@@ -4,71 +4,81 @@ import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { categoryOptions, subcategoryOptions } from '../category-data';
 import { PATCH, POST } from '../consts';
-import { createAxiosWithAuth, handleAuthError } from '../functions';
+import { createOrUpdateCourseAPI, handleAuthError } from '../functions';
 import { IMyCreatedCoursesPageParams } from '../pages/types';
-import { ICourse, RequestMethodType } from '../types';
-import { IOption } from '../ui';
-
-export const currencyOptions: IOption[] = [
-  { value: 'TON', label: 'The Open Network (TON)' },
-];
+import { ICourse } from '../types';
 
 const tg = window.Telegram.WebApp;
 
-export function useCourseForm() {
+export function useCourseForm(course?: ICourse) {
   const { t } = useTranslation();
-  const eventBuilder = useTWAEvent();
-
-  const { courseId = '' } = useParams<IMyCreatedCoursesPageParams>();
-  const [name, setName] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [imageUrl, setImageUrl] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
-  const [subcategory, setSubcategory] = useState<string>('');
-  const [price, setPrice] = useState<number>(0);
-  const [currency, setCurrency] = useState<string>('');
-  const [image, setImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between URL and upload (button)
-  const [error, setError] = useState<string | null>(null);
-  const { initDataRaw } = retrieveLaunchParams();
   const navigate = useNavigate();
+  const eventBuilder = useTWAEvent();
+  const { courseId = '' } = useParams<IMyCreatedCoursesPageParams>();
+  const { initDataRaw } = retrieveLaunchParams();
   const queryClient = useQueryClient();
 
-  const createOrUpdateCourse = useCallback(
-    async (url: string, method: RequestMethodType) => {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const formData = new FormData();
-      formData.append('name', name);
-      if (description) formData.append('description', description);
-      if (imageUrl) formData.append('imageUrl', imageUrl);
-      formData.append('category', category);
-      if (subcategory) formData.append('subcategory', subcategory);
-      formData.append('price', price.toString());
-      formData.append('currency', currency);
-      if (image) formData.append('image', image);
-      if (!image && !imageUrl) formData.append('isRemoveImage', 'true');
-
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth[method]<ICourse>(url, formData);
-      return response.data;
-    },
-    [
-      initDataRaw,
-      name,
-      description,
-      imageUrl,
-      category,
-      subcategory,
-      price,
-      currency,
-      image,
-    ]
+  // State
+  const [name, setName] = useState<string>(course?.name || '');
+  const [description, setDescription] = useState<string>(
+    course?.description || ''
   );
+  const [imageUrl, setImageUrl] = useState<string>(course?.imageUrl || '');
+  const [category, setCategory] = useState<string>(course?.category || '');
+  const [subcategory, setSubcategory] = useState<string>(
+    course?.subcategory || ''
+  );
+  const [price, setPrice] = useState<number>(course?.price || 0);
+  const [currency, setCurrency] = useState<string>(course?.currency || '');
+  const [image, setImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    course?.imageUrl || null
+  );
+  const [useUrlCover, setUseUrlCover] = useState(true); // State to toggle between URL and upload (button)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Category/subcategory functions
+  const getCategoryLabel = (value: string) => t(`categories.${value}`);
+  const getSubcategoryLabel = (value: string) => t(`subcategories.${value}`);
+
+  const sortedCategoryOptions = categoryOptions
+    .map((option) => ({
+      ...option,
+      label: getCategoryLabel(option.value),
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+
+  const sortedSubcategoryOptions =
+    category && subcategoryOptions[category]
+      ? subcategoryOptions[category]
+          .map((option) => ({
+            ...option,
+            label: getSubcategoryLabel(option.value),
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      : [];
+
+  // Send data to server
+  const dataToSend = {
+    name,
+    description,
+    category,
+    subcategory,
+    price,
+    currency,
+    imageUrl,
+    image,
+  };
 
   const createCourseMutation = useMutation({
-    mutationFn: () => createOrUpdateCourse('/course', POST),
+    mutationFn: () =>
+      createOrUpdateCourseAPI('/course', POST, dataToSend, initDataRaw),
+    onMutate: () => {
+      setIsLoading(true);
+    },
     onSuccess: (data) => {
       navigate(`/course/${data.id}`);
       eventBuilder.track('Course created', {});
@@ -82,7 +92,16 @@ export function useCourseForm() {
   });
 
   const updateCourseMutation = useMutation({
-    mutationFn: () => createOrUpdateCourse(`/course/${courseId}`, PATCH),
+    mutationFn: () =>
+      createOrUpdateCourseAPI(
+        `/course/${courseId}`,
+        PATCH,
+        dataToSend,
+        initDataRaw
+      ),
+    onMutate: () => {
+      setIsLoading(true);
+    },
     onSuccess: () => {
       navigate('/course/created');
       queryClient.invalidateQueries({
@@ -97,15 +116,17 @@ export function useCourseForm() {
     },
   });
 
-  const onCreateCourse = useCallback(
-    () => createCourseMutation.mutate(),
-    [createCourseMutation]
-  );
-  const onUpdateCourse = useCallback(
-    () => updateCourseMutation.mutate(),
-    [updateCourseMutation]
-  );
+  const updateCourse = useCallback(() => {
+    updateCourseMutation.mutate();
+  }, [updateCourseMutation]);
 
+  const createCourse = useCallback(() => {
+    createCourseMutation.mutate();
+  }, [createCourseMutation]);
+
+  const mainButtonAction = courseId ? updateCourse : createCourse;
+
+  // Image functions
   const toggleBetweenUrlAndFile = () => setUseUrlCover(!useUrlCover);
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -138,12 +159,27 @@ export function useCourseForm() {
     setImageUrl(value);
   };
 
+  // useEffects
   useEffect(() => {
-    const mainButtonAction = courseId ? onUpdateCourse : onCreateCourse;
+    if (course) {
+      setName(course.name);
+      setDescription(course.description || '');
+      setImageUrl(course.imageUrl || '');
+      setCategory(course.category);
+      setSubcategory(course.subcategory || '');
+      setPrice(course.price);
+      setCurrency(course.currency);
+      if (course.imageUrl) {
+        setPreviewUrl(course.imageUrl);
+      }
+    }
+  }, [course]);
+
+  useEffect(() => {
     tg.MainButton.setParams({ text: courseId ? t('save') : t('create') });
     tg.onEvent('mainButtonClicked', mainButtonAction);
     return () => tg.offEvent('mainButtonClicked', mainButtonAction);
-  }, [onCreateCourse, onUpdateCourse, courseId, t]);
+  }, [mainButtonAction, courseId, t]);
 
   useEffect(() => {
     if (!name || !category || !price || !currency) {
@@ -177,7 +213,7 @@ export function useCourseForm() {
     setPrice,
     currency,
     setCurrency,
-    currencyOptions,
+    isLoading,
     error: createCourseMutation.error || updateCourseMutation.error || error,
     // Image
     image,
@@ -189,5 +225,7 @@ export function useCourseForm() {
     handleUrlChange,
     useUrlCover,
     toggleBetweenUrlAndFile,
+    sortedCategoryOptions,
+    sortedSubcategoryOptions,
   };
 }

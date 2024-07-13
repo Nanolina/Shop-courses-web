@@ -1,7 +1,6 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { groupCoursesByCategory } from '../../functions';
+import { fetchAllCoursesAPI, groupCoursesByCategory } from '../../functions';
 import { filterCourses } from '../../functions/filterCourses.ts';
 import { ICourse } from '../../types.ts';
 import { MessageBox } from '../../ui/MessageBox/MessageBox.tsx';
@@ -9,20 +8,16 @@ import SearchBar from '../../ui/SearchBar/SearchBar.tsx';
 import CoursesListByCategory from '../CoursesListByCategory/CoursesListByCategory.tsx';
 import styles from './CoursesList.module.css';
 
-const serverUrl = process.env.REACT_APP_SERVER_URL;
-
-const fetchCourses = async (): Promise<ICourse[]> => {
-  const response = await axios.get<ICourse[]>(`${serverUrl}/course`);
-  return response.data;
-};
-
 const CoursesList = () => {
   const [value, setValue] = useState<string>('');
 
+  const queryClient = useQueryClient();
   const { data, error } = useQuery({
     queryKey: ['allCourses'],
-    queryFn: fetchCourses,
-    placeholderData: keepPreviousData,
+    queryFn: fetchAllCoursesAPI,
+    placeholderData: () => {
+      return queryClient.getQueryData(['allCourses']);
+    },
   });
 
   const filteredCourses = useMemo(

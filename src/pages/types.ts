@@ -25,7 +25,6 @@ export interface IUseCourseFormReturnType {
   setCurrency: (currency: string) => void;
   categoryOptions: IOption[];
   subcategoryOptions: Record<string, IOption[]>;
-  currencyOptions: IOption[];
   isLoading: boolean;
   error: string;
   // Image
@@ -40,6 +39,8 @@ export interface IUseCourseFormReturnType {
   handleUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   useUrlCover: boolean;
   toggleBetweenUrlAndFile: () => void;
+  sortedCategoryOptions: IOption[];
+  sortedSubcategoryOptions: IOption[];
 }
 
 export interface IUseCoursePartFormReturnType {
