@@ -54,8 +54,9 @@ export interface ITextareaProps {
 
 export interface ITextInputProps {
   value: string | number;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
+  disabled?: boolean;
   isRequired?: boolean;
 }
 

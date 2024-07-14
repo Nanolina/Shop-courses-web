@@ -76,6 +76,34 @@ export interface IUseCoursePartFormReturnType {
   toggleBetweenVideoUrlAndFile: () => void;
 }
 
+export interface IUseUserPageReturnType {
+  firstName: string;
+  setFirstName: (firstName: string) => void;
+  lastName: string;
+  setLastName: (lastName: string) => void;
+  phone: string;
+  setPhone: (phone: string) => void;
+  email: string;
+  setEmail: (email: string) => void;
+  code: string;
+  setCode: (code: string) => void;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+  error: string;
+  setError: (error: string) => void;
+  showCode: boolean;
+  showIsVerifiedEmail: boolean;
+  setShowIsVerifiedEmail: (showIsVerifiedEmail: boolean) => void;
+  buttonResendCode: boolean;
+  setButtonResendCode: (activButton: boolean) => void;
+  resendCode: () => void;
+}
+
+export interface IUserPageParams {
+  [key: string]: string | undefined;
+  userId?: string;
+}
+
 export interface ILessonsPageParams {
   [key: string]: string | undefined;
   moduleId?: string;
