@@ -11,10 +11,8 @@ import { I18nextProvider } from 'react-i18next';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Bounce, ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
-import ModalEarnPoints from './components/ModalEarnPoints/ModalEarnPoints';
 import {
   ContractProvider,
-  ModalProvider,
   PointsProvider,
   useContract,
   useNotification,
@@ -37,7 +35,6 @@ import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCo
 import UserPage from './pages/UserPage/UserPage';
 import { DeployEnum } from './types';
 
-const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
 const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
@@ -177,7 +174,6 @@ function App() {
         theme="colored"
         transition={Bounce}
       />
-      <ModalEarnPoints />
     </Router>
   );
 }
@@ -197,17 +193,15 @@ export default () => (
       <PointsProvider>
         <NotificationProvider>
           <ContractProvider>
-            <ModalProvider>
-              <I18nextProvider i18n={i18n}>
-                <TonConnectUIProvider manifestUrl={manifestUrl}>
-                  <App />
-                </TonConnectUIProvider>
-              </I18nextProvider>
-            </ModalProvider>
+            <I18nextProvider i18n={i18n}>
+              <TonConnectUIProvider manifestUrl={manifestUrl}>
+                <App />
+              </TonConnectUIProvider>
+            </I18nextProvider>
           </ContractProvider>
         </NotificationProvider>
       </PointsProvider>
-      {!isProduction && <ReactQueryDevtools />}
+      {process.env.REACT_QUERY_DEVTOOLS && <ReactQueryDevtools />}
     </QueryClientProvider>
   </TwaAnalyticsProvider>
 );
