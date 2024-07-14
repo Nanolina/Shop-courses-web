@@ -8,11 +8,7 @@ function VideoPlayer({ url, removeVideo }: IVideoPlayerProps) {
     <div className={styles.container}>
       <ReactPlayer controls={true} url={url} width="100%" height="100%" />
       {removeVideo && (
-        <RxCross2
-          className={styles.cross}
-          size={22}
-          onClick={removeVideo}
-        />
+        <RxCross2 className={styles.cross} size={22} onClick={removeVideo} />
       )}
     </div>
   );

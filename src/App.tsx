@@ -1,6 +1,11 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
-import { TwaAnalyticsProvider } from '@tonsolutions/telemetree-react';
+import {
+  TwaAnalyticsProvider,
+  useTWAEvent,
+} from '@tonsolutions/telemetree-react';
 import { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
@@ -32,11 +37,16 @@ import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCo
 import { DeployEnum } from './types';
 import UserPage from './pages/UserPage/UserPage';
 
+const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
 const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
 
+// Create a client for React Query
+const queryClient = new QueryClient();
+
 function App() {
+  const eventBuilder = useTWAEvent();
   const { showNotification } = useNotification();
   const { initData } = retrieveLaunchParams();
   const { refreshPoints, setPoints } = usePoints();
@@ -78,8 +88,10 @@ function App() {
 
         if (balance && type) {
           if (type === DeployEnum.Create) {
+            eventBuilder.track('Course activated', {});
             setCourseContractBalance(balance);
           } else {
+            eventBuilder.track('Course purchased', {});
             setPurchaseContractBalance(balance);
           }
         }
@@ -97,6 +109,7 @@ function App() {
     setPoints,
     setCourseContractBalance,
     setPurchaseContractBalance,
+    eventBuilder,
   ]);
 
   // Language
@@ -107,56 +120,68 @@ function App() {
   return (
     <TonConnectUIProvider manifestUrl={manifestUrl}>
       <I18nextProvider i18n={i18n}>
-        <Router>
-          <Routes>
-            {/* all users */}
-            <Route path="/" element={<MainPage />} />
-            <Route path="/user" element={<UserPage />} />
-            <Route path="/course/:courseId" element={<CourseDetailsPage />} />
-            <Route
-              path="course/category/:category"
-              element={<CoursesOneCategoryPage />}
+        <QueryClientProvider client={queryClient}>
+          <Router>
+            <Routes>
+              {/* all users */}
+              <Route path="/" element={<MainPage />} />
+              <Route path="/user" element={<UserPage />} />
+              <Route path="/course/:courseId" element={<CourseDetailsPage />} />
+              <Route
+                path="course/category/:category"
+                element={<CoursesOneCategoryPage />}
+              />
+              <Route path="/course/create" element={<CreateCourseFormPage />} />
+              {/* seller */}
+              <Route
+                path="/course/edit/:courseId"
+                element={<EditCourseFormPage />}
+              />
+              <Route
+                path="/course-part/create/:type/:parentId"
+                element={<CreateCoursePartPage />}
+              />
+              <Route
+                path="/course-part/edit/:parentId/:type/:itemId"
+                element={<EditCoursePartPage />}
+              />
+              <Route
+                path="/course/created"
+                element={<MyCreatedCoursesPage />}
+              />
+              {/* customer */}
+              <Route
+                path="/course/purchased"
+                element={<MyPurchasedCoursesPage />}
+              />
+              {/* customer & seller */}
+              <Route
+                path="/module/course/:courseId"
+                element={<ModulesPage />}
+              />
+              <Route
+                path="/lesson/module/:moduleId"
+                element={<LessonsPage />}
+              />
+              <Route path="/lesson/:lessonId" element={<LessonPage />} />
+            </Routes>
+            <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="colored"
+              transition={Bounce}
             />
-            <Route path="/course/create" element={<CreateCourseFormPage />} />
-            {/* seller */}
-            <Route
-              path="/course/edit/:courseId"
-              element={<EditCourseFormPage />}
-            />
-            <Route
-              path="/course-part/create/:type/:parentId"
-              element={<CreateCoursePartPage />}
-            />
-            <Route
-              path="/course-part/edit/:parentId/:type/:itemId"
-              element={<EditCoursePartPage />}
-            />
-            <Route path="/course/created" element={<MyCreatedCoursesPage />} />
-            {/* customer */}
-            <Route
-              path="/course/purchased"
-              element={<MyPurchasedCoursesPage />}
-            />
-            {/* customer & seller */}
-            <Route path="/module/course/:courseId" element={<ModulesPage />} />
-            <Route path="/lesson/module/:moduleId" element={<LessonsPage />} />
-            <Route path="/lesson/:lessonId" element={<LessonPage />} />
-          </Routes>
-          <ToastContainer
-            position="top-center"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-            transition={Bounce}
-          />
-          <ModalEarnPoints />
-        </Router>
+            <ModalEarnPoints />
+          </Router>
+          {!isProduction && <ReactQueryDevtools />}
+        </QueryClientProvider>
       </I18nextProvider>
     </TonConnectUIProvider>
   );

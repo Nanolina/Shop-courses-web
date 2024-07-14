@@ -1,64 +1,51 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import { useCallback, useEffect, useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
 import CourseForm from '../../components/CourseForm/CourseForm';
 import Header from '../../components/Header/Header';
-import { createAxiosWithAuth, handleAuthError } from '../../functions';
-import { ICourse } from '../../types';
+import { CourseFormProvider } from '../../context';
+import { fetchCourseDetailsAPI } from '../../functions';
+import { useCourseForm } from '../../hooks';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
-import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 
 function EditCourseFormPage() {
-  const { courseId } = useParams<{ courseId: string }>();
-
-  const [course, setCourse] = useState<ICourse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
-  const [error, setError] = useState<string>('');
-
+  const { courseId = '' } = useParams<{ courseId: string }>();
   const { initDataRaw } = retrieveLaunchParams();
+  const queryClient = useQueryClient();
 
-  const getOneCourse = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get<IGetCourse>(
-        `/course/${courseId}`
-      );
-      setCourse(response.data.course);
-      setIsLoaded(true);
-    } catch (error: any) {
-      handleAuthError(error, setError);
-      setIsLoaded(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [courseId, initDataRaw]);
+  const { data, error, isLoading } = useQuery<IGetCourse>({
+    queryKey: ['courseDetails', courseId],
+    queryFn: () => fetchCourseDetailsAPI(courseId, initDataRaw),
+    enabled: !!courseId,
+    placeholderData: () => {
+      return queryClient.getQueryData(['courseDetails', courseId]);
+    },
+  });
 
-  useEffect(() => {
-    getOneCourse();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const course = data?.course;
 
-  if (isLoading) return <Loader />;
-  if (!course && !isLoading && isLoaded) {
-    return <ItemNotFoundPage error={error} isLoading={isLoading} />;
-  }
+  const courseFormContextValue = useCourseForm(course);
 
   return (
     <Container>
       {course && (
         <>
           <Header label={course.name} icon={<FiEdit size={24} />} />
-          <CourseForm course={course} />
+          <CourseFormProvider value={courseFormContextValue}>
+            <CourseForm />
+          </CourseFormProvider>
         </>
       )}
-      {error && <MessageBox errorMessage={error} />}
+      {(isLoading || courseFormContextValue.isLoading) && <Loader />}
+      {(error || courseFormContextValue.error) && (
+        <MessageBox
+          errorMessage={error?.message || courseFormContextValue.error?.message}
+        />
+      )}
     </Container>
   );
 }

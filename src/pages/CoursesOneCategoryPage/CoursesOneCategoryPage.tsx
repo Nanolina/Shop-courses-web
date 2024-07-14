@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import CourseItem from '../../components/CourseItem/CourseItem';
@@ -24,7 +24,10 @@ function CoursesOneCategoryPage() {
   const [error, setError] = useState<string>('');
   const [value, setValue] = useState<string>('');
 
-  const filteredCourses = filterCourses(courses, value);
+  const filteredCourses = useMemo(
+    () => filterCourses(courses, value),
+    [courses, value]
+  );
 
   async function getAllCoursesOneCategory() {
     setIsLoading(true);

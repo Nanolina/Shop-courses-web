@@ -7,7 +7,6 @@ export interface ICoursePartPageProps {
   parentId: string;
   items: ICoursePartItem[];
   role: RoleType;
-  updateItems: () => void;
 }
 
 export interface IUseCourseFormReturnType {
@@ -23,9 +22,6 @@ export interface IUseCourseFormReturnType {
   setPrice: (price: number) => void;
   currency: string;
   setCurrency: (currency: string) => void;
-  categoryOptions: IOption[];
-  subcategoryOptions: Record<string, IOption[]>;
-  currencyOptions: IOption[];
   isLoading: boolean;
   error: string;
   // Image
@@ -40,6 +36,8 @@ export interface IUseCourseFormReturnType {
   handleUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   useUrlCover: boolean;
   toggleBetweenUrlAndFile: () => void;
+  sortedCategoryOptions: IOption[];
+  sortedSubcategoryOptions: IOption[];
 }
 
 export interface IUseCoursePartFormReturnType {

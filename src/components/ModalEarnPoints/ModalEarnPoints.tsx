@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useModal } from '../../context';
 import Modal from '../Modal/Modal';
 import styles from './ModalEarnPoints.module.css';
@@ -12,7 +14,12 @@ function ModalEarnPoints() {
     <Modal isOpen={isOpen} onClose={hideModal}>
       <div className={styles.container}>
         <h3 className={styles.hooray}>{t('modal.hooray')}</h3>
-        <img src="/reward.png" alt="Earn points" className={styles.image} />
+        <LazyLoadImage
+          src="https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707659/reward_etxdqk.png"
+          alt="Earn points"
+          effect="blur"
+          className={styles.image}
+        />
         <div className={styles.title}>
           {t('modal.earned_points')}
           <div className={styles.points}>20 {t('modal.points')} 🎉</div>

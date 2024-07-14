@@ -1,10 +1,11 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { MODULE } from '../../consts';
-import { createAxiosWithAuth } from '../../functions';
-import { IModule, RoleType } from '../../types';
+import { fetchModulesAPI } from '../../functions';
+import { RoleType } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import CoursePartPage from '../CoursePartPage/CoursePartPage';
@@ -13,59 +14,49 @@ import { IGetModules, IModulesPageParams } from '../types';
 
 const ModulesPage: React.FC = () => {
   const { t } = useTranslation();
-  const { courseId = '' } = useParams<IModulesPageParams>();
+  const { courseId } = useParams<IModulesPageParams>();
+  const { initDataRaw } = retrieveLaunchParams();
+  const queryClient = useQueryClient();
 
-  const [modules, setModules] = useState<IModule[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
-  const [error, setError] = useState<string>('');
+  const { data, error, isLoading, isError, isSuccess } = useQuery<IGetModules>({
+    queryKey: ['modules', courseId],
+    queryFn: () => fetchModulesAPI(courseId, initDataRaw),
+    placeholderData: () => {
+      return queryClient.getQueryData(['modules', courseId]);
+    },
+  });
+
   const [role, setRole] = useState<RoleType | null>(null);
 
-  const { initDataRaw } = retrieveLaunchParams();
-
-  const getAllModules = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get<IGetModules>(
-        `/module/course/${courseId}`
-      );
-      setModules(response.data.modules);
-      setRole(response.data.role);
-      setIsLoaded(true);
-    } catch (error: any) {
-      setError(error.response?.data.message || 'Failed to fetch modules');
-      setIsLoaded(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [courseId, initDataRaw]);
-
   useEffect(() => {
-    getAllModules();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseId]);
+    if (data) {
+      setRole(data.role);
+    }
+  }, [data]);
 
-  if (isLoading) return <Loader />;
-  if (!role && !isLoading && isLoaded) {
+  if (isError && !role) {
     return (
       <ItemNotFoundPage error={t('not_have_role')} isLoading={isLoading} />
     );
   }
 
+  if (!courseId)
+    return (
+      <ItemNotFoundPage error={t('item_not_found')} isLoading={isLoading} />
+    );
+
   return (
     <>
-      {role && (
+      {role && isSuccess && (
         <CoursePartPage
           type={MODULE}
           parentId={courseId}
-          items={modules}
+          items={data.modules}
           role={role}
-          updateItems={getAllModules}
         />
       )}
-      {error && <MessageBox errorMessage={error} />}
+      {isLoading && <Loader />}
+      {isError && <MessageBox errorMessage={error.message} />}
     </>
   );
 };

@@ -9,7 +9,7 @@
   "connect_wallet": "Please connect the wallet",
   "connect_wallet_mainnet": "Please connect the wallet from the main network",
   "course_name": "Course name",
-  "course_not_activated": "Course not activated in TON blockchain",
+  "course_not_activated": "Course not activated in TON blockchain by the seller",
   "course_need_deploy": "The balance of the Course smart contract is 0. In this case, the course purchase will not be available to users. Please click on the \"Activate\" button",
   "cover_label_file": "Upload image for cover",
   "cover_label_file_course": "Upload image for course cover",
@@ -63,6 +63,7 @@
   "modules": "Modules",
   "my_personal_data": "My personal data",
   "my_points": "My points",
+  "not_enough_data": "Not enough data",
   "not_created": "You haven't created any courses yet. Share your knowledge with others",
   "not_created_type": "You have not created any {{type}}s yet",
   "not_have_role": "The role has not been given",
@@ -100,7 +101,7 @@
   },
   "upload": "Upload",
   "video_link": "Video link for the lesson",
-  "video_uploading": "The video is probably still uploading 📤 or not saved 💾. Please wait",
+  "video_uploading": "The video is probably still uploading or not saved. Please wait",
   "warning_delete_course": "All modules and lessons will be irretrievably deleted",
 
   "categories": {
