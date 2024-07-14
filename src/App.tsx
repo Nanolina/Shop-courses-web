@@ -6,7 +6,7 @@ import {
   TwaAnalyticsProvider,
   useTWAEvent,
 } from '@tonsolutions/telemetree-react';
-import { Suspense, lazy, useEffect } from 'react';
+import { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Bounce, ToastContainer } from 'react-toastify';
@@ -22,45 +22,26 @@ import {
 } from './context';
 import NotificationProvider from './context/NotificationContext';
 import i18n from './i18n/i18n';
+import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage';
+import CoursesOneCategoryPage from './pages/CoursesOneCategoryPage/CoursesOneCategoryPage';
+import { default as CreateCourseFormPage } from './pages/CreateCourseFormPage/CreateCourseFormPage';
+import CreateCoursePartPage from './pages/CreateCoursePartPage/CreateCoursePartPage';
+import EditCourseFormPage from './pages/EditCourseFormPage/EditCourseFormPage';
+import EditCoursePartPage from './pages/EditCoursePartPage/EditCoursePartPage';
+import LessonPage from './pages/LessonPage/LessonPage';
+import LessonsPage from './pages/LessonsPage/LessonsPage';
+import MainPage from './pages/MainPage/MainPage';
+import ModulesPage from './pages/ModulesPage/ModulesPage';
+import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
+import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCoursesPage';
 import { DeployEnum } from './types';
-import { Loader } from './ui/Loader/Loader';
-
-// Lazy page loading
-const CourseDetailsPage = lazy(
-  () => import('./pages/CourseDetailsPage/CourseDetailsPage')
-);
-const CoursesOneCategoryPage = lazy(
-  () => import('./pages/CoursesOneCategoryPage/CoursesOneCategoryPage')
-);
-const CreateCourseFormPage = lazy(
-  () => import('./pages/CreateCourseFormPage/CreateCourseFormPage')
-);
-const CreateCoursePartPage = lazy(
-  () => import('./pages/CreateCoursePartPage/CreateCoursePartPage')
-);
-const EditCourseFormPage = lazy(
-  () => import('./pages/EditCourseFormPage/EditCourseFormPage')
-);
-const EditCoursePartPage = lazy(
-  () => import('./pages/EditCoursePartPage/EditCoursePartPage')
-);
-const LessonPage = lazy(() => import('./pages/LessonPage/LessonPage'));
-const LessonsPage = lazy(() => import('./pages/LessonsPage/LessonsPage'));
-const MainPage = lazy(() => import('./pages/MainPage/MainPage'));
-const ModulesPage = lazy(() => import('./pages/ModulesPage/ModulesPage'));
-const MyCreatedCoursesPage = lazy(
-  () => import('./pages/MyCreatedCoursesPage/MyCreatedCoursesPage')
-);
-const MyPurchasedCoursesPage = lazy(
-  () => import('./pages/MyPurchasedCoursesPage/MyPurchasedCoursesPage')
-);
 
 const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
 const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
 
-// Создаем клиент для React Query
+// Create a client for React Query
 const queryClient = new QueryClient();
 
 function App() {
@@ -140,56 +121,48 @@ function App() {
       <I18nextProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>
           <Router>
-            <Suspense fallback={<Loader hasBackground />}>
-              <Routes>
-                {/* all users */}
-                <Route path="/" element={<MainPage />} />
-                <Route
-                  path="/course/:courseId"
-                  element={<CourseDetailsPage />}
-                />
-                <Route
-                  path="course/category/:category"
-                  element={<CoursesOneCategoryPage />}
-                />
-                <Route
-                  path="/course/create"
-                  element={<CreateCourseFormPage />}
-                />
-                {/* seller */}
-                <Route
-                  path="/course/edit/:courseId"
-                  element={<EditCourseFormPage />}
-                />
-                <Route
-                  path="/course-part/create/:type/:parentId"
-                  element={<CreateCoursePartPage />}
-                />
-                <Route
-                  path="/course-part/edit/:parentId/:type/:itemId"
-                  element={<EditCoursePartPage />}
-                />
-                <Route
-                  path="/course/created"
-                  element={<MyCreatedCoursesPage />}
-                />
-                {/* customer */}
-                <Route
-                  path="/course/purchased"
-                  element={<MyPurchasedCoursesPage />}
-                />
-                {/* customer & seller */}
-                <Route
-                  path="/module/course/:courseId"
-                  element={<ModulesPage />}
-                />
-                <Route
-                  path="/lesson/module/:moduleId"
-                  element={<LessonsPage />}
-                />
-                <Route path="/lesson/:lessonId" element={<LessonPage />} />
-              </Routes>
-            </Suspense>
+            <Routes>
+              {/* all users */}
+              <Route path="/" element={<MainPage />} />
+              <Route path="/course/:courseId" element={<CourseDetailsPage />} />
+              <Route
+                path="course/category/:category"
+                element={<CoursesOneCategoryPage />}
+              />
+              <Route path="/course/create" element={<CreateCourseFormPage />} />
+              {/* seller */}
+              <Route
+                path="/course/edit/:courseId"
+                element={<EditCourseFormPage />}
+              />
+              <Route
+                path="/course-part/create/:type/:parentId"
+                element={<CreateCoursePartPage />}
+              />
+              <Route
+                path="/course-part/edit/:parentId/:type/:itemId"
+                element={<EditCoursePartPage />}
+              />
+              <Route
+                path="/course/created"
+                element={<MyCreatedCoursesPage />}
+              />
+              {/* customer */}
+              <Route
+                path="/course/purchased"
+                element={<MyPurchasedCoursesPage />}
+              />
+              {/* customer & seller */}
+              <Route
+                path="/module/course/:courseId"
+                element={<ModulesPage />}
+              />
+              <Route
+                path="/lesson/module/:moduleId"
+                element={<LessonsPage />}
+              />
+              <Route path="/lesson/:lessonId" element={<LessonPage />} />
+            </Routes>
             <ToastContainer
               position="top-center"
               autoClose={5000}
