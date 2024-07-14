@@ -9,3 +9,7 @@
   align-items: center;
   z-index: 30;
 }
+
+.hasBackground {
+  background-color: var(--tg-theme-secondary-bg-color);
+}

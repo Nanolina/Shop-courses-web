@@ -8,7 +8,7 @@ export interface ICourse {
   price: number;
   currency: string;
   imageUrl?: string;
-  userId: bigint;
+  userId: number;
   modules: IModule[];
 }
 
@@ -28,6 +28,14 @@ export interface ILesson {
   moduleId: string;
   imageUrl?: string;
   videoUrl?: string;
+}
+
+export interface IUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  codeValidation: string;
 }
 
 // Type

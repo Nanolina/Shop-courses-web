@@ -7,7 +7,6 @@ export interface ICoursePartPageProps {
   parentId: string;
   items: ICoursePartItem[];
   role: RoleType;
-  updateItems: () => void;
 }
 
 export interface IUseCourseFormReturnType {
@@ -23,9 +22,6 @@ export interface IUseCourseFormReturnType {
   setPrice: (price: number) => void;
   currency: string;
   setCurrency: (currency: string) => void;
-  categoryOptions: IOption[];
-  subcategoryOptions: Record<string, IOption[]>;
-  currencyOptions: IOption[];
   isLoading: boolean;
   error: string;
   // Image
@@ -40,6 +36,8 @@ export interface IUseCourseFormReturnType {
   handleUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   useUrlCover: boolean;
   toggleBetweenUrlAndFile: () => void;
+  sortedCategoryOptions: IOption[];
+  sortedSubcategoryOptions: IOption[];
 }
 
 export interface IUseCoursePartFormReturnType {
@@ -76,6 +74,34 @@ export interface IUseCoursePartFormReturnType {
   handleVideoUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   useVideoUrlCover: boolean;
   toggleBetweenVideoUrlAndFile: () => void;
+}
+
+export interface IUseUserPageReturnType {
+  firstName: string;
+  setFirstName: (firstName: string) => void;
+  lastName: string;
+  setLastName: (lastName: string) => void;
+  phone: string;
+  setPhone: (phone: string) => void;
+  email: string;
+  setEmail: (email: string) => void;
+  code: string;
+  setCode: (code: string) => void;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+  error: string;
+  setError: (error: string) => void;
+  showCode: boolean;
+  showIsVerifiedEmail: boolean;
+  setShowIsVerifiedEmail: (showIsVerifiedEmail: boolean) => void;
+  buttonResendCode: boolean;
+  setButtonResendCode: (activButton: boolean) => void;
+  resendCode: () => void;
+}
+
+export interface IUserPageParams {
+  [key: string]: string | undefined;
+  userId?: string;
 }
 
 export interface ILessonsPageParams {
