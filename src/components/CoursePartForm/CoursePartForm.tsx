@@ -71,8 +71,6 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item, isLesson]);
 
-  if (isLoading) return <Loader />;
-
   return (
     <div className={styles.container}>
       <div className={styles.formGroup}>
@@ -116,7 +114,11 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
         />
 
         {useImageUrlCover ? (
-          <TextInput value={imageUrl} onChange={handleImageUrlChange} />
+          <TextInput
+            value={imageUrl}
+            onChange={handleImageUrlChange}
+            type="url"
+          />
         ) : (
           <InputUpload
             name="files"
@@ -174,6 +176,7 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
         </>
       )}
 
+      {isLoading && <Loader />}
       {error && <MessageBox errorMessage={error} />}
     </div>
   );

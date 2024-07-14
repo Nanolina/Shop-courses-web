@@ -1,4 +1,9 @@
-import { ButtonHTMLAttributes, ChangeEvent, ReactNode } from 'react';
+import {
+  ButtonHTMLAttributes,
+  ChangeEvent,
+  HTMLInputTypeAttribute,
+  ReactNode,
+} from 'react';
 
 export interface IOption {
   value: string;
@@ -55,6 +60,7 @@ export interface ITextareaProps {
 export interface ITextInputProps {
   value: string | number;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  type?: HTMLInputTypeAttribute;
   placeholder?: string;
   disabled?: boolean;
   isRequired?: boolean;

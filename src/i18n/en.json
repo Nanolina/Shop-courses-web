@@ -101,7 +101,7 @@
   },
   "upload": "Upload",
   "video_link": "Video link for the lesson",
-  "video_uploading": "The video is probably still uploading or not saved. Please wait",
+  "video_uploading": "The video is still uploading or not saved",
   "warning_delete_course": "All modules and lessons will be irretrievably deleted",
 
   "categories": {

@@ -35,14 +35,14 @@ function Points() {
             <FaArrowLeft
               onClick={handlePrevious}
               className={`${styles.arrow} ${styles.left}`}
-              size={20}
+              size={24}
             />
           )}
           {page < 3 && (
             <FaArrowRight
               onClick={handleNext}
               className={`${styles.arrow} ${styles.right}`}
-              size={20}
+              size={24}
             />
           )}
         </div>

@@ -1,11 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CourseItem from '../../components/CourseItem/CourseItem';
 import Points from '../../components/Points/Points';
-import { fetchAllMyCreatedCourses } from '../../functions';
 import { filterCourses } from '../../functions/filterCourses';
+import { fetchAllMyCreatedCourses } from '../../requests';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
@@ -18,8 +18,8 @@ const tg = window.Telegram.WebApp;
 function MyCreatedCoursesPage() {
   const { t } = useTranslation();
   const { initDataRaw } = retrieveLaunchParams();
-
   const [value, setValue] = useState<string>('');
+  const queryClient = useQueryClient();
 
   const {
     data: courses = [],
@@ -30,6 +30,9 @@ function MyCreatedCoursesPage() {
     queryKey: ['myCreatedCourses', initDataRaw],
     queryFn: () => fetchAllMyCreatedCourses(initDataRaw),
     enabled: !!initDataRaw,
+    placeholderData: () => {
+      return queryClient.getQueryData(['myCreatedCourses', initDataRaw]);
+    },
   });
 
   const filteredCourses = useMemo(

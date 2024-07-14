@@ -43,6 +43,7 @@ export type EntityType = 'module' | 'lesson';
 export type RoleType = 'user' | 'customer' | 'seller';
 export type RequestMethodType = 'post' | 'patch';
 export type DeployType = 'create' | 'purchase';
+export type RequestType = 'create' | 'update';
 
 // Enum
 export enum StatusEnum {

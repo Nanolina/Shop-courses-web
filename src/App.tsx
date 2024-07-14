@@ -34,8 +34,8 @@ import MainPage from './pages/MainPage/MainPage';
 import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
 import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCoursesPage';
-import { DeployEnum } from './types';
 import UserPage from './pages/UserPage/UserPage';
+import { DeployEnum } from './types';
 
 const isProduction = process.env.REACT_APP_ENVIRONMENT === 'production';
 const tg = window.Telegram.WebApp;
@@ -48,8 +48,8 @@ const queryClient = new QueryClient();
 function App() {
   const eventBuilder = useTWAEvent();
   const { showNotification } = useNotification();
-  const { initData } = retrieveLaunchParams();
-  const { refreshPoints, setPoints } = usePoints();
+  const { initData, initDataRaw } = retrieveLaunchParams();
+  const { refreshPoints } = usePoints();
   const { setCourseContractBalance, setPurchaseContractBalance } =
     useContract();
 
@@ -63,8 +63,13 @@ function App() {
     const socket = io(serverUrl);
 
     socket.on('video-uploaded', (data) => {
-      const { status, userId, message } = data;
-      if (initData?.user?.id === userId) showNotification(message, status);
+      const { status, userId, lessonId, message } = data;
+      if (initData?.user?.id === userId) {
+        showNotification(message, status);
+        queryClient.invalidateQueries({
+          queryKey: ['lesson', lessonId],
+        });
+      }
     });
 
     return () => {
@@ -78,21 +83,33 @@ function App() {
     const socket = io(serverUrl);
 
     socket.on('contract-updated', (data) => {
-      const { status, userId, message, type, balance, points } = data;
+      const { status, userId, courseId, message, type, balance, points } = data;
       if (initData?.user?.id === userId) {
         showNotification(message, status);
 
         if (points) {
-          setPoints(points);
+          refreshPoints();
         }
 
-        if (balance && type) {
+        if (balance && type && courseId) {
           if (type === DeployEnum.Create) {
             eventBuilder.track('Course activated', {});
             setCourseContractBalance(balance);
+            queryClient.invalidateQueries({
+              queryKey: ['courseDetails', courseId],
+            });
           } else {
             eventBuilder.track('Course purchased', {});
             setPurchaseContractBalance(balance);
+            queryClient.invalidateQueries({
+              queryKey: ['courseDetails', courseId],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ['myPurchasedCourses', initDataRaw],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ['modules', courseId],
+            });
           }
         }
       }
@@ -105,8 +122,8 @@ function App() {
   }, [
     showNotification,
     initData?.user?.id,
+    initDataRaw,
     refreshPoints,
-    setPoints,
     setCourseContractBalance,
     setPurchaseContractBalance,
     eventBuilder,
@@ -118,72 +135,50 @@ function App() {
   }, [initData?.user?.languageCode]);
 
   return (
-    <TonConnectUIProvider manifestUrl={manifestUrl}>
-      <I18nextProvider i18n={i18n}>
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <Routes>
-              {/* all users */}
-              <Route path="/" element={<MainPage />} />
-              <Route path="/user" element={<UserPage />} />
-              <Route path="/course/:courseId" element={<CourseDetailsPage />} />
-              <Route
-                path="course/category/:category"
-                element={<CoursesOneCategoryPage />}
-              />
-              <Route path="/course/create" element={<CreateCourseFormPage />} />
-              {/* seller */}
-              <Route
-                path="/course/edit/:courseId"
-                element={<EditCourseFormPage />}
-              />
-              <Route
-                path="/course-part/create/:type/:parentId"
-                element={<CreateCoursePartPage />}
-              />
-              <Route
-                path="/course-part/edit/:parentId/:type/:itemId"
-                element={<EditCoursePartPage />}
-              />
-              <Route
-                path="/course/created"
-                element={<MyCreatedCoursesPage />}
-              />
-              {/* customer */}
-              <Route
-                path="/course/purchased"
-                element={<MyPurchasedCoursesPage />}
-              />
-              {/* customer & seller */}
-              <Route
-                path="/module/course/:courseId"
-                element={<ModulesPage />}
-              />
-              <Route
-                path="/lesson/module/:moduleId"
-                element={<LessonsPage />}
-              />
-              <Route path="/lesson/:lessonId" element={<LessonPage />} />
-            </Routes>
-            <ToastContainer
-              position="top-center"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="colored"
-              transition={Bounce}
-            />
-            <ModalEarnPoints />
-          </Router>
-          {!isProduction && <ReactQueryDevtools />}
-        </QueryClientProvider>
-      </I18nextProvider>
-    </TonConnectUIProvider>
+    <Router>
+      <Routes>
+        {/* all users */}
+        <Route path="/" element={<MainPage />} />
+        <Route path="/user" element={<UserPage />} />
+        <Route path="/course/:courseId" element={<CourseDetailsPage />} />
+        <Route
+          path="course/category/:category"
+          element={<CoursesOneCategoryPage />}
+        />
+        <Route path="/course/create" element={<CreateCourseFormPage />} />
+        {/* seller */}
+        <Route path="/course/edit/:courseId" element={<EditCourseFormPage />} />
+        <Route
+          path="/course-part/create/:type/:parentId"
+          element={<CreateCoursePartPage />}
+        />
+        <Route
+          path="/course-part/edit/:parentId/:type/:itemId"
+          element={<EditCoursePartPage />}
+        />
+        <Route path="/course/created" element={<MyCreatedCoursesPage />} />
+        {/* customer */}
+        <Route path="/course/purchased" element={<MyPurchasedCoursesPage />} />
+        {/* customer & seller */}
+        <Route path="/module/course/:courseId" element={<ModulesPage />} />
+        <Route path="/lesson/module/:moduleId" element={<LessonsPage />} />
+        <Route path="/lesson/:lessonId" element={<LessonPage />} />
+      </Routes>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
+      <ModalEarnPoints />
+    </Router>
   );
 }
 
@@ -198,14 +193,21 @@ export default () => (
       process.env.REACT_APP_TELEMETREE_APPLICATION_NAME || 'courses_app_name'
     }
   >
-    <NotificationProvider>
+    <QueryClientProvider client={queryClient}>
       <PointsProvider>
-        <ContractProvider>
-          <ModalProvider>
-            <App />
-          </ModalProvider>
-        </ContractProvider>
+        <NotificationProvider>
+          <ContractProvider>
+            <ModalProvider>
+              <I18nextProvider i18n={i18n}>
+                <TonConnectUIProvider manifestUrl={manifestUrl}>
+                  <App />
+                </TonConnectUIProvider>
+              </I18nextProvider>
+            </ModalProvider>
+          </ContractProvider>
+        </NotificationProvider>
       </PointsProvider>
-    </NotificationProvider>
+      {!isProduction && <ReactQueryDevtools />}
+    </QueryClientProvider>
   </TwaAnalyticsProvider>
 );

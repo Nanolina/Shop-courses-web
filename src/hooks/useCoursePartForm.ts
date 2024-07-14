@@ -1,10 +1,12 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LESSON } from '../consts';
-import { createAxiosWithAuth, handleAuthError } from '../functions';
-import { ILesson, IModule } from '../types';
+import { handleAuthError } from '../functions';
+import { createOrUpdateCoursePartAPI } from '../requests';
+import { ILesson, IModule, RequestType } from '../types';
 
 const tg = window.Telegram.WebApp;
 
@@ -15,13 +17,13 @@ export function useCoursePartForm() {
   // parentId - create | update
   // itemId - update
   const { type, parentId, itemId } = useParams();
+  const queryClient = useQueryClient();
 
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [isLesson, setIsLesson] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
 
   // Image
   const [imageUrl, setImageUrl] = useState<string>('');
@@ -38,80 +40,47 @@ export function useCoursePartForm() {
   const { initDataRaw } = retrieveLaunchParams();
   const navigate = useNavigate();
 
-  const createOrUpdateCoursePart = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const formData = new FormData();
-      formData.append('name', name);
-      if (description) formData.append('description', description);
-      // Image
-      if (imageUrl) formData.append('imageUrl', imageUrl);
-      if (image && !isLesson) formData.append('image', image);
-      if (image && isLesson) formData.append('files', image, image.name);
-      if (!image && !imageUrl) formData.append('isRemoveImage', 'true');
-
-      // Video
-      if (isLesson) {
-        if (videoUrl) formData.append('videoUrl', videoUrl);
-        if (video) formData.append('files', video, video.name);
-        if (!video && !videoUrl) formData.append('isRemoveVideo', 'true');
-      }
-
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-
-      // Edit module or lesson
-      if (isEditMode) {
-        const response = await axiosWithAuth.patch<IModule | ILesson>(
-          `/${type}/${itemId}`,
-          formData
-        );
-        if (response.status === 200) {
-          isLesson
-            ? navigate(`/lesson/module/${parentId}`)
-            : navigate(`/module/course/${parentId}`);
-        }
-      } else {
-        // Create lesson
-        if (isLesson) {
-          const response = await axiosWithAuth.post<ILesson>(
-            `/lesson/module/${parentId}`,
-            formData
-          );
-          if (response.status === 201) {
-            navigate(`/lesson/${response.data.id}`);
-          }
-          // Create module
-        } else {
-          const response = await axiosWithAuth.post<IModule>(
-            `/module/course/${parentId}`,
-            formData
-          );
-          if (response.status === 201) {
-            navigate(`/module/course/${parentId}`);
-          }
-        }
-      }
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [
-    initDataRaw,
+  // Send data to server
+  const dataToSend = {
     name,
     description,
     imageUrl,
     image,
-    isLesson,
-    isEditMode,
-    videoUrl,
     video,
-    type,
-    itemId,
-    navigate,
-    parentId,
-  ]);
+    videoUrl,
+  };
+
+  const createOrUpdateCoursePartMutation = useMutation({
+    mutationFn: () =>
+      createOrUpdateCoursePartAPI(
+        type as RequestType,
+        itemId as string,
+        parentId as string,
+        isLesson,
+        isEditMode,
+        dataToSend,
+        initDataRaw
+      ),
+    onSuccess: (data: IModule | ILesson) => {
+      if (isLesson) {
+        isEditMode
+          ? navigate(`/lesson/module/${parentId}`)
+          : navigate(`/lesson/${data.id}`);
+        queryClient.invalidateQueries({ queryKey: ['lessons', parentId] });
+      } else {
+        navigate(`/module/course/${parentId}`);
+        queryClient.invalidateQueries({ queryKey: ['modules', parentId] });
+      }
+    },
+    onError: (error: any) => {
+      handleAuthError(error, setError);
+    },
+  });
+
+  const createOrUpdateCoursePart = useCallback(
+    () => createOrUpdateCoursePartMutation.mutate(),
+    [createOrUpdateCoursePartMutation]
+  );
 
   // Common functions for image and video
   const handleFileChange = (
@@ -195,7 +164,7 @@ export function useCoursePartForm() {
   const handleVideoUrlChange = (event: ChangeEvent<HTMLInputElement>) =>
     handleUrlChange(event, setPreviewVideoUrl, setVideoUrl);
 
-  // useEffect
+  // useEffects
   useEffect(() => {
     setIsLesson(type === LESSON);
   }, [type]);
@@ -246,8 +215,7 @@ export function useCoursePartForm() {
     description,
     setDescription,
     isLesson,
-    isLoading,
-    error,
+
     // Image
     image,
     setImage,
@@ -273,5 +241,8 @@ export function useCoursePartForm() {
     handleVideoUrlChange,
     useVideoUrlCover,
     toggleBetweenVideoUrlAndFile,
+
+    error,
+    isLoading: createOrUpdateCoursePartMutation.isPending,
   };
 }
