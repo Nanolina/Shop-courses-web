@@ -1,51 +1,44 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import React, {
   ReactNode,
   createContext,
   useCallback,
   useContext,
-  useEffect,
-  useState,
 } from 'react';
-import { createAxiosWithAuth } from '../functions';
+import { fetchPointsAPI } from '../requests';
 
 interface PointsContextProps {
   points: number;
   refreshPoints: () => void;
-  setPoints: React.Dispatch<React.SetStateAction<number>>;
 }
-
-const PointsContext = createContext<PointsContextProps | undefined>(undefined);
 
 interface PointsProviderProps {
   children: ReactNode;
 }
 
+const PointsContext = createContext<PointsContextProps | undefined>(undefined);
+
 export const PointsProvider: React.FC<PointsProviderProps> = ({ children }) => {
-  const [points, setPoints] = useState<number>(0);
-
   const { initDataRaw } = retrieveLaunchParams();
+  const queryClient = useQueryClient();
 
-  const fetchPoints = useCallback(async () => {
-    if (!initDataRaw) return;
-    try {
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get<number>(`/points`);
-      setPoints(response.data);
-    } catch (error) {
-      return 0;
-    }
-  }, [initDataRaw]);
+  const refreshPoints = useCallback(() => {
+    queryClient.invalidateQueries({
+      queryKey: ['points', initDataRaw],
+    });
+  }, [queryClient, initDataRaw]);
 
-  useEffect(() => {
-    fetchPoints();
-    // eslint-disable-next-line
-  }, []);
+  const { data } = useQuery<number>({
+    queryKey: ['points', initDataRaw],
+    queryFn: () => fetchPointsAPI(initDataRaw),
+    placeholderData: () => {
+      return queryClient.getQueryData(['points', initDataRaw]);
+    },
+  });
 
   return (
-    <PointsContext.Provider
-      value={{ points, setPoints, refreshPoints: fetchPoints }}
-    >
+    <PointsContext.Provider value={{ points: data ?? 0, refreshPoints }}>
       {children}
     </PointsContext.Provider>
   );

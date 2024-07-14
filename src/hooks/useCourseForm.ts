@@ -6,8 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { categoryOptions, subcategoryOptions } from '../category-data';
 import { PATCH, POST } from '../consts';
-import { createOrUpdateCourseAPI, handleAuthError } from '../functions';
+import { handleAuthError } from '../functions';
 import { IMyCreatedCoursesPageParams } from '../pages/types';
+import { createOrUpdateCourseAPI } from '../requests';
 import { ICourse } from '../types';
 
 const tg = window.Telegram.WebApp;

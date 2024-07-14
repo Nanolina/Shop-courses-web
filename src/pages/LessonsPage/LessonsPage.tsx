@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { LESSON } from '../../consts';
-import { fetchLessonsAPI } from '../../functions';
+import { fetchLessonsAPI } from '../../requests';
 import { RoleType } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';

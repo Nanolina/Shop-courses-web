@@ -8,11 +8,8 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useNavigate } from 'react-router-dom';
 import { LESSON, MODULE, SELLER } from '../../consts';
-import {
-  deleteCoursePartAPI,
-  getTranslatedType,
-  handleAuthError,
-} from '../../functions';
+import { getTranslatedType, handleAuthError } from '../../functions';
+import { deleteCoursePartAPI } from '../../requests';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import Modal from '../Modal/Modal';

@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoIosArrowBack } from 'react-icons/io';
 import { MdDelete } from 'react-icons/md';
+import { RiEdit2Fill } from 'react-icons/ri';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -12,18 +13,14 @@ import CourseDetails from '../../components/CourseDetails/CourseDetails';
 import Modal from '../../components/Modal/Modal';
 import Points from '../../components/Points/Points';
 import { SELLER } from '../../consts';
-import {
-  deleteCourseAPI,
-  fetchCourseDetailsAPI,
-  handleAuthError,
-} from '../../functions';
+import { handleAuthError } from '../../functions';
+import { deleteCourseAPI, fetchCourseDetailsAPI } from '../../requests';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
-import { RiEdit2Fill } from 'react-icons/ri';
 
 const iconSize = 20;
 const iconColor = 'white';

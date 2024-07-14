@@ -1,8 +1,7 @@
+import { createAxiosWithAuth } from '../functions/axiosWithAuth';
 import { IGetLessons, IGetModules } from '../pages';
 import { EntityType } from '../types';
-import { createAxiosWithAuth } from './axiosWithAuth';
 
-// API requests
 // Modules
 export const fetchModulesAPI = async (
   courseId: string | undefined,
