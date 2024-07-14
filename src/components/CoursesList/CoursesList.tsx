@@ -1,7 +1,8 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { fetchAllCoursesAPI, groupCoursesByCategory } from '../../functions';
+import { groupCoursesByCategory } from '../../functions';
 import { filterCourses } from '../../functions/filterCourses.ts';
+import { fetchAllCoursesAPI } from '../../requests';
 import { ICourse } from '../../types.ts';
 import { MessageBox } from '../../ui/MessageBox/MessageBox.tsx';
 import SearchBar from '../../ui/SearchBar/SearchBar.tsx';

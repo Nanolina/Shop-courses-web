@@ -14,7 +14,7 @@ function CreateCoursePartPage() {
   const { type = '' } = useParams<{ type: EntityType }>();
   const { singular } = getTranslatedType(type, t);
 
-  if (!type) return <ItemNotFoundPage error="Type is not provided" />;
+  if (!type) return <ItemNotFoundPage error={t('not_enough_data')} />;
 
   return (
     <Container>

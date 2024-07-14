@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { useEffect, useMemo, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import CourseItem from '../../components/CourseItem/CourseItem';
@@ -7,48 +7,37 @@ import Header from '../../components/Header/Header';
 import Points from '../../components/Points/Points';
 import { capitalizeFirstLetter } from '../../functions';
 import { filterCourses } from '../../functions/filterCourses';
+import { fetchAllCoursesByOneCategoryAPI } from '../../requests';
 import { ICourse } from '../../types';
 import Container from '../../ui/Container/Container';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import SearchBar from '../../ui/SearchBar/SearchBar';
 
-const serverUrl = process.env.REACT_APP_SERVER_URL;
-
 function CoursesOneCategoryPage() {
   const { t } = useTranslation();
 
-  const { category } = useParams<{ category: string }>();
-  const [courses, setCourses] = useState<ICourse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const { category = '' } = useParams<{ category: string }>();
   const [value, setValue] = useState<string>('');
 
+  const queryClient = useQueryClient();
+  const {
+    data = [],
+    error,
+    isLoading,
+  } = useQuery<ICourse[]>({
+    queryKey: ['coursesByOneCategory', category],
+    queryFn: () => fetchAllCoursesByOneCategoryAPI(category),
+    enabled: !!category,
+    placeholderData: () => {
+      return queryClient.getQueryData(['coursesByOneCategory', category]);
+    },
+  });
+
   const filteredCourses = useMemo(
-    () => filterCourses(courses, value),
-    [courses, value]
+    () => filterCourses(data, value),
+    [data, value]
   );
-
-  async function getAllCoursesOneCategory() {
-    setIsLoading(true);
-    try {
-      const allCoursesApiUrl = `${serverUrl}/course/category/${category}`;
-      const response = await axios.get(allCoursesApiUrl);
-      setCourses(response.data);
-      return response.data;
-    } catch (error: any) {
-      setError(error.response?.data.message || String(error));
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    getAllCoursesOneCategory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (isLoading) return <Loader />;
 
   return (
     <Container>
@@ -64,7 +53,9 @@ function CoursesOneCategoryPage() {
           <CourseItem key={course.id} course={course} />
         ))}
       </div>
-      {error && <MessageBox errorMessage={error} />}
+
+      {error && <MessageBox errorMessage={error.message} />}
+      {isLoading && <Loader />}
     </Container>
   );
 }

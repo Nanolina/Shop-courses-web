@@ -88,9 +88,7 @@ export interface IUseUserPageReturnType {
   code: string;
   setCode: (code: string) => void;
   isLoading: boolean;
-  setIsLoading: (isLoading: boolean) => void;
   error: string;
-  setError: (error: string) => void;
   showCode: boolean;
   showIsVerifiedEmail: boolean;
   setShowIsVerifiedEmail: (showIsVerifiedEmail: boolean) => void;

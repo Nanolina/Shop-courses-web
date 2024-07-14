@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useModal } from '../../context';
+import { pointsNumber } from '../../data';
 import Modal from '../Modal/Modal';
 import styles from './ModalEarnPoints.module.css';
 
@@ -22,7 +23,9 @@ function ModalEarnPoints() {
         />
         <div className={styles.title}>
           {t('modal.earned_points')}
-          <div className={styles.points}>20 {t('modal.points')} 🎉</div>
+          <div className={styles.points}>
+            {pointsNumber} {t('modal.points')} 🎉
+          </div>
         </div>
         <div className={styles.thanks}>
           {deployType === 'create' ? (

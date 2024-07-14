@@ -1,3 +1,4 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useTWAEvent } from '@tonsolutions/telemetree-react';
 import { useEffect, useState } from 'react';
@@ -7,12 +8,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
 import { useNotification } from '../../context';
-import { createAxiosWithAuth, handleAuthError } from '../../functions';
+import { fetchCoursePartDetailsAPI } from '../../requests';
 import { ILesson } from '../../types';
 import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import VideoPlayer from '../../ui/VideoPlayer/VideoPlayer';
-import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import styles from './LessonPage.module.css';
 
 const tg = window.Telegram.WebApp;
@@ -25,31 +25,39 @@ function LessonPage() {
   const { setDisableNotification } = useNotification();
   const navigate = useNavigate();
 
-  const [lesson, setLesson] = useState<ILesson | null>(null);
-  const [videoUrl, setVideoUrl] = useState<string>(lesson?.videoUrl || '');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState(false); // State to track the completion of data loading
-  const [error, setError] = useState<string>('');
-
   const { initDataRaw } = retrieveLaunchParams();
+  const queryClient = useQueryClient();
 
-  async function getOneLesson() {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get<ILesson>(`/lesson/${lessonId}`);
-      setLesson(response.data);
-      setVideoUrl(response.data.videoUrl || '');
-      setIsLoaded(true);
-      eventBuilder.track('Lesson opened', {});
-    } catch (error: any) {
-      handleAuthError(error, setError);
-      setIsLoaded(true);
-    } finally {
-      setIsLoading(false);
+  const [videoUrl, setVideoUrl] = useState<string>('');
+
+  const getLessonData = async () => {
+    const data = await fetchCoursePartDetailsAPI(
+      'lesson',
+      lessonId as string,
+      initDataRaw
+    );
+    if ('videoUrl' in data) {
+      return data as ILesson;
+    } else {
+      throw new Error('Expected lesson data but received module data');
     }
-  }
+  };
+
+  const { data, error, isLoading, isSuccess } = useQuery<ILesson>({
+    queryKey: ['lesson', lessonId],
+    queryFn: getLessonData,
+    enabled: !!lessonId,
+    placeholderData: () => {
+      return queryClient.getQueryData(['lesson', lessonId]);
+    },
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      setVideoUrl(data.videoUrl || '');
+      eventBuilder.track('Lesson opened', {});
+    }
+  }, [isSuccess, data, eventBuilder]);
 
   // To receive notifications when a video is successfully uploaded to Cloudinary
   useEffect(() => {
@@ -79,16 +87,6 @@ function LessonPage() {
     return () => setDisableNotification(false);
   }, [setDisableNotification]);
 
-  useEffect(() => {
-    getOneLesson();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (isLoading) return <Loader />;
-  if (!lesson && !isLoading && isLoaded) {
-    return <ItemNotFoundPage error={error} isLoading={isLoading} />;
-  }
-
   return (
     <div className={styles.videoContainer}>
       <IoIosArrowBack
@@ -96,12 +94,19 @@ function LessonPage() {
         onClick={() => navigate(-1)}
         size={24}
       />
-      {videoUrl ? (
-        <VideoPlayer url={videoUrl} />
-      ) : (
-        <div className={styles.notUploaded}>{t('video_uploading')}⏳</div>
+      {videoUrl && isSuccess && <VideoPlayer url={videoUrl} />}
+      {!videoUrl && isSuccess && (
+        <div className={styles.notUploaded}>
+          {t('video_uploading')}
+          <img
+            src="/hourglass.gif"
+            alt="Hourglass gif"
+            className={styles.hourglass}
+          />
+        </div>
       )}
-      {error && <MessageBox errorMessage={error} />}
+      {isLoading && <Loader hasBackground />}
+      {error && <MessageBox errorMessage={error.message} />}
     </div>
   );
 }
