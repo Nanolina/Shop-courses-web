@@ -48,7 +48,7 @@ const queryClient = new QueryClient();
 function App() {
   const eventBuilder = useTWAEvent();
   const { showNotification } = useNotification();
-  const { initData } = retrieveLaunchParams();
+  const { initData, initDataRaw } = retrieveLaunchParams();
   const { refreshPoints } = usePoints();
   const { setCourseContractBalance, setPurchaseContractBalance } =
     useContract();
@@ -63,8 +63,13 @@ function App() {
     const socket = io(serverUrl);
 
     socket.on('video-uploaded', (data) => {
-      const { status, userId, message } = data;
-      if (initData?.user?.id === userId) showNotification(message, status);
+      const { status, userId, lessonId, message } = data;
+      if (initData?.user?.id === userId) {
+        showNotification(message, status);
+        queryClient.invalidateQueries({
+          queryKey: ['lesson', lessonId],
+        });
+      }
     });
 
     return () => {
@@ -78,7 +83,7 @@ function App() {
     const socket = io(serverUrl);
 
     socket.on('contract-updated', (data) => {
-      const { status, userId, message, type, balance, points } = data;
+      const { status, userId, courseId, message, type, balance, points } = data;
       if (initData?.user?.id === userId) {
         showNotification(message, status);
 
@@ -86,13 +91,25 @@ function App() {
           refreshPoints();
         }
 
-        if (balance && type) {
+        if (balance && type && courseId) {
           if (type === DeployEnum.Create) {
             eventBuilder.track('Course activated', {});
             setCourseContractBalance(balance);
+            queryClient.invalidateQueries({
+              queryKey: ['courseDetails', courseId],
+            });
           } else {
             eventBuilder.track('Course purchased', {});
             setPurchaseContractBalance(balance);
+            queryClient.invalidateQueries({
+              queryKey: ['courseDetails', courseId],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ['myPurchasedCourses', initDataRaw],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ['modules', courseId],
+            });
           }
         }
       }
@@ -105,6 +122,7 @@ function App() {
   }, [
     showNotification,
     initData?.user?.id,
+    initDataRaw,
     refreshPoints,
     setCourseContractBalance,
     setPurchaseContractBalance,
@@ -161,7 +179,6 @@ function App() {
       />
       <ModalEarnPoints />
     </Router>
-    // </TonConnectUIProvider>
   );
 }
 

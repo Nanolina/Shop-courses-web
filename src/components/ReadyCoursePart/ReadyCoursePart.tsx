@@ -27,7 +27,7 @@ function ReadyCoursePart({
 
   const [isSeller, setIsSeller] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
 
   const { initDataRaw } = retrieveLaunchParams();
 
@@ -139,6 +139,7 @@ function ReadyCoursePart({
           >{`${type === MODULE ? t('module_all_lessons') : t('this_lesson')}`}</div>
         </div>
       </Modal>
+
       {deleteMutation.isPending && <Loader />}
       {error && <MessageBox errorMessage={error} />}
     </div>

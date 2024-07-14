@@ -114,7 +114,11 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
         />
 
         {useImageUrlCover ? (
-          <TextInput value={imageUrl} onChange={handleImageUrlChange} />
+          <TextInput
+            value={imageUrl}
+            onChange={handleImageUrlChange}
+            type="url"
+          />
         ) : (
           <InputUpload
             name="files"

@@ -22,7 +22,7 @@ import ItemNotFoundPage from '../ItemNotFoundPage/ItemNotFoundPage';
 import { IGetCourse } from '../types';
 import styles from './CourseDetailsPage.module.css';
 
-const iconSize = 20;
+const iconSize = 24;
 const iconColor = 'white';
 function CourseDetailsPage() {
   const { t } = useTranslation();
@@ -33,8 +33,8 @@ function CourseDetailsPage() {
   const { initDataRaw } = retrieveLaunchParams();
   const queryClient = useQueryClient();
 
-  const [errorPage, setErrorPage] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [errorPage, setErrorPage] = useState<string | null>(null);
 
   const { data, error, isLoading } = useQuery<IGetCourse>({
     queryKey: ['courseDetails', courseId],
@@ -45,7 +45,7 @@ function CourseDetailsPage() {
     },
   });
 
-  const mutation = useMutation({
+  const deleteCourseMutation = useMutation({
     mutationFn: () => deleteCourseAPI(courseId, initDataRaw),
     onSuccess: () => {
       navigate('/course/created');
@@ -56,11 +56,22 @@ function CourseDetailsPage() {
       queryClient.invalidateQueries({
         queryKey: ['allCourses'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['coursesByOneCategory', data?.course.category],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['myCreatedCourses', initDataRaw],
+      });
     },
     onError: (error: any) => {
       handleAuthError(error, setErrorPage);
     },
   });
+
+  const deleteCourse = useCallback(
+    () => deleteCourseMutation.mutate(),
+    [deleteCourseMutation]
+  );
 
   const handleBack = useCallback(() => navigate(-1), [navigate]);
   const handleEdit = useCallback(
@@ -73,7 +84,7 @@ function CourseDetailsPage() {
     return <Loader hasBackground />;
   }
 
-  if (!data?.course) {
+  if (!data?.course || !data.role) {
     return <ItemNotFoundPage error={t('item_not_found')} />;
   }
 
@@ -81,7 +92,7 @@ function CourseDetailsPage() {
 
   return (
     <>
-      {course && role ? (
+      {course && role && (
         <>
           <div className={styles.imageContainer}>
             <LazyLoadImage
@@ -119,14 +130,11 @@ function CourseDetailsPage() {
           <Container>
             <Points />
             <CourseDetails course={course} role={role} />
-            {(error || errorPage) && (
-              <MessageBox errorMessage={error?.message} />
-            )}
           </Container>
           <Modal
             isOpen={modalOpen}
             onClose={() => setModalOpen(false)}
-            confirm={() => mutation.mutate()}
+            confirm={deleteCourse}
             buttonRightText={t('delete')}
           >
             <div className={styles.modalContainer}>
@@ -145,11 +153,14 @@ function CourseDetailsPage() {
               </div>
             </div>
           </Modal>
-          {mutation.isPending && <Loader />}
         </>
-      ) : (
-        <ItemNotFoundPage isLoading={isLoading} error={t('not_enough_data')} />
       )}
+
+      {deleteCourseMutation.isPending && <Loader />}
+      {error?.message ||
+        (errorPage && (
+          <MessageBox errorMessage={error?.message || errorPage} />
+        ))}
     </>
   );
 }

@@ -23,7 +23,7 @@ export function useCoursePartForm() {
   const [description, setDescription] = useState<string>('');
   const [isLesson, setIsLesson] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
 
   // Image
   const [imageUrl, setImageUrl] = useState<string>('');
@@ -77,9 +77,10 @@ export function useCoursePartForm() {
     },
   });
 
-  const createOrUpdateCoursePart = useCallback(() => {
-    createOrUpdateCoursePartMutation.mutate();
-  }, [createOrUpdateCoursePartMutation]);
+  const createOrUpdateCoursePart = useCallback(
+    () => createOrUpdateCoursePartMutation.mutate(),
+    [createOrUpdateCoursePartMutation]
+  );
 
   // Common functions for image and video
   const handleFileChange = (
@@ -163,7 +164,7 @@ export function useCoursePartForm() {
   const handleVideoUrlChange = (event: ChangeEvent<HTMLInputElement>) =>
     handleUrlChange(event, setPreviewVideoUrl, setVideoUrl);
 
-  // useEffect
+  // useEffects
   useEffect(() => {
     setIsLesson(type === LESSON);
   }, [type]);
@@ -214,8 +215,7 @@ export function useCoursePartForm() {
     description,
     setDescription,
     isLesson,
-    isLoading: createOrUpdateCoursePartMutation.isPending,
-    error,
+
     // Image
     image,
     setImage,
@@ -241,5 +241,8 @@ export function useCoursePartForm() {
     handleVideoUrlChange,
     useVideoUrlCover,
     toggleBetweenVideoUrlAndFile,
+
+    error,
+    isLoading: createOrUpdateCoursePartMutation.isPending,
   };
 }

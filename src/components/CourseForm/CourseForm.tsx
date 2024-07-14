@@ -2,7 +2,7 @@ import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdCameraswitch } from 'react-icons/md';
 import { useCourseFormContext } from '../../context/CourseFormContext';
-import { currencyOptions } from '../../currency-options';
+import { currencyOptions } from '../../data';
 import Button from '../../ui/Button/Button';
 import ImagePreview from '../../ui/ImagePreview/ImagePreview';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
@@ -131,7 +131,7 @@ function CourseForm() {
         />
 
         {useUrlCover ? (
-          <TextInput value={imageUrl} onChange={handleUrlChange} />
+          <TextInput value={imageUrl} onChange={handleUrlChange} type="url" />
         ) : (
           <InputUpload
             name="image"

@@ -11,6 +11,15 @@ export const fetchAllCoursesAPI = async (): Promise<ICourse[]> => {
   return response.data;
 };
 
+export const fetchAllCoursesByOneCategoryAPI = async (
+  category: string
+): Promise<ICourse[]> => {
+  const response = await axios.get<ICourse[]>(
+    `${serverUrl}/course/category/${category}`
+  );
+  return response.data;
+};
+
 export const fetchCourseDetailsAPI = async (
   courseId: string | undefined,
   initDataRaw: string | undefined

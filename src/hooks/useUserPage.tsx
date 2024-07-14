@@ -1,17 +1,23 @@
-import { useTranslation } from 'react-i18next';
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
+import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { getCSSVariableValue, handleAuthError } from '../functions';
 import {
-  createAxiosWithAuth,
-  getCSSVariableValue,
-  handleAuthError,
-} from '../functions';
+  IFetchUserDetails,
+  IUserDataToUpdate,
+  fetchUserDetailsAPI,
+  resendCodeAPI,
+  saveDataAndGenerateCodeAPI,
+  sendCodeFromUserAPI,
+} from '../requests';
 
 const tg = window.Telegram.WebApp;
 
 export function useUserPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { initDataRaw } = retrieveLaunchParams();
   const [firstName, setFirstName] = useState<string>('');
@@ -21,102 +27,112 @@ export function useUserPage() {
   const [emailFromDB, setEmailFromDB] = useState<string>('');
   const [code, setCode] = useState<string>('');
   const [showCode, setShowCode] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
   const [showIsVerifiedEmail, setShowIsVerifiedEmail] =
     useState<boolean>(false);
   const [buttonResendCode, setButtonResendCode] = useState<boolean>(true);
+  const [errorPage, setErrorPage] = useState<string | null>(null);
 
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const getDataUser = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.get('/user');
-      if (response.status === 200) {
-        const {
-          firstName: firstNameFromDB,
-          lastName: lastNameFromDB,
-          phone: phoneFromDB,
-          email: emailFromDB,
-          isVerifiedEmail,
-        } = response.data;
-        setFirstName(firstNameFromDB);
-        setLastName(lastNameFromDB);
-        setPhone(phoneFromDB);
-        setEmail(emailFromDB);
-        setShowIsVerifiedEmail(isVerifiedEmail);
-        setEmailFromDB(emailFromDB);
-      }
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [initDataRaw]);
+  // Get data from server
+  const { data, error, isLoading, isSuccess } = useQuery<IFetchUserDetails>({
+    queryKey: ['userDetails', initDataRaw],
+    queryFn: () => fetchUserDetailsAPI(initDataRaw),
+    enabled: !!initDataRaw,
+    placeholderData: () => {
+      return queryClient.getQueryData(['userDetails', initDataRaw]);
+    },
+  });
 
-  const saveDataAndGenerateCode = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.patch(`/user`, {
-        firstName,
-        lastName,
-        email,
-      });
-      const isVerifiedEmail = response.data.isVerifiedEmail;
-      if (response.status === 200 && !isVerifiedEmail) {
-        setShowIsVerifiedEmail(!isVerifiedEmail);
-        setShowCode(true);
-      } else if (response.status === 200 && isVerifiedEmail) {
+  // Send data to server
+  const dataToSend: IUserDataToUpdate = {
+    firstName,
+    lastName,
+    email,
+  };
+
+  // Mutations
+  const saveDataAndGenerateCodeMutation = useMutation({
+    mutationFn: () => saveDataAndGenerateCodeAPI(initDataRaw, dataToSend),
+    onSuccess: (data) => {
+      const isVerifiedEmail = data.isVerifiedEmail;
+      if (isVerifiedEmail) {
         setShowIsVerifiedEmail(isVerifiedEmail);
         tg.MainButton.hide();
         navigate('/');
+      } else {
+        setShowIsVerifiedEmail(!isVerifiedEmail);
+        setShowCode(true);
       }
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [initDataRaw, firstName, lastName, email, navigate]);
+      queryClient.invalidateQueries({
+        queryKey: ['userDetails', initDataRaw],
+      });
+    },
+    onError: (error: any) => {
+      handleAuthError(error, setErrorPage);
+    },
+  });
 
-  const sendCodeFromUser = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.post(`/user/email/code/${code}`);
-      if (response.status === 200) {
-        navigate('/course/create');
-      }
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [initDataRaw, code, navigate]);
+  const sendCodeFromUserMutation = useMutation({
+    mutationFn: () => sendCodeFromUserAPI(initDataRaw, code),
+    onSuccess: () => {
+      navigate('/course/create');
+      queryClient.invalidateQueries({
+        queryKey: ['userDetails', initDataRaw],
+      });
+    },
+    onError: (error: any) => {
+      handleAuthError(error, setErrorPage);
+    },
+  });
 
-  const resendCode = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      if (!initDataRaw) throw new Error('Not enough authorization data');
-      const axiosWithAuth = createAxiosWithAuth(initDataRaw);
-      const response = await axiosWithAuth.post(`/user/email/code/resend`);
-      if (response.status === 200) {
-        setButtonResendCode(false);
-      }
-    } catch (error: any) {
-      handleAuthError(error, setError);
-    } finally {
-      setIsLoading(false);
+  const resendCodeMutation = useMutation({
+    mutationFn: () => resendCodeAPI(initDataRaw),
+    onSuccess: () => {
+      setButtonResendCode(false);
+    },
+    onError: (error: any) => {
+      handleAuthError(error, setErrorPage);
+    },
+  });
+
+  // Callbacks
+  const saveDataAndGenerateCode = useCallback(
+    () => saveDataAndGenerateCodeMutation.mutate(),
+    [saveDataAndGenerateCodeMutation]
+  );
+
+  const sendCodeFromUser = useCallback(
+    () => sendCodeFromUserMutation.mutate(),
+    [sendCodeFromUserMutation]
+  );
+
+  const resendCode = useCallback(
+    () => resendCodeMutation.mutate(),
+    [resendCodeMutation]
+  );
+
+  // useEffects
+  useEffect(() => {
+    if (isSuccess) {
+      const {
+        firstName: firstNameFromDB,
+        lastName: lastNameFromDB,
+        phone: phoneFromDB,
+        email: emailFromDB,
+        isVerifiedEmail,
+      } = data;
+      setFirstName(firstNameFromDB);
+      setLastName(lastNameFromDB);
+      setPhone(phoneFromDB);
+      setEmail(emailFromDB);
+      setShowIsVerifiedEmail(isVerifiedEmail);
+      setEmailFromDB(emailFromDB);
     }
-  }, [initDataRaw, setButtonResendCode]);
+  }, [data, isSuccess]);
 
   useEffect(() => {
-    if (!firstName || !lastName || !email) {
+    if (!firstName || !email) {
       tg.MainButton.hide();
     } else {
       tg.MainButton.show();
@@ -157,10 +173,6 @@ export function useUserPage() {
     email,
   ]);
 
-  useEffect(() => {
-    getDataUser();
-  }, [getDataUser]);
-
   return {
     firstName,
     setFirstName,
@@ -172,15 +184,18 @@ export function useUserPage() {
     setEmail,
     code,
     setCode,
-    isLoading,
-    setIsLoading,
-    error,
-    setError,
     showCode,
     showIsVerifiedEmail,
     setShowIsVerifiedEmail,
     buttonResendCode,
     setButtonResendCode,
     resendCode,
+
+    isLoading:
+      isLoading ||
+      saveDataAndGenerateCodeMutation.isPending ||
+      sendCodeFromUserMutation.isPending ||
+      resendCodeMutation.isPending,
+    error: error?.message || errorPage,
   };
 }

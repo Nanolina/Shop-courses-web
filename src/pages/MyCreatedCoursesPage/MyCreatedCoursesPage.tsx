@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,8 +18,8 @@ const tg = window.Telegram.WebApp;
 function MyCreatedCoursesPage() {
   const { t } = useTranslation();
   const { initDataRaw } = retrieveLaunchParams();
-
   const [value, setValue] = useState<string>('');
+  const queryClient = useQueryClient();
 
   const {
     data: courses = [],
@@ -30,6 +30,9 @@ function MyCreatedCoursesPage() {
     queryKey: ['myCreatedCourses', initDataRaw],
     queryFn: () => fetchAllMyCreatedCourses(initDataRaw),
     enabled: !!initDataRaw,
+    placeholderData: () => {
+      return queryClient.getQueryData(['myCreatedCourses', initDataRaw]);
+    },
   });
 
   const filteredCourses = useMemo(

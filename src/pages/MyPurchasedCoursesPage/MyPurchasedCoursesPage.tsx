@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { retrieveLaunchParams } from '@tma.js/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,7 @@ function MyPurchasedCoursesPage() {
   const { t } = useTranslation();
   const { initDataRaw } = retrieveLaunchParams();
   const [value, setValue] = useState<string>('');
+  const queryClient = useQueryClient();
 
   const {
     data: courses = [],
@@ -29,6 +30,9 @@ function MyPurchasedCoursesPage() {
     queryKey: ['myPurchasedCourses', initDataRaw],
     queryFn: () => fetchAllMyPurchasedCourses(initDataRaw),
     enabled: !!initDataRaw,
+    placeholderData: () => {
+      return queryClient.getQueryData(['myPurchasedCourses', initDataRaw]);
+    },
   });
 
   const filteredCourses = useMemo(

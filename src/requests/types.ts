@@ -17,3 +17,17 @@ export interface ICoursePartDataToCreateOrUpdate {
   videoUrl?: string;
   video?: File | null;
 }
+
+export interface IFetchUserDetails {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  isVerifiedEmail: boolean;
+}
+
+export interface IUserDataToUpdate {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+}

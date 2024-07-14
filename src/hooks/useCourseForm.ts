@@ -82,6 +82,12 @@ export function useCourseForm(course?: ICourse) {
       queryClient.invalidateQueries({
         queryKey: ['allCourses'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['coursesByOneCategory', data.category],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['myCreatedCourses', initDataRaw],
+      });
     },
     onError: (error: any) => {
       handleAuthError(error, setError);
@@ -104,19 +110,27 @@ export function useCourseForm(course?: ICourse) {
       queryClient.invalidateQueries({
         queryKey: ['allCourses'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['coursesByOneCategory', dataToSend.category],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['myCreatedCourses', initDataRaw],
+      });
     },
     onError: (error: any) => {
       handleAuthError(error, setError);
     },
   });
 
-  const updateCourse = useCallback(() => {
-    updateCourseMutation.mutate();
-  }, [updateCourseMutation]);
+  const updateCourse = useCallback(
+    () => updateCourseMutation.mutate(),
+    [updateCourseMutation]
+  );
 
-  const createCourse = useCallback(() => {
-    createCourseMutation.mutate();
-  }, [createCourseMutation]);
+  const createCourse = useCallback(
+    () => createCourseMutation.mutate(),
+    [createCourseMutation]
+  );
 
   const mainButtonAction = courseId ? updateCourse : createCourse;
 
@@ -207,8 +221,7 @@ export function useCourseForm(course?: ICourse) {
     setPrice,
     currency,
     setCurrency,
-    isLoading: createCourseMutation.isPending || updateCourseMutation.isPending,
-    error: createCourseMutation.error || updateCourseMutation.error || error,
+
     // Image
     image,
     setImage,
@@ -222,5 +235,8 @@ export function useCourseForm(course?: ICourse) {
     sortedCategoryOptions,
     sortedSubcategoryOptions,
     updateCourseMutation,
+
+    error,
+    isLoading: createCourseMutation.isPending || updateCourseMutation.isPending,
   };
 }
