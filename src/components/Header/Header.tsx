@@ -19,7 +19,7 @@ const Header = ({
         <IoIosArrowBack
           onClick={() => navigate(-1)}
           className={styles.backButton}
-          size={20}
+          size={25}
         />
       )}
       {label && (

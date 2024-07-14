@@ -54,7 +54,7 @@ function LessonsPage() {
           role={role}
         />
       )}
-      {isLoading && <Loader />}
+      {isLoading && <Loader hasBackground />}
       {isError && <MessageBox errorMessage={error.message} />}
     </>
   );

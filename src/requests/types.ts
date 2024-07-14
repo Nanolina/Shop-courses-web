@@ -8,3 +8,12 @@ export interface ICourseDataToCreateOrUpdate {
   imageUrl?: string;
   image?: File | null;
 }
+
+export interface ICoursePartDataToCreateOrUpdate {
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  image?: File | null;
+  videoUrl?: string;
+  video?: File | null;
+}

@@ -7,7 +7,9 @@ export {
   fetchCourseDetailsAPI,
 } from './course';
 export {
+  createOrUpdateCoursePartAPI,
   deleteCoursePartAPI,
+  fetchCoursePartDetailsAPI,
   fetchLessonsAPI,
   fetchModulesAPI,
 } from './coursePart';

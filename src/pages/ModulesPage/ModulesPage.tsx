@@ -55,7 +55,7 @@ const ModulesPage: React.FC = () => {
           role={role}
         />
       )}
-      {isLoading && <Loader />}
+      {isLoading && <Loader hasBackground />}
       {isError && <MessageBox errorMessage={error.message} />}
     </>
   );

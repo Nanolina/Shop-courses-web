@@ -1,14 +1,19 @@
 .videoContainer {
   width: 100%;
   position: relative;
+  background-color: var(--tg-theme-secondary-bg-color);
+  height: 100vh;
 }
 
 .backIcon {
   position: absolute;
   top: 3px;
   left: 25px;
-  color: rgb(193, 193, 193);
+  color: white;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 20%;
+  background-color: rgba(250, 230, 200, 0.4);
+  padding: 3px;
   z-index: 1;
 }
 
@@ -16,8 +21,15 @@
   padding: 50px;
   text-align: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 20px;
   color: var(--tg-theme-accent-text-color);
+  font-size: larger;
+}
+
+.hourglass {
+  width: 200px;
+  height: 200px;
 }

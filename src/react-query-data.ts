@@ -6,4 +6,7 @@ const queryKeys = {
   MyPurchasedCoursesPage: ['myPurchasedCourses', 'initDataRaw'],
   ModulesPage: ['modules', 'courseId'],
   LessonsPage: ['lessons', 'moduleId'],
+  PointsContext: ['points', 'initDataRaw'],
+  EditCoursePartPageModule: ['module', 'moduleId'],
+  EditCoursePartPageLessonAndLessonPage: ['lesson', 'lessonId'],
 };
