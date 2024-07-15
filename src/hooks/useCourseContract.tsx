@@ -19,6 +19,7 @@ export function useCourseContract(course: ICourse) {
   const [contractAddress, setContractAddress] = useState<string>('');
   const [errorContract, setErrorContract] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState<boolean>(false);
 
   const coursePriceInNano = toNano(course.price.toString());
 
@@ -78,6 +79,7 @@ export function useCourseContract(course: ICourse) {
           initialBalance: courseContractBalance,
           type: DeployEnum.Create,
           language: initData?.user?.languageCode,
+          hasAcceptedTerms,
         });
       }
     } catch (error: any) {
@@ -89,6 +91,7 @@ export function useCourseContract(course: ICourse) {
     initData?.user?.languageCode,
     courseContractBalance,
     contractAddress,
+    hasAcceptedTerms,
   ]);
 
   useEffect(() => {
@@ -99,6 +102,8 @@ export function useCourseContract(course: ICourse) {
     errorContract,
     contractAddress,
     loading,
+    hasAcceptedTerms,
+    setHasAcceptedTerms,
     createCourse: async () => {
       const message: NewCourse = {
         courseId,

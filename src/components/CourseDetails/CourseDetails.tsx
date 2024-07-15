@@ -20,6 +20,9 @@ import Label from '../../ui/Label/Label';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import { ICourseDetailsProps } from '../types';
 import styles from './CourseDetails.module.css';
+import ChekBoxInput from '../../ui/ChekBoxInput/ChekBoxInput';
+import Modal from '../Modal/Modal';
+import ContractInfoModalContent from './ContractInfoModalContent';
 
 const tg = window.Telegram.WebApp;
 const purchaseFee = 0.07;
@@ -28,6 +31,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const { t } = useTranslation();
   const { courseContractBalance, purchaseContractBalance } = useContract();
   const [dataLoaded, setDataLoaded] = useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [showModalFromSeller, setShowModalFromSeller] = useState<boolean>(true);
 
   const {
     isActivateButtonDisabled,
@@ -40,6 +45,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const {
     errorContract: courseErrorContract,
     createCourse,
+    hasAcceptedTerms,
+    setHasAcceptedTerms,
     loading: courseLoading,
     contractAddress: courseContractAddress,
   } = useCourseContract(course);
@@ -47,6 +54,8 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const {
     errorContract: purchaseErrorContract,
     purchaseCourse,
+    hasAcceptedTermsPurchase,
+    setHasAcceptedTermsPurchase,
     loading: purchaseLoading,
     contractAddress: purchaseContractAddress,
   } = usePurchaseContract(course);
@@ -91,6 +100,9 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   return (
     <>
       <div className={styles.info}>
+        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+          <ContractInfoModalContent showModalFromSeller={showModalFromSeller} />
+        </Modal>
         <Label text={course.name} isBig isBold />
         {course.description && (
           <div className={styles.descriptionText}>{course.description}</div>
@@ -136,6 +148,30 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
               <Label text={`${t('smart_contract_address')}: `} isBold />
               <Label text={courseContractAddress} />
             </div>
+            <div className={styles.checkbox}>
+              <ChekBoxInput
+                type="checkbox"
+                onChange={() => setHasAcceptedTerms(!hasAcceptedTerms)}
+                name={t('i_accept_the_terms')}
+                id="chekbox"
+              />
+            </div>
+            <p
+              onClick={() => {
+                setModalOpen(!modalOpen);
+                setShowModalFromSeller(true);
+              }}
+            >
+              Договор продавца
+            </p>
+            <p
+              onClick={() => {
+                setModalOpen(!modalOpen);
+                setShowModalFromSeller(false);
+              }}
+            >
+              Договор покупателя
+            </p>
           </>
         )}
         {dataLoaded && role === CUSTOMER && (
@@ -147,6 +183,16 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             <div className={styles.contractAddress}>
               <Label text={`${t('smart_contract_address')}: `} isBold />
               <Label text={purchaseContractAddress} />
+            </div>
+            <div className={styles.checkbox}>
+              <ChekBoxInput
+                type="checkbox"
+                onChange={() =>
+                  setHasAcceptedTermsPurchase(!hasAcceptedTermsPurchase)
+                }
+                name={t('i_accept_the_terms')}
+                id="iAccept"
+              />
             </div>
           </>
         )}

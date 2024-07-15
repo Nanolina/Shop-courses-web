@@ -66,6 +66,17 @@ export interface ITextInputProps {
   isRequired?: boolean;
 }
 
+export interface IChekBoxInputProps {
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  type?: HTMLInputTypeAttribute;
+  placeholder?: string;
+  disabled?: boolean;
+  isRequired?: boolean;
+  id?: string;
+  name?: string;
+  checked?: boolean;
+}
+
 export interface IInputUploadProps {
   name?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

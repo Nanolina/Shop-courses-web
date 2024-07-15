@@ -1,0 +1,21 @@
+.input {
+  width: 20px;
+  height: 20px;
+  padding: 3px;
+  box-sizing: border-box;
+  color: var(--tg-theme-accent-text-color);
+  font-size: large;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.input:focus {
+  outline: none;
+  border: 1px solid var(--tg-theme-accent-text-color);
+}
+
+.label {
+  text-align: justify;
+  font-style: italic;
+}

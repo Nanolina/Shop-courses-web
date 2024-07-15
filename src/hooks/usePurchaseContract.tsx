@@ -20,6 +20,8 @@ export function usePurchaseContract(course: ICourse) {
   const [contractAddress, setContractAddress] = useState<string>('');
   const [errorContract, setErrorContract] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
+  const [hasAcceptedTermsPurchase, setHasAcceptedTermsPurchase] =
+    useState<boolean>(false);
 
   const coursePriceInNano = toNano(course.price.toString());
 
@@ -84,6 +86,7 @@ export function usePurchaseContract(course: ICourse) {
           initialBalance: purchaseContractBalance,
           type: DeployEnum.Purchase,
           language: initData?.user?.languageCode,
+          hasAcceptedTerms: hasAcceptedTermsPurchase,
         });
       }
     } catch (error: any) {
@@ -95,6 +98,7 @@ export function usePurchaseContract(course: ICourse) {
     initData?.user?.languageCode,
     purchaseContractBalance,
     contractAddress,
+    hasAcceptedTermsPurchase,
   ]);
 
   useEffect(() => {
@@ -106,6 +110,8 @@ export function usePurchaseContract(course: ICourse) {
     errorContract,
     contractAddress,
     loading,
+    hasAcceptedTermsPurchase,
+    setHasAcceptedTermsPurchase,
 
     // Send money to 2 contracts: seller contract with type Sale (useTonConnect) and create purchase contract "NewPurchase"
     purchaseCourse: async () => {

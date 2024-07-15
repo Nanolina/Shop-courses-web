@@ -23,6 +23,14 @@
   content: '❗ ';
 }
 
+.checkbox {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
 .descriptionText {
   text-align: left;
   font-size: 16px;
