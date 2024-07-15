@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CgBriefcase } from 'react-icons/cg';
 import { MdOutlineUpdate } from 'react-icons/md';
@@ -33,22 +33,10 @@ function UserPage() {
     showCode,
     showIsVerifiedEmail,
     buttonResendCode,
-    setButtonResendCode,
     resendCode,
+    counter,
+    showCounter,
   } = useUserPage() as IUseUserPageReturnType;
-
-  let [counter, setCounter] = useState<number>(120);
-
-  const showCouner = useCallback(() => {
-    const idInterval = setInterval(() => {
-      setCounter(counter--);
-      if (counter === 0) {
-        setButtonResendCode(true);
-        setCounter(120);
-        clearInterval(idInterval);
-      }
-    }, 1000);
-  }, [counter, setCounter, setButtonResendCode]);
 
   return (
     <Container>
@@ -104,7 +92,7 @@ function UserPage() {
               text={t('resend_code')}
               onClick={() => {
                 resendCode();
-                showCouner();
+                showCounter();
               }}
               disabled={!buttonResendCode}
             />
@@ -128,7 +116,7 @@ function UserPage() {
           <p className={styles.infoGreen}>{t('email_confirmed')}</p>
         </div>
       ) : (
-        <div className={styles.isVerif}>
+        <div className={styles.isVerifiedEmail}>
           <LazyLoadImage
             src="https://static.vecteezy.com/system/resources/previews/018/887/460/original/signs-close-icon-png.png"
             alt="cross"

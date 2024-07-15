@@ -95,6 +95,9 @@ export interface IUseUserPageReturnType {
   buttonResendCode: boolean;
   setButtonResendCode: (activButton: boolean) => void;
   resendCode: () => void;
+  counter: number;
+  setCounter: (counter: number) => void;
+  showCounter: () => void;
 }
 
 export interface IUserPageParams {
