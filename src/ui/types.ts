@@ -75,6 +75,7 @@ export interface IChekBoxInputProps {
   id?: string;
   name?: string;
   checked?: boolean;
+  children?: any;
 }
 
 export interface IInputUploadProps {

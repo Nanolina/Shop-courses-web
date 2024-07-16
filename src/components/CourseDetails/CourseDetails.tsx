@@ -29,7 +29,14 @@ const purchaseFee = 0.07;
 
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const { t } = useTranslation();
-  const { courseContractBalance, purchaseContractBalance } = useContract();
+  const {
+    courseContractBalance,
+    purchaseContractBalance,
+    hasAcceptedTermsCourse,
+    setHasAcceptedTermsCourse,
+    hasAcceptedTermsPurchase,
+    setHasAcceptedTermsPurchase,
+  } = useContract();
   const [dataLoaded, setDataLoaded] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [showModalFromSeller, setShowModalFromSeller] = useState<boolean>(true);
@@ -45,8 +52,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const {
     errorContract: courseErrorContract,
     createCourse,
-    hasAcceptedTerms,
-    setHasAcceptedTerms,
     loading: courseLoading,
     contractAddress: courseContractAddress,
   } = useCourseContract(course);
@@ -54,8 +59,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   const {
     errorContract: purchaseErrorContract,
     purchaseCourse,
-    hasAcceptedTermsPurchase,
-    setHasAcceptedTermsPurchase,
     loading: purchaseLoading,
     contractAddress: purchaseContractAddress,
   } = usePurchaseContract(course);
@@ -138,6 +141,33 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             />
           </div>
         )}
+        {role !== SELLER && role !== CUSTOMER && (
+          <div className={styles.checkbox}>
+            <ChekBoxInput
+              checked={hasAcceptedTermsPurchase}
+              type="checkbox"
+              onChange={() =>
+                setHasAcceptedTermsPurchase(!hasAcceptedTermsPurchase)
+              }
+              name={t('i_accept_the_terms')}
+              id="chekbox"
+            >
+              <p>
+                {t('i_accept_the_terms')}
+                <b
+                  className={styles.contract}
+                  onClick={() => {
+                    setModalOpen(!modalOpen);
+                    setShowModalFromSeller(false);
+                  }}
+                >
+                  {t('contracts')}
+                </b>
+                {t('i_accept_the_terms_personal_data')}
+              </p>
+            </ChekBoxInput>
+          </div>
+        )}
         {dataLoaded && role === SELLER && (
           <>
             <div className={styles.category}>
@@ -150,28 +180,29 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             </div>
             <div className={styles.checkbox}>
               <ChekBoxInput
+                checked={hasAcceptedTermsCourse}
                 type="checkbox"
-                onChange={() => setHasAcceptedTerms(!hasAcceptedTerms)}
-                name={t('i_accept_the_terms')}
+                onChange={() =>
+                  setHasAcceptedTermsCourse(!hasAcceptedTermsCourse)
+                }
+                name="chekbox"
                 id="chekbox"
-              />
+              >
+                <p>
+                  {t('i_accept_the_terms')}
+                  <b
+                    className={styles.contract}
+                    onClick={() => {
+                      setModalOpen(!modalOpen);
+                      setShowModalFromSeller(true);
+                    }}
+                  >
+                    {t('contracts')}
+                  </b>
+                  {t('i_accept_the_terms_personal_data')}
+                </p>
+              </ChekBoxInput>
             </div>
-            <p
-              onClick={() => {
-                setModalOpen(!modalOpen);
-                setShowModalFromSeller(true);
-              }}
-            >
-              Договор продавца
-            </p>
-            <p
-              onClick={() => {
-                setModalOpen(!modalOpen);
-                setShowModalFromSeller(false);
-              }}
-            >
-              Договор покупателя
-            </p>
           </>
         )}
         {dataLoaded && role === CUSTOMER && (
@@ -183,16 +214,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             <div className={styles.contractAddress}>
               <Label text={`${t('smart_contract_address')}: `} isBold />
               <Label text={purchaseContractAddress} />
-            </div>
-            <div className={styles.checkbox}>
-              <ChekBoxInput
-                type="checkbox"
-                onChange={() =>
-                  setHasAcceptedTermsPurchase(!hasAcceptedTermsPurchase)
-                }
-                name={t('i_accept_the_terms')}
-                id="iAccept"
-              />
             </div>
           </>
         )}

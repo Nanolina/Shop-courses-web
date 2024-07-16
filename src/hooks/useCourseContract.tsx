@@ -14,12 +14,15 @@ export function useCourseContract(course: ICourse) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
   const { initDataRaw, initData } = retrieveLaunchParams();
-  const { courseContractBalance, setCourseContractBalance } = useContract();
+  const {
+    courseContractBalance,
+    setCourseContractBalance,
+    hasAcceptedTermsCourse,
+  } = useContract();
 
   const [contractAddress, setContractAddress] = useState<string>('');
   const [errorContract, setErrorContract] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-  const [hasAcceptedTerms, setHasAcceptedTerms] = useState<boolean>(false);
 
   const coursePriceInNano = toNano(course.price.toString());
 
@@ -76,10 +79,11 @@ export function useCourseContract(course: ICourse) {
         await axiosWithAuth.post('/ton/monitor', {
           contractAddress,
           courseId,
+
           initialBalance: courseContractBalance,
           type: DeployEnum.Create,
           language: initData?.user?.languageCode,
-          hasAcceptedTerms,
+          hasAcceptedTerms: hasAcceptedTermsCourse,
         });
       }
     } catch (error: any) {
@@ -91,7 +95,7 @@ export function useCourseContract(course: ICourse) {
     initData?.user?.languageCode,
     courseContractBalance,
     contractAddress,
-    hasAcceptedTerms,
+    hasAcceptedTermsCourse,
   ]);
 
   useEffect(() => {
@@ -102,8 +106,6 @@ export function useCourseContract(course: ICourse) {
     errorContract,
     contractAddress,
     loading,
-    hasAcceptedTerms,
-    setHasAcceptedTerms,
     createCourse: async () => {
       const message: NewCourse = {
         courseId,

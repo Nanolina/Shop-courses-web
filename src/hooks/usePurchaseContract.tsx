@@ -14,14 +14,16 @@ export function usePurchaseContract(course: ICourse) {
   const { client } = useTonClient();
   const { sender } = useTonConnect(course);
   const { initDataRaw, initData } = retrieveLaunchParams();
-  const { purchaseContractBalance, setPurchaseContractBalance } = useContract();
+  const {
+    purchaseContractBalance,
+    setPurchaseContractBalance,
+    hasAcceptedTermsPurchase,
+  } = useContract();
 
   const [customerId, setCustomerId] = useState<any>(0);
   const [contractAddress, setContractAddress] = useState<string>('');
   const [errorContract, setErrorContract] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-  const [hasAcceptedTermsPurchase, setHasAcceptedTermsPurchase] =
-    useState<boolean>(false);
 
   const coursePriceInNano = toNano(course.price.toString());
 
@@ -110,8 +112,6 @@ export function usePurchaseContract(course: ICourse) {
     errorContract,
     contractAddress,
     loading,
-    hasAcceptedTermsPurchase,
-    setHasAcceptedTermsPurchase,
 
     // Send money to 2 contracts: seller contract with type Sale (useTonConnect) and create purchase contract "NewPurchase"
     purchaseCourse: async () => {

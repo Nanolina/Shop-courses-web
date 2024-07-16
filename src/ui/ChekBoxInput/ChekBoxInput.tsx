@@ -10,6 +10,7 @@ function ChekBoxInput({
   id = '',
   name = '',
   checked,
+  children,
 }: IChekBoxInputProps) {
   return (
     <>
@@ -24,7 +25,7 @@ function ChekBoxInput({
         checked={checked}
       />
       <label className={styles.label} htmlFor={id}>
-        {name}
+        {children}
       </label>
     </>
   );

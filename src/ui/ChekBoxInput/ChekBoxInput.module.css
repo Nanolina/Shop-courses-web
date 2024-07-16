@@ -1,12 +1,11 @@
 .input {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   padding: 3px;
   box-sizing: border-box;
   color: var(--tg-theme-accent-text-color);
   font-size: large;
   border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
