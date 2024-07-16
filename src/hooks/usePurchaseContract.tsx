@@ -14,7 +14,11 @@ export function usePurchaseContract(course: ICourse) {
   const { client } = useTonClient();
   const { sender } = useTonConnect(course);
   const { initDataRaw, initData } = retrieveLaunchParams();
-  const { purchaseContractBalance, setPurchaseContractBalance } = useContract();
+  const {
+    purchaseContractBalance,
+    setPurchaseContractBalance,
+    hasAcceptedTermsPurchase,
+  } = useContract();
 
   const [customerId, setCustomerId] = useState<any>(0);
   const [contractAddress, setContractAddress] = useState<string>('');
@@ -84,6 +88,7 @@ export function usePurchaseContract(course: ICourse) {
           initialBalance: purchaseContractBalance,
           type: DeployEnum.Purchase,
           language: initData?.user?.languageCode,
+          hasAcceptedTerms: hasAcceptedTermsPurchase,
         });
       }
     } catch (error: any) {
@@ -95,6 +100,7 @@ export function usePurchaseContract(course: ICourse) {
     initData?.user?.languageCode,
     purchaseContractBalance,
     contractAddress,
+    hasAcceptedTermsPurchase,
   ]);
 
   useEffect(() => {
