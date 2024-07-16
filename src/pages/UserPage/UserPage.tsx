@@ -26,8 +26,6 @@ function UserPage() {
     phone,
     email,
     setEmail,
-    isLoading,
-    error,
     code,
     setCode,
     showCode,
@@ -36,6 +34,11 @@ function UserPage() {
     resendCode,
     counter,
     showCounter,
+    firstNameDisabled,
+    lastNameDisabled,
+    emailDisabled,
+    isLoading,
+    error,
   } = useUserPage() as IUseUserPageReturnType;
 
   return (
@@ -48,6 +51,7 @@ function UserPage() {
         />
         <Label text={t('first_name')} isRequired isPadding isBold />
         <TextInput
+          disabled={firstNameDisabled}
           value={firstName}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             setFirstName(event.target.value)
@@ -55,6 +59,7 @@ function UserPage() {
         />
         <Label text={t('last_name')} isPadding isBold />
         <TextInput
+          disabled={lastNameDisabled}
           value={lastName}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             setLastName(event.target.value)
@@ -63,12 +68,13 @@ function UserPage() {
         <Label text={t('phone_number')} isPadding isBold />
         <TextInput
           disabled={true}
-          value={phone} // Connect with the data obtained from tg
+          value={phone || ' '} // Connect with the data obtained from tg
           placeholder={phone}
         />
         <Label text={t('email')} isRequired isPadding isBold />
         <TextInput
           type="email"
+          disabled={emailDisabled}
           value={email}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             setEmail(event.target.value)

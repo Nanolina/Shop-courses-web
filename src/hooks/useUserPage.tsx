@@ -32,6 +32,9 @@ export function useUserPage() {
   const [buttonResendCode, setButtonResendCode] = useState<boolean>(false);
   const [errorPage, setErrorPage] = useState<string | null>(null);
   let [counter, setCounter] = useState<number>(120);
+  const [firstNameDisabled, setFirstNameDisabled] = useState<boolean>(false);
+  const [lastNameDisabled, setLastNameDisabled] = useState<boolean>(false);
+  const [emailDisabled, setEmailDisabled] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
 
@@ -78,6 +81,9 @@ export function useUserPage() {
         setShowIsVerifiedEmail(!isVerifiedEmail);
         setShowCode(true);
         showCounter();
+        setFirstNameDisabled(true);
+        setLastNameDisabled(true);
+        setEmailDisabled(true);
       }
       queryClient.invalidateQueries({
         queryKey: ['userDetails', initDataRaw],
@@ -208,6 +214,9 @@ export function useUserPage() {
     counter,
     setCounter,
     showCounter,
+    firstNameDisabled,
+    lastNameDisabled,
+    emailDisabled,
 
     isLoading:
       isLoading ||
