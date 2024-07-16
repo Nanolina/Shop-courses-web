@@ -41,9 +41,11 @@ function EditCourseFormPage() {
         </>
       )}
       {(isLoading || courseFormContextValue.isLoading) && <Loader />}
-      {(error || courseFormContextValue.error) && (
+      {(error?.message || courseFormContextValue.error) && (
         <MessageBox
-          errorMessage={error?.message || courseFormContextValue.error?.message}
+          errorMessage={
+            error?.message || (courseFormContextValue.error ?? undefined)
+          }
         />
       )}
     </Container>

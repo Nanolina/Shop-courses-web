@@ -23,7 +23,7 @@ export interface IUseCourseFormReturnType {
   currency: string;
   setCurrency: (currency: string) => void;
   isLoading: boolean;
-  error: string;
+  error: string | null;
   // Image
   image: File | null;
   setImage: React.Dispatch<React.SetStateAction<File | null>>;
