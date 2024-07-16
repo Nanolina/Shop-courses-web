@@ -15,7 +15,7 @@ function Button({ text, icon, hint, ...props }: IButtonProps) {
       </button>
       {hint && (
         <div className={styles.hint}>
-          <BsInfoCircleFill size={16} />
+          <BsInfoCircleFill size={34} />
           <div>{hint}</div>
         </div>
       )}

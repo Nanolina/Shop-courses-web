@@ -18,6 +18,7 @@ export function useCourseActions(course: ICourse, role: RoleType) {
   const { connected, network } = useTonConnect();
   const {
     courseContractBalance,
+    purchaseContractBalance,
     hasAcceptedTermsCourse,
     hasAcceptedTermsPurchase,
   } = useContract();
@@ -32,18 +33,21 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     [course.id, navigate]
   );
 
+  // For Customer
   const getParamsMainButton = useCallback(() => {
     const buttonColor = getCSSVariableValue('--tg-theme-button-color');
-    const isActive =
-      (isProduction &&
-        isMainnet &&
-        connected &&
-        courseContractBalance > 0 &&
-        hasAcceptedTermsPurchase) ||
-      (!isProduction &&
-        connected &&
-        courseContractBalance > 0 &&
-        hasAcceptedTermsPurchase);
+    const productionIsActiveButton =
+      isProduction &&
+      isMainnet &&
+      connected &&
+      courseContractBalance > 0 &&
+      hasAcceptedTermsPurchase;
+    const developmentIsActiveButton =
+      !isProduction &&
+      connected &&
+      courseContractBalance > 0 &&
+      hasAcceptedTermsPurchase;
+    const isActive = productionIsActiveButton || developmentIsActiveButton;
     const color = isActive ? buttonColor : '#e6e9e9';
 
     return {
@@ -52,6 +56,7 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     };
   }, [isMainnet, connected, courseContractBalance, hasAcceptedTermsPurchase]);
 
+  // For Customer
   const hintMessage = useMemo(() => {
     if (isProduction && !isMainnet) {
       return t('connect_wallet_mainnet');
@@ -62,7 +67,7 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     if (courseContractBalance <= 0) {
       return t('course_not_activated');
     }
-    if (!hasAcceptedTermsPurchase) {
+    if (!hasAcceptedTermsPurchase && purchaseContractBalance <= 0) {
       return t('accepted');
     }
     return '';
@@ -70,6 +75,7 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     isMainnet,
     connected,
     courseContractBalance,
+    purchaseContractBalance,
     hasAcceptedTermsPurchase,
     t,
   ]);
@@ -87,7 +93,7 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     setIsMainnet(network === CHAIN.MAINNET);
   }, [network]);
 
-  // Handle activate button
+  // Handle activate button (for seller)
   useEffect(() => {
     let hint = '';
     let disabled = true;

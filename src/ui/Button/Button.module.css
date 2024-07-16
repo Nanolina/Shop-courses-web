@@ -28,7 +28,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 10px;
   color: var(--tg-theme-hint-color);
   font-size: 16px;
   font-style: italic;

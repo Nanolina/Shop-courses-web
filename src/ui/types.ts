@@ -66,14 +66,10 @@ export interface ITextInputProps {
   isRequired?: boolean;
 }
 
-export interface IChekBoxInputProps {
+export interface ICheckboxInputProps {
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  type?: HTMLInputTypeAttribute;
-  placeholder?: string;
   disabled?: boolean;
-  isRequired?: boolean;
-  id?: string;
-  name?: string;
+  id: string;
   checked?: boolean;
   children?: any;
 }
