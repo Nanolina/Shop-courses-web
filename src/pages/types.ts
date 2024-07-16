@@ -87,14 +87,20 @@ export interface IUseUserPageReturnType {
   setEmail: (email: string) => void;
   code: string;
   setCode: (code: string) => void;
-  isLoading: boolean;
-  error: string;
   showCode: boolean;
   showIsVerifiedEmail: boolean;
   setShowIsVerifiedEmail: (showIsVerifiedEmail: boolean) => void;
   buttonResendCode: boolean;
   setButtonResendCode: (activButton: boolean) => void;
   resendCode: () => void;
+  counter: number;
+  setCounter: (counter: number) => void;
+  showCounter: () => void;
+  firstNameDisabled: boolean;
+  lastNameDisabled: boolean;
+  emailDisabled: boolean;
+  isLoading: boolean;
+  error: string;
 }
 
 export interface IUserPageParams {

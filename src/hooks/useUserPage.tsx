@@ -29,8 +29,12 @@ export function useUserPage() {
   const [showCode, setShowCode] = useState<boolean>(false);
   const [showIsVerifiedEmail, setShowIsVerifiedEmail] =
     useState<boolean>(false);
-  const [buttonResendCode, setButtonResendCode] = useState<boolean>(true);
+  const [buttonResendCode, setButtonResendCode] = useState<boolean>(false);
   const [errorPage, setErrorPage] = useState<string | null>(null);
+  let [counter, setCounter] = useState<number>(120);
+  const [firstNameDisabled, setFirstNameDisabled] = useState<boolean>(false);
+  const [lastNameDisabled, setLastNameDisabled] = useState<boolean>(false);
+  const [emailDisabled, setEmailDisabled] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
 
@@ -51,6 +55,19 @@ export function useUserPage() {
     email,
   };
 
+  const showCounter = useCallback(() => {
+    if (counter === 120) {
+      const idInterval = setInterval(() => {
+        setCounter(counter--);
+        if (counter === 0) {
+          setButtonResendCode(true);
+          setCounter(120);
+          clearInterval(idInterval);
+        }
+      }, 1000);
+    }
+  }, [counter, setCounter, setButtonResendCode]);
+
   // Mutations
   const saveDataAndGenerateCodeMutation = useMutation({
     mutationFn: () => saveDataAndGenerateCodeAPI(initDataRaw, dataToSend),
@@ -63,6 +80,10 @@ export function useUserPage() {
       } else {
         setShowIsVerifiedEmail(!isVerifiedEmail);
         setShowCode(true);
+        showCounter();
+        setFirstNameDisabled(true);
+        setLastNameDisabled(true);
+        setEmailDisabled(true);
       }
       queryClient.invalidateQueries({
         queryKey: ['userDetails', initDataRaw],
@@ -140,7 +161,7 @@ export function useUserPage() {
   }, [firstName, lastName, email]);
 
   useEffect(() => {
-    if (!showCode && email !== emailFromDB) {
+    if (email !== emailFromDB || (!showCode && !showIsVerifiedEmail)) {
       tg.MainButton.setParams({
         text: t('get_code'),
         color: getCSSVariableValue('--tg-theme-button-color'),
@@ -190,6 +211,12 @@ export function useUserPage() {
     buttonResendCode,
     setButtonResendCode,
     resendCode,
+    counter,
+    setCounter,
+    showCounter,
+    firstNameDisabled,
+    lastNameDisabled,
+    emailDisabled,
 
     isLoading:
       isLoading ||

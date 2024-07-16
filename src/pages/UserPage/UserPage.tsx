@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CgBriefcase } from 'react-icons/cg';
 import { MdOutlineUpdate } from 'react-icons/md';
@@ -26,29 +26,20 @@ function UserPage() {
     phone,
     email,
     setEmail,
-    isLoading,
-    error,
     code,
     setCode,
     showCode,
     showIsVerifiedEmail,
     buttonResendCode,
-    setButtonResendCode,
     resendCode,
+    counter,
+    showCounter,
+    firstNameDisabled,
+    lastNameDisabled,
+    emailDisabled,
+    isLoading,
+    error,
   } = useUserPage() as IUseUserPageReturnType;
-
-  let [counter, setCounter] = useState<number>(120);
-
-  const showCouner = useCallback(() => {
-    const idInterval = setInterval(() => {
-      setCounter(counter--);
-      if (counter === 0) {
-        setButtonResendCode(true);
-        setCounter(120);
-        clearInterval(idInterval);
-      }
-    }, 1000);
-  }, [counter, setCounter, setButtonResendCode]);
 
   return (
     <Container>
@@ -60,6 +51,7 @@ function UserPage() {
         />
         <Label text={t('first_name')} isRequired isPadding isBold />
         <TextInput
+          disabled={firstNameDisabled}
           value={firstName}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             setFirstName(event.target.value)
@@ -67,6 +59,7 @@ function UserPage() {
         />
         <Label text={t('last_name')} isPadding isBold />
         <TextInput
+          disabled={lastNameDisabled}
           value={lastName}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             setLastName(event.target.value)
@@ -75,12 +68,13 @@ function UserPage() {
         <Label text={t('phone_number')} isPadding isBold />
         <TextInput
           disabled={true}
-          value={phone} // Connect with the data obtained from tg
+          value={phone || ' '} // Connect with the data obtained from tg
           placeholder={phone}
         />
         <Label text={t('email')} isRequired isPadding isBold />
         <TextInput
           type="email"
+          disabled={emailDisabled}
           value={email}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             setEmail(event.target.value)
@@ -104,7 +98,7 @@ function UserPage() {
               text={t('resend_code')}
               onClick={() => {
                 resendCode();
-                showCouner();
+                showCounter();
               }}
               disabled={!buttonResendCode}
             />
@@ -128,7 +122,7 @@ function UserPage() {
           <p className={styles.infoGreen}>{t('email_confirmed')}</p>
         </div>
       ) : (
-        <div className={styles.isVerif}>
+        <div className={styles.isVerifiedEmail}>
           <LazyLoadImage
             src="https://static.vecteezy.com/system/resources/previews/018/887/460/original/signs-close-icon-png.png"
             alt="cross"
