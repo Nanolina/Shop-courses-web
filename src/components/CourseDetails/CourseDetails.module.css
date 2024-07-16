@@ -23,6 +23,19 @@
   content: '❗ ';
 }
 
+.checkbox {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.contract {
+  color: var(--tg-theme-link-color);
+  text-decoration: underline;
+}
+
 .descriptionText {
   text-align: left;
   font-size: 16px;
@@ -55,11 +68,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
   color: var(--tg-theme-hint-color);
   font-size: 16px;
   font-style: italic;
-  padding-top: 50px;
 }
 
 .contractAddress {

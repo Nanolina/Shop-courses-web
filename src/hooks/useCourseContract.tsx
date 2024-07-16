@@ -14,7 +14,11 @@ export function useCourseContract(course: ICourse) {
   const { client } = useTonClient();
   const { sender } = useTonConnect();
   const { initDataRaw, initData } = retrieveLaunchParams();
-  const { courseContractBalance, setCourseContractBalance } = useContract();
+  const {
+    courseContractBalance,
+    setCourseContractBalance,
+    hasAcceptedTermsCourse,
+  } = useContract();
 
   const [contractAddress, setContractAddress] = useState<string>('');
   const [errorContract, setErrorContract] = useState<string>('');
@@ -75,9 +79,11 @@ export function useCourseContract(course: ICourse) {
         await axiosWithAuth.post('/ton/monitor', {
           contractAddress,
           courseId,
+
           initialBalance: courseContractBalance,
           type: DeployEnum.Create,
           language: initData?.user?.languageCode,
+          hasAcceptedTerms: hasAcceptedTermsCourse,
         });
       }
     } catch (error: any) {
@@ -89,6 +95,7 @@ export function useCourseContract(course: ICourse) {
     initData?.user?.languageCode,
     courseContractBalance,
     contractAddress,
+    hasAcceptedTermsCourse,
   ]);
 
   useEffect(() => {

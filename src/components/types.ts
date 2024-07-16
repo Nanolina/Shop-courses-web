@@ -93,3 +93,7 @@ export interface IModalEarnPointsProps {
 export interface IPointsInfoModalContentProps {
   page: number;
 }
+
+export interface IContractInfoModalContentProps {
+  showModalFromSeller: boolean;
+}

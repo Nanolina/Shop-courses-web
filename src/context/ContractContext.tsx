@@ -5,6 +5,10 @@ interface ContractContextProps {
   setCourseContractBalance: React.Dispatch<React.SetStateAction<number>>;
   purchaseContractBalance: number;
   setPurchaseContractBalance: React.Dispatch<React.SetStateAction<number>>;
+  hasAcceptedTermsCourse: boolean;
+  setHasAcceptedTermsCourse: React.Dispatch<React.SetStateAction<boolean>>;
+  hasAcceptedTermsPurchase: boolean;
+  setHasAcceptedTermsPurchase: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ContractContext = createContext<ContractContextProps | undefined>(
@@ -21,6 +25,10 @@ export const ContractProvider: React.FC<ContractProviderProps> = ({
   const [courseContractBalance, setCourseContractBalance] = useState<number>(0);
   const [purchaseContractBalance, setPurchaseContractBalance] =
     useState<number>(0);
+  const [hasAcceptedTermsCourse, setHasAcceptedTermsCourse] =
+    useState<boolean>(false);
+  const [hasAcceptedTermsPurchase, setHasAcceptedTermsPurchase] =
+    useState<boolean>(false);
 
   return (
     <ContractContext.Provider
@@ -29,6 +37,10 @@ export const ContractProvider: React.FC<ContractProviderProps> = ({
         setCourseContractBalance,
         purchaseContractBalance,
         setPurchaseContractBalance,
+        hasAcceptedTermsCourse,
+        setHasAcceptedTermsCourse,
+        hasAcceptedTermsPurchase,
+        setHasAcceptedTermsPurchase,
       }}
     >
       {children}

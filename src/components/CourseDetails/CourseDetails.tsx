@@ -16,9 +16,12 @@ import {
   usePurchaseContract,
 } from '../../hooks';
 import Button from '../../ui/Button/Button';
+import CheckboxInput from '../../ui/CheckboxInput/CheckboxInput';
 import Label from '../../ui/Label/Label';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import Modal from '../Modal/Modal';
 import { ICourseDetailsProps } from '../types';
+import ContractInfoModalContent from './ContractInfoModalContent';
 import styles from './CourseDetails.module.css';
 
 const tg = window.Telegram.WebApp;
@@ -26,8 +29,18 @@ const purchaseFee = 0.07;
 
 function CourseDetails({ course, role }: ICourseDetailsProps) {
   const { t } = useTranslation();
-  const { courseContractBalance, purchaseContractBalance } = useContract();
-  const [dataLoaded, setDataLoaded] = useState<boolean>(false);
+  const {
+    courseContractBalance,
+    purchaseContractBalance,
+    hasAcceptedTermsCourse,
+    setHasAcceptedTermsCourse,
+    hasAcceptedTermsPurchase,
+    setHasAcceptedTermsPurchase,
+  } = useContract();
+  const [dataLoadedFromBlockchain, setDataLoadedFromBlockchain] =
+    useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [showModalFromSeller, setShowModalFromSeller] = useState<boolean>(true);
 
   const {
     isActivateButtonDisabled,
@@ -53,7 +66,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
 
   useEffect(() => {
     if (!courseLoading || !purchaseLoading) {
-      setDataLoaded(true);
+      setDataLoadedFromBlockchain(true);
     }
   }, [courseLoading, purchaseLoading]);
 
@@ -91,6 +104,9 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   return (
     <>
       <div className={styles.info}>
+        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+          <ContractInfoModalContent showModalFromSeller={showModalFromSeller} />
+        </Modal>
         <Label text={course.name} isBig isBold />
         {course.description && (
           <div className={styles.descriptionText}>{course.description}</div>
@@ -126,7 +142,32 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             />
           </div>
         )}
-        {dataLoaded && role === SELLER && (
+        {role !== SELLER && role !== CUSTOMER && (
+          <div className={styles.checkbox}>
+            <CheckboxInput
+              checked={hasAcceptedTermsPurchase}
+              onChange={() =>
+                setHasAcceptedTermsPurchase(!hasAcceptedTermsPurchase)
+              }
+              id="hasAcceptedTermsPurchase"
+            >
+              <p>
+                {t('i_accept_the_terms')}
+                <b
+                  className={styles.contract}
+                  onClick={() => {
+                    setModalOpen(!modalOpen);
+                    setShowModalFromSeller(false);
+                  }}
+                >
+                  {t('contracts')}
+                </b>
+                {t('i_accept_the_terms_personal_data')}
+              </p>
+            </CheckboxInput>
+          </div>
+        )}
+        {dataLoadedFromBlockchain && role === SELLER && (
           <>
             <div className={styles.category}>
               <Label text={`${t('smart_contract_balance')}: `} isBold />
@@ -136,9 +177,32 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
               <Label text={`${t('smart_contract_address')}: `} isBold />
               <Label text={courseContractAddress} />
             </div>
+            <div className={styles.checkbox}>
+              <CheckboxInput
+                checked={hasAcceptedTermsCourse}
+                onChange={() =>
+                  setHasAcceptedTermsCourse(!hasAcceptedTermsCourse)
+                }
+                id="hasAcceptedTermsCourse"
+              >
+                <p>
+                  {t('i_accept_the_terms')}
+                  <b
+                    className={styles.contract}
+                    onClick={() => {
+                      setModalOpen(!modalOpen);
+                      setShowModalFromSeller(true);
+                    }}
+                  >
+                    {t('contracts')}
+                  </b>
+                  {t('i_accept_the_terms_personal_data')}
+                </p>
+              </CheckboxInput>
+            </div>
           </>
         )}
-        {dataLoaded && role === CUSTOMER && (
+        {dataLoadedFromBlockchain && role === CUSTOMER && (
           <>
             <div className={styles.category}>
               <Label text={`${t('smart_contract_balance')}: `} isBold />
@@ -156,7 +220,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
 
       {role === SELLER && (
         <>
-          {dataLoaded && courseContractBalance <= 0 && (
+          {dataLoadedFromBlockchain && courseContractBalance <= 0 && (
             <div className={styles.warning}>{t('course_need_deploy')}</div>
           )}
           <Button
@@ -169,19 +233,22 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         </>
       )}
 
-      {role === CUSTOMER && dataLoaded && purchaseContractBalance <= 0 && (
-        <div className={styles.warning}>{t('purchase_need_deploy')}</div>
-      )}
+      {role === CUSTOMER &&
+        dataLoadedFromBlockchain &&
+        purchaseContractBalance <= 0 && (
+          <div className={styles.warning}>{t('purchase_need_deploy')}</div>
+        )}
 
-      {courseErrorContract && <MessageBox errorMessage={courseErrorContract} />}
-      {purchaseErrorContract && (
-        <MessageBox errorMessage={purchaseErrorContract} />
-      )}
       {role !== SELLER && hintMessage && (
         <div className={styles.hint}>
           <BsInfoCircleFill size={24} />
           {hintMessage}
         </div>
+      )}
+
+      {courseErrorContract && <MessageBox errorMessage={courseErrorContract} />}
+      {purchaseErrorContract && (
+        <MessageBox errorMessage={purchaseErrorContract} />
       )}
     </>
   );
