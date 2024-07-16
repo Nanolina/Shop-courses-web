@@ -201,7 +201,7 @@ export default () => (
           </ContractProvider>
         </NotificationProvider>
       </PointsProvider>
-      {process.env.REACT_QUERY_DEVTOOLS && <ReactQueryDevtools />}
+      {process.env.REACT_APP_QUERY_DEVTOOLS && <ReactQueryDevtools />}
     </QueryClientProvider>
   </TwaAnalyticsProvider>
 );

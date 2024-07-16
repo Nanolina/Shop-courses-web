@@ -44,6 +44,7 @@ function LessonsPage() {
     return (
       <ItemNotFoundPage error={t('item_not_found')} isLoading={isLoading} />
     );
+
   return (
     <>
       {role && isSuccess && (

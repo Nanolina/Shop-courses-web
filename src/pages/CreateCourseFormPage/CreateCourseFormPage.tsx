@@ -26,7 +26,7 @@ function CreateCourseFormPage() {
 
       {courseFormContextValue.isLoading && <Loader />}
       {courseFormContextValue.error && (
-        <MessageBox errorMessage={courseFormContextValue.error?.message} />
+        <MessageBox errorMessage={courseFormContextValue.error} />
       )}
     </Container>
   );
