@@ -15,8 +15,8 @@ const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
       return (
         <div className={styles.container}>
           <h2 className={styles.title}>{t('modal.benefits')}!</h2>
-          {t('modal.offers')}:
-          <h4 className={styles.subtitle}>{t('modal.how_earn_points')}?</h4>
+          <div className={styles.text}>{t('modal.offers')}!</div>
+          <div className={styles.subtitle}>{t('modal.how_earn_points')}?</div>
           <div className={styles.imageContainer}>
             <LazyLoadImage
               src="https://res.cloudinary.com/dbrquscbv/image/upload/q_auto/f_auto/c_scale,w_1280/v1720707437/earn-points_tzl8nx.svg"
@@ -77,8 +77,7 @@ const PointsInfoModalContent: React.FC<IPointsInfoModalContentProps> = ({
               className={styles.image}
             />
           </div>
-          <div className={styles.text}></div>
-          {t('modal.additional_benefits')}!
+          <div className={styles.text}>{t('modal.additional_benefits')}!</div>
         </div>
       );
     default:

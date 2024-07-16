@@ -21,7 +21,6 @@ export interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export interface IContainerProps {
-  grayContainer?: boolean;
   children: ReactNode;
 }
 

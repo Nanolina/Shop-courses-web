@@ -156,6 +156,7 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
               isPadding
               isBold
             />
+            <Label text={t('video_allowed')} isHint isPadding />
 
             {useVideoUrlCover ? (
               <TextInput value={videoUrl} onChange={handleVideoUrlChange} />

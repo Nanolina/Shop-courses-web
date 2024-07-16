@@ -11,3 +11,7 @@
   background-color: var(--tg-theme-secondary-bg-color);
   flex-grow: 1;
 }
+
+.isKeyboardButton {
+  min-height: 150vh;
+}
