@@ -106,17 +106,6 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     setIsActivateButtonDisabled(disabled);
   }, [connected, isMainnet, hasAcceptedTermsCourse, t]);
 
-  // useEffect(() => {
-  //   let hint = '';
-  //   let disabled = true;
-
-  //    else {
-  //     disabled = false;
-  //   }
-  //   setActivateButtonHint(hint);
-  //   setIsActivateButtonDisabled(disabled);
-  // }, [, t]);
-
   return {
     isActivateButtonDisabled,
     activateButtonHint,
