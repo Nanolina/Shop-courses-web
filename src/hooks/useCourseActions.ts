@@ -56,7 +56,7 @@ export function useCourseActions(course: ICourse, role: RoleType) {
     };
   }, [isMainnet, connected, courseContractBalance, hasAcceptedTermsPurchase]);
 
-  // For Customer
+  // For сustomer
   const hintMessage = useMemo(() => {
     if (isProduction && !isMainnet) {
       return t('connect_wallet_mainnet');
