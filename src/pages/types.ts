@@ -46,8 +46,6 @@ export interface IUseCoursePartFormReturnType {
   description: string;
   setDescription: (description: string) => void;
   isLesson: boolean;
-  isLoading: boolean;
-  error: string;
 
   // Image
   image: File | null;
@@ -74,6 +72,10 @@ export interface IUseCoursePartFormReturnType {
   handleVideoUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   useVideoUrlCover: boolean;
   toggleBetweenVideoUrlAndFile: () => void;
+  progress: number;
+
+  isLoading: boolean;
+  error: string;
 }
 
 export interface IUseUserPageReturnType {
