@@ -23,6 +23,7 @@ import Modal from '../Modal/Modal';
 import { ICourseDetailsProps } from '../types';
 import ContractInfoModalContent from './ContractInfoModalContent';
 import styles from './CourseDetails.module.css';
+import { LuHeartHandshake } from 'react-icons/lu';
 
 const tg = window.Telegram.WebApp;
 const purchaseFee = 0.07;
@@ -39,7 +40,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   } = useContract();
   const [dataLoadedFromBlockchain, setDataLoadedFromBlockchain] =
     useState<boolean>(false);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [modalContractOpen, setModalContractOpen] = useState<boolean>(false);
   const [showModalFromSeller, setShowModalFromSeller] = useState<boolean>(true);
 
   const {
@@ -55,11 +56,15 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
     createCourse,
     loading: courseLoading,
     contractAddress: courseContractAddress,
+    showModalCourse,
+    setShowModalCourse,
   } = useCourseContract(course);
 
   const {
     errorContract: purchaseErrorContract,
     purchaseCourse,
+    showModalPurchase,
+    setShowModalPurchase,
     loading: purchaseLoading,
     contractAddress: purchaseContractAddress,
   } = usePurchaseContract(course);
@@ -104,7 +109,28 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   return (
     <>
       <div className={styles.info}>
-        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <Modal
+          isOpen={showModalCourse || showModalPurchase}
+          onClose={() => {
+            setShowModalCourse(false);
+            setShowModalPurchase(false);
+          }}
+        >
+          <div className={styles.modalInfo}>
+            <p className={styles.dearUser}>{t('dear_user')}</p>
+            <p className={styles.updatingData}>{t('updating_data')}</p>
+            <div className={styles.hint}>{t('dont_close')}</div>
+            <p className={styles.action}>{t('action_prescription')}</p>
+            <p className={styles.thankYou}>
+              {t('thank_you')}
+              <LuHeartHandshake className={styles.heart} />
+            </p>
+          </div>
+        </Modal>
+        <Modal
+          isOpen={modalContractOpen}
+          onClose={() => setModalContractOpen(false)}
+        >
           <ContractInfoModalContent showModalFromSeller={showModalFromSeller} />
         </Modal>
         <Label text={course.name} isBig isBold />
@@ -156,7 +182,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
                 <b
                   className={styles.contract}
                   onClick={() => {
-                    setModalOpen(!modalOpen);
+                    setModalContractOpen(!modalContractOpen);
                     setShowModalFromSeller(false);
                   }}
                 >
@@ -190,7 +216,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
                   <b
                     className={styles.contract}
                     onClick={() => {
-                      setModalOpen(!modalOpen);
+                      setModalContractOpen(!modalContractOpen);
                       setShowModalFromSeller(true);
                     }}
                   >

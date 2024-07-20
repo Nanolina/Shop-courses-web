@@ -1,5 +1,6 @@
 {
   "accepted": "Confirm your consent to the contract and the processing of personal data",
+  "action_prescription": "You can go to any page within our platform and perform all kinds of actions without waiting for confirmation. As soon as the data is updated, we will notify you in a pop-up dialog box.",
   "activate": "Activate",
   "all": "All",
   "buy": "Buy for",
@@ -47,10 +48,12 @@
   "create_course": "Create course",
   "create_type": "Create {{type}}",
   "currency": "Currency",
+  "dear_user": "Dear user!",
   "delete": "Delete",
   "delete_course": "Are you sure you want to delete course",
   "delete_type": "Are you sure you want to delete {{type}}",
   "description": "Description",
+  "dont_close": "Please don't close the app!",
   "earned_points": "You've earned",
   "email": "E-mail address",
   "email_confirmed": "Your e-mail address has been verified",
@@ -115,6 +118,7 @@
   "switch_to_video_file": "Video file",
   "switch_to_image_link": "Image link",
   "switch_to_video_link": "Video link",
+  "thank_you": "Thank you for using our application!",
   "this_lesson": "This lesson will be irretrievably deleted",
   "types": {
     "module": {
@@ -128,6 +132,7 @@
       "plural": "lessons"
     }
   },
+  "updating_data": "Updating the course activation data in the TON system takes indefinite time.",
   "upload": "Upload",
   "video_allowed": "Only your copyrighted videos and links to them are allowed",
   "video_link": "Video link for the lesson",
