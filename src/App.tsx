@@ -33,6 +33,7 @@ import ModulesPage from './pages/ModulesPage/ModulesPage';
 import MyCreatedCoursesPage from './pages/MyCreatedCoursesPage/MyCreatedCoursesPage';
 import MyPurchasedCoursesPage from './pages/MyPurchasedCoursesPage/MyPurchasedCoursesPage';
 import UserPage from './pages/UserPage/UserPage';
+import VideoPage from './pages/VideoPage/VideoPage';
 import { DeployEnum } from './types';
 
 const tg = window.Telegram.WebApp;
@@ -54,26 +55,6 @@ function App() {
     tg.ready();
     tg.setHeaderColor('secondary_bg_color');
   }, []);
-
-  // To receive notifications from backend if the video is uploaded to Cloudinary
-  useEffect(() => {
-    const socket = io(serverUrl);
-
-    socket.on('video-uploaded', (data) => {
-      const { status, userId, lessonId, message } = data;
-      if (initData?.user?.id === userId) {
-        showNotification(message, status);
-        queryClient.invalidateQueries({
-          queryKey: ['lesson', lessonId],
-        });
-      }
-    });
-
-    return () => {
-      socket.off('video-uploaded');
-      socket.close();
-    };
-  }, [showNotification, initData?.user?.id]);
 
   // To receive notifications from backend if the smart contract balance is updated (points have been credited)
   useEffect(() => {
@@ -160,6 +141,7 @@ function App() {
         <Route path="/module/course/:courseId" element={<ModulesPage />} />
         <Route path="/lesson/module/:moduleId" element={<LessonsPage />} />
         <Route path="/lesson/:lessonId" element={<LessonPage />} />
+        <Route path="/lesson/:lessonId/video" element={<VideoPage />} />
       </Routes>
       <ToastContainer
         position="top-center"
@@ -201,7 +183,9 @@ export default () => (
           </ContractProvider>
         </NotificationProvider>
       </PointsProvider>
-      {process.env.REACT_APP_QUERY_DEVTOOLS && <ReactQueryDevtools />}
+      {process.env.REACT_APP_QUERY_DEVTOOLS === 'true' && (
+        <ReactQueryDevtools />
+      )}
     </QueryClientProvider>
   </TwaAnalyticsProvider>
 );

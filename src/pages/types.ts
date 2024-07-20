@@ -61,19 +61,20 @@ export interface IUseCoursePartFormReturnType {
   handleImageUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   useImageUrlCover: boolean;
   toggleBetweenImageUrlAndFile: () => void;
+}
 
-  // Video
-  video: File | null;
-  setVideo: React.Dispatch<React.SetStateAction<File | null>>;
+export interface IUseVideoReturnType {
   videoUrl: string;
   setVideoUrl: (url: string) => void;
   previewVideoUrl: string | null;
   setPreviewVideoUrl: React.Dispatch<React.SetStateAction<string | null>>;
-  handleVideoChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleRemoveVideo: () => void;
   handleVideoUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   useVideoUrlCover: boolean;
   toggleBetweenVideoUrlAndFile: () => void;
+  openBotToSendVideo: () => void;
+  handleRemoveVideo: () => void;
+  isLoading: boolean;
+  error: string;
 }
 
 export interface IUseUserPageReturnType {

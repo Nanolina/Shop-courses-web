@@ -14,8 +14,6 @@ export interface ICoursePartDataToCreateOrUpdate {
   description?: string;
   imageUrl?: string;
   image?: File | null;
-  videoUrl?: string;
-  video?: File | null;
 }
 
 export interface IFetchUserDetails {

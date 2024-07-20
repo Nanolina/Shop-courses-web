@@ -97,3 +97,7 @@ export interface IPointsInfoModalContentProps {
 export interface IContractInfoModalContentProps {
   showModalFromSeller: boolean;
 }
+
+export interface IVideoFormProps {
+  lesson?: ILesson;
+}

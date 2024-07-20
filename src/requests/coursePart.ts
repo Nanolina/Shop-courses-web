@@ -32,6 +32,34 @@ export const fetchLessonsAPI = async (
   return response.data;
 };
 
+export const updateVideoUrlAPI = async (
+  lessonId: string | undefined,
+  videoUrl: string,
+  initDataRaw: string | undefined
+) => {
+  if (!initDataRaw || !lessonId)
+    throw new Error('Not enough authorization data or no lesson data');
+  const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+  const response = await axiosWithAuth.patch<string>(
+    `/lesson/${lessonId}/video-url`,
+    { videoUrl }
+  );
+  return response.data;
+};
+
+export const openBotToSendVideoAPI = async (
+  lessonId: string | undefined,
+  initDataRaw: string | undefined
+) => {
+  if (!initDataRaw || !lessonId)
+    throw new Error('Not enough authorization data or no lesson data');
+  const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+  const response = await axiosWithAuth.post<void>(
+    `/lesson/${lessonId}/video`
+  );
+  return response.data;
+};
+
 // Common
 export const fetchCoursePartDetailsAPI = async (
   type: EntityType,
@@ -66,23 +94,15 @@ export const createOrUpdateCoursePartAPI = async (
   initDataRaw: string | undefined
 ) => {
   if (!initDataRaw) throw new Error('Not enough authorization data');
-  const { name, description, imageUrl, image, videoUrl, video } = dto;
+  const { name, description, imageUrl, image } = dto;
 
   const formData = new FormData();
   formData.append('name', name);
   if (description) formData.append('description', description);
   // Image
   if (imageUrl) formData.append('imageUrl', imageUrl);
-  if (image && !isLesson) formData.append('image', image);
-  if (image && isLesson) formData.append('files', image, image.name);
+  if (image) formData.append('image', image);
   if (!image && !imageUrl) formData.append('isRemoveImage', 'true');
-
-  // Video
-  if (isLesson) {
-    if (videoUrl) formData.append('videoUrl', videoUrl);
-    if (video) formData.append('files', video, video.name);
-    if (!video && !videoUrl) formData.append('isRemoveVideo', 'true');
-  }
 
   const axiosWithAuth = createAxiosWithAuth(initDataRaw);
 

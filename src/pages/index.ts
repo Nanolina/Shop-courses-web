@@ -3,4 +3,5 @@ export type {
   IGetLessons,
   IGetModules,
   IUseCoursePartFormReturnType,
+  IUseVideoReturnType,
 } from './types';

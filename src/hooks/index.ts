@@ -6,3 +6,4 @@ export { useCoursePartForm } from './useCoursePartForm';
 export { usePurchaseContract } from './usePurchaseContract';
 export { useTonClient } from './useTonClient';
 export { useTonConnect } from './useTonConnect';
+export { useVideo } from './useVideo';

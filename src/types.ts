@@ -54,3 +54,7 @@ export enum DeployEnum {
   Create = 'create',
   Purchase = 'purchase',
 }
+export enum RequestTypeEnum {
+  Create = 'create',
+  Update = 'update',
+}

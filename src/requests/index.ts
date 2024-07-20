@@ -13,6 +13,8 @@ export {
   fetchCoursePartDetailsAPI,
   fetchLessonsAPI,
   fetchModulesAPI,
+  updateVideoUrlAPI,
+  openBotToSendVideoAPI,
 } from './coursePart';
 export { fetchPointsAPI } from './points';
 export type { IFetchUserDetails, IUserDataToUpdate } from './types';

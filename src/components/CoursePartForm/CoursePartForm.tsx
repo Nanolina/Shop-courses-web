@@ -4,7 +4,6 @@ import { MdCameraswitch } from 'react-icons/md';
 import { MODULE } from '../../consts';
 import { useCoursePartForm } from '../../hooks';
 import { IUseCoursePartFormReturnType } from '../../pages';
-import { ILesson } from '../../types';
 import Button from '../../ui/Button/Button';
 import ImagePreview from '../../ui/ImagePreview/ImagePreview';
 import { InputUpload } from '../../ui/InputUpload/InputUpload';
@@ -13,7 +12,6 @@ import { Loader } from '../../ui/Loader/Loader';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import TextInput from '../../ui/TextInput/TextInput';
 import Textarea from '../../ui/Textarea/Textarea';
-import VideoPlayer from '../../ui/VideoPlayer/VideoPlayer';
 import { ICoursePartFormProps } from '../types';
 import styles from './CoursePartForm.module.css';
 
@@ -36,17 +34,6 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
     handleImageUrlChange,
     useImageUrlCover,
     toggleBetweenImageUrlAndFile,
-
-    // Video
-    videoUrl,
-    setVideoUrl,
-    previewVideoUrl,
-    setPreviewVideoUrl,
-    handleVideoChange,
-    handleRemoveVideo,
-    handleVideoUrlChange,
-    useVideoUrlCover,
-    toggleBetweenVideoUrlAndFile,
   } = useCoursePartForm() as IUseCoursePartFormReturnType;
   const { t } = useTranslation();
 
@@ -61,11 +48,6 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
       if (item.imageUrl) {
         setImageUrl(item.imageUrl);
         setPreviewImageUrl(item.imageUrl);
-      }
-      if (isLesson && (item as ILesson).videoUrl) {
-        const lesson = item as ILesson; // Type assertion to ILesson
-        setVideoUrl(lesson.videoUrl ?? '');
-        setPreviewVideoUrl(lesson.videoUrl ?? '');
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -132,49 +114,6 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
           imagePreview={previewImageUrl}
           removeImage={handleRemoveImage}
         />
-      )}
-
-      {/* Video for lesson */}
-      {isLesson && (
-        <>
-          <div className={styles.formGroup}>
-            <div className={styles.switchButton}>
-              <Button
-                onClick={toggleBetweenVideoUrlAndFile}
-                text={
-                  useVideoUrlCover
-                    ? t('switch_to_video_file')
-                    : t('switch_to_video_link')
-                }
-                icon={<MdCameraswitch size={36} />}
-              />
-            </div>
-            <Label
-              text={
-                useVideoUrlCover ? t('video_link') : t('cover_label_file_video')
-              }
-              isPadding
-              isBold
-            />
-            <Label text={t('video_allowed')} isHint isPadding />
-
-            {useVideoUrlCover ? (
-              <TextInput value={videoUrl} onChange={handleVideoUrlChange} />
-            ) : (
-              <InputUpload
-                name="files"
-                onChange={handleVideoChange}
-                acceptFiles="video/*"
-              />
-            )}
-          </div>
-          {previewVideoUrl && (
-            <VideoPlayer
-              url={previewVideoUrl}
-              removeVideo={handleRemoveVideo}
-            />
-          )}
-        </>
       )}
 
       {isLoading && <Loader />}

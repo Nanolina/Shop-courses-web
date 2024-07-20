@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 5px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.switchButton {
+  margin-left: auto;
+  width: 50%;
+  padding-bottom: 5px;
+}

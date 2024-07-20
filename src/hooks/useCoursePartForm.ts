@@ -31,12 +31,6 @@ export function useCoursePartForm() {
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
   const [useImageUrlCover, setUseImageUrlCover] = useState(true); // State to toggle between image URL and image upload (button)
 
-  // Video (only lesson)
-  const [videoUrl, setVideoUrl] = useState<string>('');
-  const [video, setVideo] = useState<File | null>(null);
-  const [previewVideoUrl, setPreviewVideoUrl] = useState<string | null>(null);
-  const [useVideoUrlCover, setUseVideoUrlCover] = useState(true); // State to toggle between video URL and video upload (button)
-
   const { initDataRaw } = retrieveLaunchParams();
   const navigate = useNavigate();
 
@@ -46,8 +40,6 @@ export function useCoursePartForm() {
     description,
     imageUrl,
     image,
-    video,
-    videoUrl,
   };
 
   const createOrUpdateCoursePartMutation = useMutation({
@@ -63,9 +55,7 @@ export function useCoursePartForm() {
       ),
     onSuccess: (data: IModule | ILesson) => {
       if (isLesson) {
-        isEditMode
-          ? navigate(`/lesson/module/${parentId}`)
-          : navigate(`/lesson/${data.id}`);
+        navigate(`/lesson/${data.id}/video`);
         queryClient.invalidateQueries({ queryKey: ['lessons', parentId] });
       } else {
         navigate(`/module/course/${parentId}`);
@@ -147,23 +137,6 @@ export function useCoursePartForm() {
   const handleImageUrlChange = (event: ChangeEvent<HTMLInputElement>) =>
     handleUrlChange(event, setPreviewImageUrl, setImageUrl);
 
-  // Video
-  const toggleBetweenVideoUrlAndFile = () =>
-    setUseVideoUrlCover(!useVideoUrlCover);
-  const handleVideoChange = (event: ChangeEvent<HTMLInputElement>) =>
-    handleFileChange(event, setVideo, setPreviewVideoUrl, setVideoUrl);
-
-  const handleRemoveVideo = () =>
-    handleRemoveFile(
-      previewVideoUrl,
-      setPreviewVideoUrl,
-      setVideo,
-      setVideoUrl
-    );
-
-  const handleVideoUrlChange = (event: ChangeEvent<HTMLInputElement>) =>
-    handleUrlChange(event, setPreviewVideoUrl, setVideoUrl);
-
   // useEffects
   useEffect(() => {
     setIsLesson(type === LESSON);
@@ -173,23 +146,29 @@ export function useCoursePartForm() {
     setIsEditMode(Boolean(itemId));
   }, [itemId]);
 
-  useEffect(() => {
-    tg.MainButton.setParams({ text: itemId ? t('save') : t('create') });
-    tg.onEvent('mainButtonClicked', createOrUpdateCoursePart);
-    return () => tg.offEvent('mainButtonClicked', createOrUpdateCoursePart);
-  }, [itemId, createOrUpdateCoursePart, t]);
+  const getText = useCallback(() => {
+    if (isLesson) {
+      return 'СОХРАНИТЬ И ПЕРЕЙТИ К ВИДЕО';
+    } else if (itemId && !isLesson) {
+      return t('save');
+    } else {
+      return t('create');
+    }
+  }, [isLesson, itemId, t]);
 
   useEffect(() => {
-    // Lesson
-    if (isLesson && name && (videoUrl || video)) {
-      tg.MainButton.show();
-      // Module
-    } else if (!isLesson && name) {
+    tg.MainButton.setParams({ text: getText() });
+    tg.onEvent('mainButtonClicked', createOrUpdateCoursePart);
+    return () => tg.offEvent('mainButtonClicked', createOrUpdateCoursePart);
+  }, [itemId, createOrUpdateCoursePart, t, getText]);
+
+  useEffect(() => {
+    if (name) {
       tg.MainButton.show();
     } else {
       tg.MainButton.hide();
     }
-  }, [isLesson, name, videoUrl, video]);
+  }, [name]);
 
   // Clearing preview image URL to free up resources
   useEffect(() => {
@@ -199,15 +178,6 @@ export function useCoursePartForm() {
       }
     };
   }, [previewImageUrl]);
-
-  // Clearing preview video URL to free up resources
-  useEffect(() => {
-    return () => {
-      if (previewVideoUrl) {
-        URL.revokeObjectURL(previewVideoUrl);
-      }
-    };
-  }, [previewVideoUrl]);
 
   return {
     name,
@@ -228,19 +198,6 @@ export function useCoursePartForm() {
     handleImageUrlChange,
     useImageUrlCover,
     toggleBetweenImageUrlAndFile,
-
-    // Video
-    video,
-    setVideo,
-    videoUrl,
-    setVideoUrl,
-    previewVideoUrl,
-    setPreviewVideoUrl,
-    handleVideoChange,
-    handleRemoveVideo,
-    handleVideoUrlChange,
-    useVideoUrlCover,
-    toggleBetweenVideoUrlAndFile,
 
     error,
     isLoading: createOrUpdateCoursePartMutation.isPending,
