@@ -3,7 +3,8 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  gap: 5px;
+  gap: 20px;
+  width: 100%;
 }
 
 .button {
@@ -22,14 +23,4 @@
 
 .disabled {
   background-color: rgba(204, 204, 204, 0.425);
-}
-
-.hint {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  color: var(--tg-theme-hint-color);
-  font-size: 16px;
-  font-style: italic;
 }

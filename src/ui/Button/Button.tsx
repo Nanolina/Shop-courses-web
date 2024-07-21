@@ -1,4 +1,4 @@
-import { BsInfoCircleFill } from 'react-icons/bs';
+import HintInfoIconText from '../HintInfoIconText/HintInfoIconText';
 import { IButtonProps } from '../types';
 import styles from './Button.module.css';
 
@@ -13,12 +13,7 @@ function Button({ text, icon, hint, ...props }: IButtonProps) {
         {icon}
         {text}
       </button>
-      {hint && (
-        <div className={styles.hint}>
-          <BsInfoCircleFill size={24} />
-          <div>{hint}</div>
-        </div>
-      )}
+      {hint && <HintInfoIconText>{hint}</HintInfoIconText>}
     </div>
   );
 }
