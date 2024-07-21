@@ -63,9 +63,9 @@ function LessonPage() {
   useEffect(() => {
     const socket = io(serverUrl);
 
-    socket.on('notification', (data) => {
-      const { url, message, status } = data;
-      if (status === 'success') {
+    socket.on('video-uploaded', (data) => {
+      const { url, message, status, lessonId: lessonIdFromBackend } = data;
+      if (status === 'success' && lessonId === lessonIdFromBackend) {
         toast.success(message);
         setVideoUrl(url);
       } else if (status === 'error') {
@@ -76,10 +76,10 @@ function LessonPage() {
     });
 
     return () => {
-      socket.off('notification');
+      socket.off('video-uploaded');
       socket.close();
     };
-  }, []);
+  }, [lessonId]);
 
   useEffect(() => {
     tg.MainButton.hide();
