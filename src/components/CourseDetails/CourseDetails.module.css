@@ -98,6 +98,16 @@
   font-style: italic;
 }
 
+.hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  color: var(--tg-theme-hint-color);
+  font-size: 16px;
+  font-style: italic;
+}
+
 .contractAddress {
   display: flex;
   flex-direction: column;
