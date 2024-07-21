@@ -24,8 +24,6 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
     description,
     setDescription,
     isLesson,
-    isLoading,
-    error,
     // Image
     imageUrl,
     setImageUrl,
@@ -47,6 +45,10 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
     handleVideoUrlChange,
     useVideoUrlCover,
     toggleBetweenVideoUrlAndFile,
+    progress,
+
+    isLoading,
+    error,
   } = useCoursePartForm() as IUseCoursePartFormReturnType;
   const { t } = useTranslation();
 
@@ -177,7 +179,15 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
         </>
       )}
 
-      {isLoading && <Loader />}
+      {isLoading && (
+        <>
+          <Loader />
+          <div className={styles.loaderTextContainer}>
+            {t('not_close_tab')}
+            <div>{progress} %</div>
+          </div>
+        </>
+      )}
       {error && <MessageBox errorMessage={error} />}
     </div>
   );
