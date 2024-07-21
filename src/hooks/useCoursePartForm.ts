@@ -239,14 +239,16 @@ export function useCoursePartForm() {
     setVideoUrl,
     previewVideoUrl,
     setPreviewVideoUrl,
-    handleVideoChange,
     handleRemoveVideo,
     handleVideoUrlChange,
-    useVideoUrlCover,
-    toggleBetweenVideoUrlAndFile,
-    progress,
 
     error,
     isLoading: createOrUpdateCoursePartMutation.isPending,
+
+    // Not used due to the lack of video sending capability
+    progress,
+    handleVideoChange,
+    useVideoUrlCover,
+    toggleBetweenVideoUrlAndFile,
   };
 }
