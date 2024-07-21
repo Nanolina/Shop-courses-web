@@ -21,6 +21,7 @@ import CheckboxInput from '../../ui/CheckboxInput/CheckboxInput';
 import InfoBox from '../../ui/InfoBox/InfoBox';
 import Label from '../../ui/Label/Label';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
+import WarningBox from '../../ui/WarningBox/WarningBox';
 import Modal from '../Modal/Modal';
 import { ICourseDetailsProps } from '../types';
 import ContractInfoModalContent from './ContractInfoModalContent';
@@ -224,7 +225,7 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
       {role === SELLER && (
         <>
           {dataLoadedFromBlockchain && courseContractBalance <= 0 && (
-            <div className={styles.warning}>{t('course_need_deploy')}</div>
+            <WarningBox>❗ {t('course_need_deploy')}</WarningBox>
           )}
           <Button
             onClick={createCourse}

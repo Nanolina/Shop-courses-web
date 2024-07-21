@@ -9,20 +9,6 @@
   width: 100%;
 }
 
-.warning {
-  color: var(--tg-theme-destructive-text-color);
-  background-color: #fbd5d5;
-  border: 1px solid var(--tg-theme-destructive-text-color);
-  border-radius: 10px;
-  padding: 10px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.warning::before {
-  content: '❗ ';
-}
-
 .checkbox {
   display: flex;
   gap: 20px;
