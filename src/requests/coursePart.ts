@@ -63,7 +63,8 @@ export const createOrUpdateCoursePartAPI = async (
   isLesson: boolean,
   isEditMode: boolean,
   dto: ICoursePartDataToCreateOrUpdate,
-  initDataRaw: string | undefined
+  initDataRaw: string | undefined,
+  setProgress: (progress: number) => void
 ) => {
   if (!initDataRaw) throw new Error('Not enough authorization data');
   const { name, description, imageUrl, image, videoUrl, video } = dto;
@@ -85,12 +86,21 @@ export const createOrUpdateCoursePartAPI = async (
   }
 
   const axiosWithAuth = createAxiosWithAuth(initDataRaw);
+  const config = {
+    onUploadProgress: (progressEvent: any) => {
+      const percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total
+      );
+      setProgress(percentCompleted); // Обновляем прогресс через callback
+    },
+  };
 
   // Edit module or lesson
   if (isEditMode) {
     const response = await axiosWithAuth.patch<IModule | ILesson>(
       `/${type}/${itemId}`,
-      formData
+      formData,
+      config
     );
     return response.data;
   } else {
@@ -98,14 +108,16 @@ export const createOrUpdateCoursePartAPI = async (
     if (isLesson) {
       const response = await axiosWithAuth.post<ILesson>(
         `/lesson/module/${parentId}`,
-        formData
+        formData,
+        config
       );
       return response.data;
       // Create module
     } else {
       const response = await axiosWithAuth.post<IModule>(
         `/module/course/${parentId}`,
-        formData
+        formData,
+        config
       );
       return response.data;
     }

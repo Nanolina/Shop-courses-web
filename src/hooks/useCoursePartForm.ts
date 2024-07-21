@@ -36,6 +36,7 @@ export function useCoursePartForm() {
   const [video, setVideo] = useState<File | null>(null);
   const [previewVideoUrl, setPreviewVideoUrl] = useState<string | null>(null);
   const [useVideoUrlCover, setUseVideoUrlCover] = useState(true); // State to toggle between video URL and video upload (button)
+  const [progress, setProgress] = useState<number>(0);
 
   const { initDataRaw } = retrieveLaunchParams();
   const navigate = useNavigate();
@@ -59,7 +60,8 @@ export function useCoursePartForm() {
         isLesson,
         isEditMode,
         dataToSend,
-        initDataRaw
+        initDataRaw,
+        (progressValue: any) => setProgress(progressValue)
       ),
     onSuccess: (data: IModule | ILesson) => {
       if (isLesson) {
@@ -83,13 +85,14 @@ export function useCoursePartForm() {
   );
 
   // Common functions for image and video
-  const handleFileChange = (
+  const handleFileChange = async (
     event: ChangeEvent<HTMLInputElement>,
     setFile: React.Dispatch<React.SetStateAction<File | null>>,
     setPreviewUrl: React.Dispatch<React.SetStateAction<string | null>>,
     setFileUrl: React.Dispatch<React.SetStateAction<string>>
   ) => {
     const file = event.target.files?.[0];
+
     if (file) {
       setFile(file);
       const fileUrl = URL.createObjectURL(file);
@@ -241,6 +244,7 @@ export function useCoursePartForm() {
     handleVideoUrlChange,
     useVideoUrlCover,
     toggleBetweenVideoUrlAndFile,
+    progress,
 
     error,
     isLoading: createOrUpdateCoursePartMutation.isPending,
