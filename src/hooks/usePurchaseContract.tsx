@@ -23,6 +23,7 @@ export function usePurchaseContract(course: ICourse) {
   const [customerId, setCustomerId] = useState<any>(0);
   const [contractAddress, setContractAddress] = useState<string>('');
   const [errorContract, setErrorContract] = useState<string>('');
+  const [showModalPurchase, setShowModalPurchase] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   const coursePriceInNano = toNano(course.price.toString());
@@ -112,6 +113,8 @@ export function usePurchaseContract(course: ICourse) {
     errorContract,
     contractAddress,
     loading,
+    showModalPurchase,
+    setShowModalPurchase,
 
     // Send money to 2 contracts: seller contract with type Sale (useTonConnect) and create purchase contract "NewPurchase"
     purchaseCourse: async () => {
@@ -131,6 +134,7 @@ export function usePurchaseContract(course: ICourse) {
           message
         );
         await monitorContract();
+        setShowModalPurchase(true);
       } catch (error: any) {
         setErrorContract(
           `Transaction failed or was rejected. ${error?.message}`

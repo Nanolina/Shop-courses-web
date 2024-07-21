@@ -17,6 +17,7 @@ function CheckboxInput({
         onChange={onChange}
         disabled={disabled}
         className={styles.input}
+        autoFocus={false}
       />
       <label className={styles.label} htmlFor={id}>
         {children}
