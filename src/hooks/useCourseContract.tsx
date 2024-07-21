@@ -22,6 +22,7 @@ export function useCourseContract(course: ICourse) {
 
   const [contractAddress, setContractAddress] = useState<string>('');
   const [errorContract, setErrorContract] = useState<string>('');
+  const [showModalCourse, setShowModalCourse] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   const coursePriceInNano = toNano(course.price.toString());
@@ -106,6 +107,8 @@ export function useCourseContract(course: ICourse) {
     errorContract,
     contractAddress,
     loading,
+    showModalCourse,
+    setShowModalCourse,
     createCourse: async () => {
       const message: NewCourse = {
         courseId,
@@ -122,6 +125,7 @@ export function useCourseContract(course: ICourse) {
           message
         );
         await monitorContract();
+        setShowModalCourse(true);
       } catch (error: any) {
         setErrorContract(
           `Transaction failed or was rejected. ${error?.message}`
