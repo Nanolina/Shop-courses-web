@@ -38,9 +38,16 @@ import { DeployEnum } from './types';
 const tg = window.Telegram.WebApp;
 const serverUrl = process.env.REACT_APP_SERVER_URL || '';
 const manifestUrl = `${process.env.REACT_APP_WEB_URL}/tonconnect-manifest.json`;
+const staleTime = Number(process.env.REACT_APP_STALE_TIME) || 1000 * 60 * 1; // 1 min
 
 // Create a client for React Query
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime,
+    },
+  },
+});
 
 function App() {
   const eventBuilder = useTWAEvent();
@@ -201,7 +208,9 @@ export default () => (
           </ContractProvider>
         </NotificationProvider>
       </PointsProvider>
-      {process.env.REACT_APP_QUERY_DEVTOOLS && <ReactQueryDevtools />}
+      {process.env.REACT_APP_QUERY_DEVTOOLS === 'true' && (
+        <ReactQueryDevtools />
+      )}
     </QueryClientProvider>
   </TwaAnalyticsProvider>
 );
