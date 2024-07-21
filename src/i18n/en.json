@@ -1,6 +1,6 @@
 {
   "accepted": "Confirm your consent to the contract and the processing of personal data",
-  "action_prescription": "You can go to any page within our platform and perform all kinds of actions without waiting for confirmation. As soon as the data is updated, we will notify you in a pop-up dialog box.",
+  "action_prescription": "You can freely navigate through the pages within our mini-application, continuing to use it while the data is updated. Once the updates are complete, we'll notify you.",
   "activate": "Activate",
   "all": "All",
   "buy": "Buy for",
@@ -53,7 +53,7 @@
   "delete_course": "Are you sure you want to delete course",
   "delete_type": "Are you sure you want to delete {{type}}",
   "description": "Description",
-  "dont_close": "Please don't close the app!",
+  "dont_close": "Please don't close the app until notified!",
   "earned_points": "You've earned",
   "email": "E-mail address",
   "email_confirmed": "Your e-mail address has been verified",

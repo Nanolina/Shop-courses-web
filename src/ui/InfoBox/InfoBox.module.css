@@ -1,0 +1,6 @@
+.container {
+  border: 4px double var(--tg-theme-link-color);
+  border-radius: 30px;
+  font-style: italic;
+  padding: 10px;
+}

@@ -2,6 +2,7 @@ import { TonConnectButton } from '@tonconnect/ui-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsInfoCircleFill } from 'react-icons/bs';
+import { LuHeartHandshake } from 'react-icons/lu';
 import { SiHiveBlockchain } from 'react-icons/si';
 import { CUSTOMER, SELLER, USER } from '../../consts';
 import { useContract } from '../../context';
@@ -17,13 +18,13 @@ import {
 } from '../../hooks';
 import Button from '../../ui/Button/Button';
 import CheckboxInput from '../../ui/CheckboxInput/CheckboxInput';
+import InfoBox from '../../ui/InfoBox/InfoBox';
 import Label from '../../ui/Label/Label';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
 import Modal from '../Modal/Modal';
 import { ICourseDetailsProps } from '../types';
 import ContractInfoModalContent from './ContractInfoModalContent';
 import styles from './CourseDetails.module.css';
-import { LuHeartHandshake } from 'react-icons/lu';
 
 const tg = window.Telegram.WebApp;
 const purchaseFee = 0.07;
@@ -109,30 +110,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
   return (
     <>
       <div className={styles.info}>
-        <Modal
-          isOpen={showModalCourse || showModalPurchase}
-          onClose={() => {
-            setShowModalCourse(false);
-            setShowModalPurchase(false);
-          }}
-        >
-          <div className={styles.modalInfo}>
-            <p className={styles.dearUser}>{t('dear_user')}</p>
-            <p className={styles.updatingData}>{t('updating_data')}</p>
-            <div className={styles.hint}>{t('dont_close')}</div>
-            <p className={styles.action}>{t('action_prescription')}</p>
-            <p className={styles.thankYou}>
-              {t('thank_you')}
-              <LuHeartHandshake className={styles.heart} />
-            </p>
-          </div>
-        </Modal>
-        <Modal
-          isOpen={modalContractOpen}
-          onClose={() => setModalContractOpen(false)}
-        >
-          <ContractInfoModalContent showModalFromSeller={showModalFromSeller} />
-        </Modal>
         <Label text={course.name} isBig isBold />
         {course.description && (
           <div className={styles.descriptionText}>{course.description}</div>
@@ -272,6 +249,30 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         </div>
       )}
 
+      <Modal
+        isOpen={showModalCourse || showModalPurchase}
+        onClose={() => {
+          setShowModalCourse(false);
+          setShowModalPurchase(false);
+        }}
+      >
+        <div className={styles.modalInfo}>
+          <div className={styles.dearUser}>{t('dear_user')}</div>
+          <div className={styles.action}>{t('updating_data')}</div>
+          <InfoBox className={styles.notClose}>{t('dont_close')}</InfoBox>
+          <div className={styles.action}>{t('action_prescription')}</div>
+          <div className={styles.thankYou}>
+            {t('thank_you')}
+            <LuHeartHandshake className={styles.heart} />
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={modalContractOpen}
+        onClose={() => setModalContractOpen(false)}
+      >
+        <ContractInfoModalContent showModalFromSeller={showModalFromSeller} />
+      </Modal>
       {courseErrorContract && <MessageBox errorMessage={courseErrorContract} />}
       {purchaseErrorContract && (
         <MessageBox errorMessage={purchaseErrorContract} />

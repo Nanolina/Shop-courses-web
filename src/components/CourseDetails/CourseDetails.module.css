@@ -42,6 +42,7 @@
   align-items: center;
   text-align: center;
   padding: 10px;
+  gap: 20px;
 }
 
 .dearUser {
@@ -53,17 +54,10 @@
   font-weight: 700;
 }
 
-.updatingData {
-  border: 4px double var(--tg-theme-link-color);
-  border-radius: 30px;
-  font-style: italic;
-  font-size: 1.1em;
-  padding: 10px;
-}
-
 .action {
   text-align: justify;
   font-size: 1.1em;
+  color: var(--tg-theme-hint-color);
 }
 
 .thankYou {
@@ -73,7 +67,6 @@
   font-style: italic;
   color: var(--tg-theme-link-color);
   align-items: center;
-  justify-content: space-around;
 }
 
 .heart {
@@ -110,12 +103,11 @@
   color: var(--tg-theme-text-color);
 }
 
-.hint {
+.notClose {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 15px;
-  color: var(--tg-theme-hint-color);
   font-size: 16px;
   font-style: italic;
 }
