@@ -1,7 +1,6 @@
 import { TonConnectButton } from '@tonconnect/ui-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BsInfoCircleFill } from 'react-icons/bs';
 import { LuHeartHandshake } from 'react-icons/lu';
 import { SiHiveBlockchain } from 'react-icons/si';
 import { CUSTOMER, SELLER, USER } from '../../consts';
@@ -18,6 +17,7 @@ import {
 } from '../../hooks';
 import Button from '../../ui/Button/Button';
 import CheckboxInput from '../../ui/CheckboxInput/CheckboxInput';
+import HintInfoIconText from '../../ui/HintInfoIconText/HintInfoIconText';
 import InfoBox from '../../ui/InfoBox/InfoBox';
 import Label from '../../ui/Label/Label';
 import { MessageBox } from '../../ui/MessageBox/MessageBox';
@@ -146,31 +146,6 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
             />
           </div>
         )}
-        {role !== SELLER && role !== CUSTOMER && (
-          <div className={styles.checkbox}>
-            <CheckboxInput
-              checked={hasAcceptedTermsPurchase}
-              onChange={() =>
-                setHasAcceptedTermsPurchase(!hasAcceptedTermsPurchase)
-              }
-              id="hasAcceptedTermsPurchase"
-            >
-              <p>
-                {t('i_accept_the_terms')}
-                <b
-                  className={styles.contract}
-                  onClick={() => {
-                    setModalContractOpen(!modalContractOpen);
-                    setShowModalFromSeller(false);
-                  }}
-                >
-                  {t('contracts')}
-                </b>
-                {t('i_accept_the_terms_personal_data')}
-              </p>
-            </CheckboxInput>
-          </div>
-        )}
         {dataLoadedFromBlockchain && role === SELLER && (
           <>
             <div className={styles.category}>
@@ -181,29 +156,9 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
               <Label text={`${t('smart_contract_address')}: `} isBold />
               <Label text={courseContractAddress} />
             </div>
-            <div className={styles.checkbox}>
-              <CheckboxInput
-                checked={hasAcceptedTermsCourse}
-                onChange={() =>
-                  setHasAcceptedTermsCourse(!hasAcceptedTermsCourse)
-                }
-                id="hasAcceptedTermsCourse"
-              >
-                <p>
-                  {t('i_accept_the_terms')}
-                  <b
-                    className={styles.contract}
-                    onClick={() => {
-                      setModalContractOpen(!modalContractOpen);
-                      setShowModalFromSeller(true);
-                    }}
-                  >
-                    {t('contracts')}
-                  </b>
-                  {t('i_accept_the_terms_personal_data')}
-                </p>
-              </CheckboxInput>
-            </div>
+            {courseContractBalance <= 0 && (
+              <WarningBox>{t('course_need_deploy')}</WarningBox>
+            )}
           </>
         )}
         {dataLoadedFromBlockchain && role === CUSTOMER && (
@@ -216,17 +171,37 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
               <Label text={`${t('smart_contract_address')}: `} isBold />
               <Label text={purchaseContractAddress} />
             </div>
+            {purchaseContractBalance <= 0 && (
+              <WarningBox>{t('purchase_need_deploy')}</WarningBox>
+            )}
           </>
         )}
       </div>
 
-      <TonConnectButton />
-
-      {role === SELLER && (
+      {role === SELLER && courseContractBalance <= 0 && (
         <>
-          {dataLoadedFromBlockchain && courseContractBalance <= 0 && (
-            <WarningBox>❗ {t('course_need_deploy')}</WarningBox>
-          )}
+          <TonConnectButton />
+          <div className={styles.checkbox}>
+            <CheckboxInput
+              checked={hasAcceptedTermsCourse}
+              onChange={() =>
+                setHasAcceptedTermsCourse(!hasAcceptedTermsCourse)
+              }
+              id="hasAcceptedTermsCourse"
+            >
+              {t('i_accept_the_terms')}
+              <b
+                className={styles.contract}
+                onClick={() => {
+                  setModalContractOpen(!modalContractOpen);
+                  setShowModalFromSeller(true);
+                }}
+              >
+                {t('contracts')}
+              </b>
+              {t('i_accept_the_terms_personal_data')}
+            </CheckboxInput>
+          </div>
           <Button
             onClick={createCourse}
             text={t('activate')}
@@ -237,18 +212,48 @@ function CourseDetails({ course, role }: ICourseDetailsProps) {
         </>
       )}
 
-      {role === CUSTOMER &&
-        dataLoadedFromBlockchain &&
+      {role !== SELLER &&
+        courseContractBalance > 0 &&
         purchaseContractBalance <= 0 && (
-          <div className={styles.warning}>{t('purchase_need_deploy')}</div>
+          <>
+            <TonConnectButton />
+            <div className={styles.checkbox}>
+              <CheckboxInput
+                checked={hasAcceptedTermsPurchase}
+                onChange={() =>
+                  setHasAcceptedTermsPurchase(!hasAcceptedTermsPurchase)
+                }
+                id="hasAcceptedTermsPurchase"
+              >
+                {t('i_accept_the_terms')}
+                <b
+                  className={styles.contract}
+                  onClick={() => {
+                    setModalContractOpen(!modalContractOpen);
+                    setShowModalFromSeller(false);
+                  }}
+                >
+                  {t('contracts')}
+                </b>
+                {t('i_accept_the_terms_personal_data')}
+              </CheckboxInput>
+            </div>
+          </>
         )}
 
       {role !== SELLER && hintMessage && (
-        <div className={styles.hint}>
-          <BsInfoCircleFill size={24} />
-          {hintMessage}
-        </div>
+        <HintInfoIconText>{hintMessage}</HintInfoIconText>
       )}
+
+      {!isActivateButtonDisabled ||
+        (role !== SELLER &&
+          courseContractBalance > 0 &&
+          purchaseContractBalance <= 0 && (
+            <HintInfoIconText>
+              {t('dont_make_transaction')} <b>{t('refund')}</b> {t('instead')}{' '}
+              <b>{t('network_fee')}</b>
+            </HintInfoIconText>
+          ))}
 
       <Modal
         isOpen={showModalCourse || showModalPurchase}

@@ -83,3 +83,7 @@ export interface IMessageBox {
   errorMessage?: string;
   successMessage?: string;
 }
+
+export interface IHintInfoIconTextProps {
+  children: any;
+}

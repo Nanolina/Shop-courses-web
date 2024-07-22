@@ -1,8 +1,8 @@
 .container {
   color: var(--tg-theme-destructive-text-color);
   background-color: #fbd5d5;
-  border: 1px solid var(--tg-theme-destructive-text-color);
-  border-radius: 10px;
+  border: 4px double var(--tg-theme-destructive-text-color);
+  border-radius: 20px;
   padding: 10px;
   font-weight: bold;
   text-align: center;

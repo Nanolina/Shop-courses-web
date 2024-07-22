@@ -40,12 +40,8 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
     setVideoUrl,
     previewVideoUrl,
     setPreviewVideoUrl,
-    handleVideoChange,
     handleRemoveVideo,
     handleVideoUrlChange,
-    useVideoUrlCover,
-    toggleBetweenVideoUrlAndFile,
-    progress,
 
     isLoading,
     error,
@@ -140,35 +136,9 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
       {isLesson && (
         <>
           <div className={styles.formGroup}>
-            <div className={styles.switchButton}>
-              <Button
-                onClick={toggleBetweenVideoUrlAndFile}
-                text={
-                  useVideoUrlCover
-                    ? t('switch_to_video_file')
-                    : t('switch_to_video_link')
-                }
-                icon={<MdCameraswitch size={36} />}
-              />
-            </div>
-            <Label
-              text={
-                useVideoUrlCover ? t('video_link') : t('cover_label_file_video')
-              }
-              isPadding
-              isBold
-            />
+            <Label text={t('video_link')} isPadding isBold />
             <Label text={t('video_allowed')} isHint isPadding />
-
-            {useVideoUrlCover ? (
-              <TextInput value={videoUrl} onChange={handleVideoUrlChange} />
-            ) : (
-              <InputUpload
-                name="files"
-                onChange={handleVideoChange}
-                acceptFiles="video/*"
-              />
-            )}
+            <TextInput value={videoUrl} onChange={handleVideoUrlChange} />
           </div>
           {previewVideoUrl && (
             <VideoPlayer
@@ -179,15 +149,7 @@ function CoursePartForm({ type, item }: ICoursePartFormProps) {
         </>
       )}
 
-      {isLoading && (
-        <>
-          <Loader />
-          <div className={styles.loaderTextContainer}>
-            {t('not_close_tab')}
-            <div>{progress} %</div>
-          </div>
-        </>
-      )}
+      {isLoading && <Loader />}
       {error && <MessageBox errorMessage={error} />}
     </div>
   );
